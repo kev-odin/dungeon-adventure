@@ -1,3 +1,5 @@
+# Kevin's Time Tracker: 0.15 hours
+
 from health_potion import HealthPotion
 from vision_potion import VisionPotion
 

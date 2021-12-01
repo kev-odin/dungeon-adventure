@@ -1,3 +1,5 @@
+# Kevin's Time Tracker: 0.15 hours
+
 from potion import Potion
 
 class HealthPotion(Potion):
