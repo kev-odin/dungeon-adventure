@@ -4,8 +4,8 @@ class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and must complete the maze to win.
     """
 
-    def __init__(self):
-        self.name = None
+    def __init__(self, name = None):
+        self.name = name
         self.dev_powers = False
         self.hitpoints = 75
         self.health_pots = 0
