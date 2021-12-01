@@ -1,7 +1,12 @@
 import unittest
 from room import Room
 
-
+"""
+TODO
+Add tests for door setters
+Add tests for pillar setter
+Add tests for impassable
+"""
 class TestRoom(unittest.TestCase):
     def test_init_default_str(self):
         test = Room()

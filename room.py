@@ -50,7 +50,7 @@ class Room:
         string = ""
         string += ("***\n", "*-*\n")[self.__north_door]  # Appends *** if not north_door, *-* if north door
         string += ("*", "|")[self.__west_door]  # Appends * if not west_door, | if west_door
-        if self.__pillar != "":
+        if self.__pillar:
             string += self.__pillar
         elif self.__entrance:
             string += "i"  # It's the entrance!
@@ -64,6 +64,8 @@ class Room:
             string += "H"  # Get healthy!
         elif self.__vision_potion:
             string += "V"  # See the world from the comfort of your own home!  JK it's a laptop.
+        elif self.__impassable:
+            string += "*"  # More rocks here!  Not for human entrance.
         else:
             string += " "
         string += ("*\n", "|\n")[self.__east_door]  # Appends | if east_door and * if not east_door.
@@ -217,18 +219,44 @@ class Room:
     def north_door(self):
         return self.__north_door
 
+    @north_door.setter
+    def north_door(self, door_exists):
+        if self.__is_boolean(door_exists):
+            self.__north_door = door_exists
+
     @property
     def east_door(self):
         return self.__east_door
+
+    @east_door.setter
+    def east_door(self, door_exists):
+        if self.__is_boolean(door_exists):
+            self.__east_door = door_exists
 
     @property
     def south_door(self):
         return self.__south_door
 
+    @south_door.setter
+    def south_door(self, door_exists):
+        if self.__is_boolean(door_exists):
+            self.__south_door = door_exists
+
     @property
     def west_door(self):
         return self.__west_door
 
+    @west_door.setter
+    def west_door(self, door_exists):
+        if self.__is_boolean(door_exists):
+            self.__west_door = door_exists
+
     @property
     def pillar(self):
         return self.__pillar
+
+    @pillar.setter
+    def pillar(self, current_pillar):
+        if self.__is_valid_pillar(current_pillar):
+            self.__pillar = current_pillar
+
