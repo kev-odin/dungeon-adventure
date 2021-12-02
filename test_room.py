@@ -10,7 +10,7 @@ Add tests for impassable
 class TestRoom(unittest.TestCase):
     def test_init_default_str(self):
         test = Room()
-        expected = f"***\n* *\n***\n"
+        expected = f"*  *  *\n*     *\n*  *  *\n"
         self.assertEqual(expected, test.__str__(), "Check your to string method.")
 
     def test_init_default_health_potions(self):
@@ -117,7 +117,7 @@ class TestRoom(unittest.TestCase):
 
     def test_partial_init_string(self):
         test = Room(health_potion=2, pit=10, north_door=True)
-        self.assertEqual("*-*\n*M*\n***\n", test.__str__(), "Check string for multiples and north doors")
+        self.assertEqual("*  -  *\n*  M  *\n*  *  *\n", test.__str__(), "Check string for multiples and north doors")
 
     def test_partial_init_hp(self):
         test = Room(health_potion=2, pit=10, north_door=True)
@@ -140,7 +140,7 @@ class TestRoom(unittest.TestCase):
 
     def test_partial_init_doors_strings(self):
         test = Room(north_door=True, south_door=True, east_door=True, west_door=True)
-        self.assertEqual("*-*\n| |\n*-*\n", test.__str__(), "Check string for opening doors")
+        self.assertEqual("*  -  *\n|     |\n*  -  *\n", test.__str__(), "Check string for opening doors")
 
     def test_partial_init_potions(self):
         test = Room(vision_potion=2, health_potion=1)
@@ -153,27 +153,27 @@ class TestRoom(unittest.TestCase):
 
     def test_partial_init_potions_multiple_string(self):
         test = Room(vision_potion=2, health_potion=1)
-        self.assertEqual("***\n*M*\n***\n", test.__str__(), "Check string for multiple potions")
+        self.assertEqual("*  *  *\n*  M  *\n*  *  *\n", test.__str__(), "Check string for multiple potions")
 
     def test_partial_init_pillar_A(self):
         test = Room(pillar="A")
         self.assertEqual("A", test.pillar, "Something went wrong with pillar init")
-        self.assertEqual("***\n*A*\n***\n", test.__str__(), "Check string for pillar")
+        self.assertEqual("*  *  *\n*  A  *\n*  *  *\n", test.__str__(), "Check string for pillar")
 
     def test_pillar_validity_P(self):
         test = Room(pillar="P")
         self.assertEqual("P", test.pillar, "Something went wrong with pillar init")
-        self.assertEqual("***\n*P*\n***\n", test.__str__(), "Check string for pillar")
+        self.assertEqual("*  *  *\n*  P  *\n*  *  *\n", test.__str__(), "Check string for pillar")
 
     def test_pillar_validity_I(self):
         test = Room(pillar="I")
         self.assertEqual("I", test.pillar, "Something went wrong with pillar init")
-        self.assertEqual("***\n*I*\n***\n", test.__str__(), "Check string for pillar")
+        self.assertEqual("*  *  *\n*  I  *\n*  *  *\n", test.__str__(), "Check string for pillar")
 
     def test_pillar_validity_E(self):
         test = Room(pillar="E")
         self.assertEqual("E", test.pillar, "Something went wrong with pillar init")
-        self.assertEqual("***\n*E*\n***\n", test.__str__(), "Check string for pillar")
+        self.assertEqual("*  *  *\n*  E  *\n*  *  *\n", test.__str__(), "Check string for pillar")
 
     def test_pillar_validity_value_error(self):
         try:
@@ -205,24 +205,29 @@ class TestRoom(unittest.TestCase):
 
     def test_init_pit_string(self):
         test = Room(pit=10)
-        self.assertEqual("***\n*X*\n***\n", test.__str__(), "Check string for pit")
+        self.assertEqual("*  *  *\n*  X  *\n*  *  *\n", test.__str__(), "Check string for pit")
 
     def test_hp_string(self):
         test = Room(health_potion=1)
-        self.assertEqual("***\n*H*\n***\n", test.__str__(), "Check string for health potions")
+        self.assertEqual("*  *  *\n*  H  *\n*  *  *\n", test.__str__(), "Check string for health potions")
 
     def test_vision_potion_string(self):
         test = Room(vision_potion=1)
-        self.assertEqual("***\n*V*\n***\n", test.__str__(), "Check string for vision potions")
+        self.assertEqual("*  *  *\n*  V  *\n*  *  *\n", test.__str__(), "Check string for vision potions")
 
     def test_exit_string(self):
         test = Room(is_exit=True)
-        self.assertEqual("***\n*O*\n***\n", test.__str__(), "Check string for exit")
+        self.assertEqual("*  *  *\n*  O  *\n*  *  *\n", test.__str__(), "Check string for exit")
 
     def test_entrance_string(self):
         test = Room(entrance=True)
-        self.assertEqual("***\n*i*\n***\n", test.__str__(), "Check string for exit")
+        self.assertEqual("*  *  *\n*  i  *\n*  *  *\n", test.__str__(), "Check string for exit")
 
+    def test_clear_room(self):
+        test = Room(entrance=True)
+        test.clear_room()
+        empty_room = Room()
+        self.assertEqual(f"{empty_room}", f"{test}", "Check if room is clearing properly.")
 
 if __name__ == '__main__':
     unittest.main()

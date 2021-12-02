@@ -1,6 +1,6 @@
 """
 Steph's Time Tracker~!
-2 hours
+4 hours to working properly with no error checking or fun.
 """
 
 import random
@@ -8,126 +8,212 @@ from room import Room
 
 
 class Dungeon:
+    def __init__(self, row_count, col_count, impassable_chance=0.05, pillars=["A", "P", "I", "E"], hp_pot_chance=0.1,
+                 vision_chance=0.05, many_chance=0.05, pit_chance=0.1, max_hp_pots=2, max_vision=1, max_pit_damage=20):
+        """
+        Welcome to the dungeon!  Allows for hardcoded difficulty to be adjusted in the event we want to add different
+        difficulty settings as an extra credit feature (ex. increase pit chance and damage)
+        :param row_count:
+        :param col_count:
+        :param impassable_chance:
+        :param pillars:
+        :param hp_pot_chance:
+        :param vision_chance:
+        :param many_chance:
+        :param pit_chance:
+        :param max_hp_pots:
+        :param max_vision:
+        :param max_pit_damage:
+        """
+        if len(pillars) + 2 < (row_count * col_count * (impassable_chance + pit_chance + hp_pot_chance + vision_chance +
+                               many_chance)):  # If not, very unlikely maze will successfully generate
+            self.__dungeon = []
+            self.__row_count = row_count
+            self.__col_count = col_count
+            self.__empty_rooms = []  # Stores list of empty rooms to be used later for pillar placement
+            self.__pillars = pillars  # To be popped into rooms
+            self.__impassable_chance = impassable_chance  # 5% of rooms will be impassable
+            self.__hp_pot_chance = hp_pot_chance  # max number of potions vs. max damage pits do
+            self.__vision_chance = vision_chance
+            self.__many_chance = many_chance  # It is vital to fall in a pit and find potions on bodies of unfortunates.
+            self.__pit_chance = pit_chance
+            self.__max_hp_pots = max_hp_pots
+            self.__max_vision = max_vision
+            self.__pit_pain = max_pit_damage  # max number of damage a pit can do.
+            self.__build_maze()
+        else:
+            raise ValueError("Rows * Columns  / 2 must be greater than len(pillars) + 2.")
 
-    def __init__(self, row_count, col_count):
-        self.__maze = []
-        self.__rowCount = row_count
-        self.__colCount = col_count
-        self.__accessible_rooms = []
-        total_rooms = row_count * col_count
+    def __str__(self):
+        string = string_top = string_middle = string_bottom = ""
+        for row in range(0, self.__row_count):
+            for col in range(0, self.__col_count):
+                room = self.__dungeon[row][col]
+                string_top += room.string_top()
+                string_middle += room.string_middle()
+                string_bottom += room.string_bottom()
+            string += string_top + "\n" + string_middle + "\n" + string_bottom + "\n"
+            string_top = string_middle = string_bottom = ""
+        return string
 
-        for row in range(0, self.__rowCount):
-            self.__maze.append([])
-            for col in range(0, self.__colCount):
-                self.__maze[row].append([])
-                random_number = random.randint(0, total_rooms)
-                if random_number/total_rooms < 0.1:  # 10% of rooms will be impassable.  NO HARDCODE BEFORE SHARING.
-                    new_room = Room(impassable=True)
-                else:
-                    new_room = Room()
-                self.__maze[row][col] = new_room
+    def create_room(self):
+        return self.__create_room()
+    def __create_room(self):
+        """
+        Generates rooms to be input to the maze that are either impassable, pits and potions, potions, pits, or boring.
+        :return: room
+        """
+        total_rooms = self.__row_count * self.__col_count
+        random_number = random.randint(0, total_rooms)
+        intrigue = random_number / total_rooms
+        many_trigger = self.__impassable_chance + self.__many_chance  # range of impassable through many
+        hp_trigger = many_trigger + self.__hp_pot_chance  # range of many trigger through hp pot chance
+        vision_trigger = hp_trigger + self.__vision_chance  # range of hp trigger through vision trigger
+        pit_trigger = vision_trigger + self.__pit_chance
+        if intrigue <= self.__impassable_chance:
+            new_room = Room(impassable=True)
+        elif intrigue <= many_trigger:
+            new_room = Room(health_potion=random.randint(0, self.__max_hp_pots),
+                            vision_potion=random.randint(0, self.__max_vision),
+                            pit=random.randint(0, self.__pit_pain))
+        elif intrigue <= hp_trigger:
+            new_room = Room(health_potion=random.randint(0, self.__max_hp_pots))
+        elif intrigue <= vision_trigger:
+            new_room = Room(vision_potion=random.randint(0, self.__max_vision))
+        elif intrigue <= pit_trigger:
+            new_room = Room(pit=random.randint(1, self.__pit_pain))
+        else:  # Boring empty room.
+            new_room = Room()
+        return new_room
 
-            # self.__maze.append([Room() for c in range(0, self.__colCount)])
-        self.build_maze()
+    def __create_2d_room_maze(self):
+        """
 
-    def build_maze(self):
-        # make some rooms impassible
-        # rand gen chance a room is impassable
-        # set entrance and exit
-        entrance = self.__maze[0][0]
-        entrance.entrance, entrance.__impassable = True, False
-        exit_room = self.__maze[1][1]
-        exit_room.exit, exit_room.__impassable = True, False
-        collected_pillars = ["", "", "", ""]
-        curr_row, curr_col = 0, 0
-        # while collected_pillars.sort() != ["A", "E", "I", "P"] and self.__maze[curr_row][curr_col] != exit:
-        # self.traverse(curr_row, curr_col)
-        # place pillars after entrance/exit
-        a_pillar_room = self.__maze[2][1]  # Set to random place on traversed room later
-        p_pillar_room = self.__maze[3][2]
-        i_pillar_room = self.__maze[1][0]
-        e_pillar_room = self.__maze[2][2]
-        a_pillar_room.pillar, a_pillar_room.__impassable = "A", False
-        p_pillar_room.pillar, p_pillar_room.__impassable = "P", False
-        i_pillar_room.pillar, i_pillar_room.__impassable = "I", False
-        e_pillar_room.pillar, e_pillar_room.__impassable = "E", False
+        :return: None
+        """
+        for row in range(0, self.__row_count):
+            self.__dungeon.append([])
+            for col in range(0, self.__col_count):
+                self.__dungeon[row].append([])
+                new_room = self.__create_room()
+                self.__dungeon[row][col] = new_room
 
-    """
-        #place potions and pits
-        for row in range(0, self.__rowCount):
-            for col in range(0, self.__colCount):
-                #check for entrance/exit and impassible
-                #generate a random value
-                current = self.__maze[row][col]
-                if not current.exit and not current.entrance and not current.pillar:
-                    number = random.randint(1, 100)
-                    if number >= 10:
-                        self.__maze[row][col].health_potion += 1
-    """
+    def __add_pillars(self):
+        pillars_left = len(self.__pillars)
+        pillars = self.__copy_of_list(self.__pillars)
+        while pillars_left > 0:
+            current = random.choice(self.__empty_rooms)
+            self.__empty_rooms.remove(current)
+            current.pillar = pillars.pop()
+            pillars_left -= 1
+
+    @staticmethod
+    def __copy_of_list(copied):
+        copy = []
+        for datum in copied:
+            copy.append(datum)
+        return copy
+
+    @staticmethod
+    def __check_if_empty_room(a_room):
+        return not a_room.exit and not a_room.pillar and not a_room.entrance and not a_room.health_potion \
+               and not a_room.vision_potion and not a_room.pit_damage
+
+    def __build_maze(self):
+        reach_exit = False
+        pillar_options = 0
+        num_pillars = len(self.__pillars)
+        while (not reach_exit) or (pillar_options < num_pillars):  # If can't traverse or spots for pillars, resets.
+            self.__create_2d_room_maze()
+            ent_row, ent_col = random.randint(0, self.__row_count-1), random.randint(0, self.__col_count-1)
+            exit_row, exit_col = random.randint(0, self.__row_count-1), random.randint(0, self.__col_count-1)
+            entrance = self.__dungeon[ent_row][ent_col]
+            entrance.clear_room()
+            entrance.entrance = True
+            exit_room = self.__dungeon[exit_row][exit_col]
+            exit_room.clear_room()
+            exit_room.exit = True
+            reach_exit = self.__traverse(ent_row, ent_col)
+            pillar_options = len(self.__empty_rooms)
+        self.__add_pillars()
 
     def print_maze(self):
         # print(self.__maze)
-        for row in range(0, self.__rowCount):
+        for row in range(0, self.__row_count):
             print("row ", row)
-            for col in range(0, self.__colCount):
-                print(self.__maze[row][col].__str__())
+            for col in range(0, self.__col_count):
+                print(self.__dungeon[row][col].__str__())
             print()
 
-    def set_health_potion(self, row, col):
-        self.__maze[row][col].health_potion += 1
+    def set_health_potion(self, row, col, num):
+        self.__dungeon[row][col].health_potion = num
 
-    # WARNING: Work in progress ;-)
+    def __try_a_room(self, row, col):
+        room = self.__dungeon[row][col]
+        if self.__is_valid_room(row + 1, col):
+            room.south_door = True
+            next_room = self.__dungeon[row + 1][col]
+            next_room.north_door = True
+        found_exit = self.__traverse(row + 1, col)  # south
+        if not found_exit:
+            if self.__is_valid_room(row, col + 1):
+                room.east_door = True
+                next_room = self.__dungeon[row][col + 1]
+                next_room.west_door = True
+            found_exit = self.__traverse(row, col + 1)  # east
+        if not found_exit:
+            if self.__is_valid_room(row - 1, col):
+                room.north_door = True
+                next_room = self.__dungeon[row - 1][col]
+                next_room.south_door = True
+            found_exit = self.__traverse(row - 1, col)  # north
+        if not found_exit:
+            if self.__is_valid_room(row, col - 1):
+                room.west_door = True
+                next_room = self.__dungeon[row][col - 1]
+                next_room.east_door = True
+            found_exit = self.__traverse(row, col - 1)  # west
+
     # initial call if you know entrance is 0,0 would be traverse(0, 0)
-    def traverse(self, row, col):
+    def __traverse(self, row, col):
         found_exit = False
-        if self.is_valid_room(row, col):
-            room = self.__maze[row][col]
-            room.visited = True
+        if self.__is_valid_room(row, col):
+            room = self.__dungeon[row][col]
+            if self.__check_if_empty_room(room):
+                self.__empty_rooms.append(room)  # Places to put pillars later
+            room.visited = True  # No coming back here!
             # check for exit
             if room.exit:
                 return True
             # not at exit so try another room: south, east, north, west
             else:
-                if self.is_valid_room(row + 1, col):
+                room_options = [1, 2, 3, 4]
+                random.choice(room_options)
+                if self.__is_valid_room(row + 1, col):
                     room.south_door = True
-                    next_room = self.__maze[row + 1][col]
+                    next_room = self.__dungeon[row + 1][col]
                     next_room.north_door = True
-                found_exit = self.traverse(row + 1, col)  # south
+                found_exit = self.__traverse(row + 1, col)  # south
                 if not found_exit:
-                    if self.is_valid_room(row, col + 1):
+                    if self.__is_valid_room(row, col + 1):
                         room.east_door = True
-                        next_room = self.__maze[row][col + 1]
+                        next_room = self.__dungeon[row][col + 1]
                         next_room.west_door = True
-                    found_exit = self.traverse(row, col + 1)  # east
+                    found_exit = self.__traverse(row, col + 1)  # east
                 if not found_exit:
-                    if self.is_valid_room(row - 1, col):
+                    if self.__is_valid_room(row - 1, col):
                         room.north_door = True
-                        next_room = self.__maze[row-1][col]
+                        next_room = self.__dungeon[row - 1][col]
                         next_room.south_door = True
-                    found_exit = self.traverse(row - 1, col)  # north
+                    found_exit = self.__traverse(row - 1, col)  # north
                 if not found_exit:
-                    if self.is_valid_room(row, col - 1):
+                    if self.__is_valid_room(row, col - 1):
                         room.west_door = True
-                        next_room = self.__maze[row][col - 1]
+                        next_room = self.__dungeon[row][col - 1]
                         next_room.east_door = True
-                    found_exit = self.traverse(row, col - 1)  # west
-                # if we did not reach the exit from this room we need mark it as visited to
-                # avoid going into the room again
-                # if not found_exit:
-                    # self.__maze[row][col].visited = True
-        # else:  # tried to move into a room that is not valid
-        #    return False
+                    found_exit = self.__traverse(row, col - 1)  # west
         return found_exit
 
-    def is_valid_room(self, row, col):
-        return (0 <= row < self.__rowCount) and (col >= 0) and (col < self.__colCount) and self.__maze[row][col].can_enter()
-
-
-dungeon = Dungeon(5, 5)
-# dungeon.set_health_potion(0, 0)
-if dungeon.traverse(0, 0):
-    print("whoo hoo, we reached the exit")
-else:
-    print("exit not reachable")
-dungeon.print_maze()
-
+    def __is_valid_room(self, row, col):
+        return (0 <= row < self.__row_count) and (col >= 0) and (col < self.__col_count) \
+               and self.__dungeon[row][col].can_enter()

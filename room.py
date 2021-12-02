@@ -48,8 +48,24 @@ class Room:
         :return: string
         """
         string = ""
-        string += ("***\n", "*-*\n")[self.__north_door]  # Appends *** if not north_door, *-* if north door
-        string += ("*", "|")[self.__west_door]  # Appends * if not west_door, | if west_door
+        string += self.string_top() + "\n"  # Appends *** if not north_door, *-* if north door
+        string += self.string_middle() + "\n"  # Gets the middle of the string and adds a new line for individual room.
+        string += self.string_bottom() + "\n"
+        return string
+
+    def __eq__(self, other):
+        """
+        For testing purposes.  Compares the strings of the two rooms.
+        :param other:
+        :return:
+        """
+
+    def string_top(self):
+        return ("*  *  *", "*  -  *")[self.__north_door]  # Appends *** if not north_door, *-* if north door
+
+    def string_middle(self):
+        string = ""
+        string += ("*  ", "|  ")[self.__west_door]  # Appends * if not west_door, | if west_door
         if self.__pillar:
             string += self.__pillar
         elif self.__entrance:
@@ -68,9 +84,11 @@ class Room:
             string += "*"  # More rocks here!  Not for human entrance.
         else:
             string += " "
-        string += ("*\n", "|\n")[self.__east_door]  # Appends | if east_door and * if not east_door.
-        string += ("***\n", "*-*\n")[self.__south_door]
+        string += ("  *", "  |")[self.__east_door]  # Appends | if east_door and * if not east_door.
         return string
+
+    def string_bottom(self):
+        return ("*  *  *", "*  -  *")[self.__south_door]
 
     @staticmethod
     def __is_number_gt_eq_0(num):
@@ -141,6 +159,20 @@ class Room:
         :return: bool
         """
         return not self.__impassable and not self.__visited
+
+    def clear_room(self):
+        """
+        Clears all settings in a room back to nothing.  Not visited, not impassable, no potions, not pits.
+        :return:
+        """
+        self.__health_potion = 0
+        self.__vision_potion = 0
+        self.__pillar = ""
+        self.__pit = 0
+        self.__exit = False
+        self.__entrance = False
+        self.__impassable = False
+        self.__visited = False
 
     @property
     def exit(self):
@@ -259,4 +291,3 @@ class Room:
     def pillar(self, current_pillar):
         if self.__is_valid_pillar(current_pillar):
             self.__pillar = current_pillar
-
