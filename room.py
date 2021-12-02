@@ -59,6 +59,7 @@ class Room:
         :param other:
         :return:
         """
+        return f"{self}" == f"{other}"
 
     def string_top(self):
         return ("*  *  *", "*  -  *")[self.__north_door]  # Appends *** if not north_door, *-* if north door
@@ -291,3 +292,8 @@ class Room:
     def pillar(self, current_pillar):
         if self.__is_valid_pillar(current_pillar):
             self.__pillar = current_pillar
+
+    @property
+    def is_empty(self):
+        return not self.exit and not self.pillar and not self.entrance and not self.health_potion \
+               and not self.vision_potion and not self.pit_damage

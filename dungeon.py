@@ -1,29 +1,31 @@
 """
 Steph's Time Tracker~!
-4 hours to working properly with no error checking or fun.
+6 hours to working properly with no error checking or fun.
 """
 
 import random
 from room import Room
+from collections.abc import Iterable
+from dungeon_iterator import DungeonIterator
 
 
-class Dungeon:
+class Dungeon(Iterable):
     def __init__(self, row_count, col_count, impassable_chance=0.05, pillars=["A", "P", "I", "E"], hp_pot_chance=0.1,
                  vision_chance=0.05, many_chance=0.05, pit_chance=0.1, max_hp_pots=2, max_vision=1, max_pit_damage=20):
         """
         Welcome to the dungeon!  Allows for hardcoded difficulty to be adjusted in the event we want to add different
         difficulty settings as an extra credit feature (ex. increase pit chance and damage)
-        :param row_count:
-        :param col_count:
-        :param impassable_chance:
-        :param pillars:
-        :param hp_pot_chance:
-        :param vision_chance:
-        :param many_chance:
-        :param pit_chance:
-        :param max_hp_pots:
-        :param max_vision:
-        :param max_pit_damage:
+        :param row_count: int between 0 and stack overflow
+        :param col_count: int between 0 and stack overflow
+        :param impassable_chance: float, chance of making a room impassable for maze building algo.
+        :param pillars: list of strings, though current room coding will error if not A P I E due to hardcoding.
+        :param hp_pot_chance: float, chance of HP potion appearing in dungeon.
+        :param vision_chance: float, chance of vision potion appearing in dungeon.
+        :param many_chance: float, chance of pits, hp potions, vision potions appearing in a single room.
+        :param pit_chance: float, chance of pits appearing in the dungeon.
+        :param max_hp_pots: int, maximum number of HP potions in a room.
+        :param max_vision: int, maximum number of vision potions possible to be found in a room.
+        :param max_pit_damage: int, maximum amount of damage an adventurer can experience if they land in a pit.
         """
         if len(pillars) + 2 < (row_count * col_count * (impassable_chance + pit_chance + hp_pot_chance + vision_chance +
                                many_chance)):  # If not, very unlikely maze will successfully generate
@@ -40,9 +42,12 @@ class Dungeon:
             self.__max_hp_pots = max_hp_pots
             self.__max_vision = max_vision
             self.__pit_pain = max_pit_damage  # max number of damage a pit can do.
-            self.__build_maze()
+            self.__ent_col = None
+            self.__ent_row = None
+            self.__entrance = self.__build_maze()
         else:
-            raise ValueError("Rows * Columns  / 2 must be greater than len(pillars) + 2.")
+            raise ValueError("row_count * col_count * (impassable_chance + pit_chance + hp_pot_chance + vision_chance"
+                             " + many_chance) must be greater than len(pillars) + 2.")
 
     def __str__(self):
         string = string_top = string_middle = string_bottom = ""
@@ -56,8 +61,39 @@ class Dungeon:
             string_top = string_middle = string_bottom = ""
         return string
 
-    def create_room(self):
-        return self.__create_room()
+    def __iter__(self):
+        return DungeonIterator(self.__dungeon, 0, 0, self.__row_count, self.__col_count)
+
+    def __verify_can_complete_dungeon(self, row, col):  # Place holder for testing.  TODO finish this.
+        room = self.__dungeon[row][col]
+        collected_pillars = []
+        found_exit = False
+        if room.pillar and collected_pillars.count(room.pillar) == 0:
+            collected_pillars.append(room.pillar)
+        if room.exit:
+            found_exit = True
+        if self.__is_valid_room(row + 1, col):
+            next_room = self.__dungeon[row + 1][col]
+        found_exit = self.__traverse(row + 1, col)  # south
+        if not found_exit:
+            if self.__is_valid_room(row, col + 1):
+                room.east_door = True
+                next_room = self.__dungeon[row][col + 1]
+                next_room.west_door = True
+            found_exit = self.__traverse(row, col + 1)  # east
+        if not found_exit:
+            if self.__is_valid_room(row - 1, col):
+                room.north_door = True
+                next_room = self.__dungeon[row - 1][col]
+                next_room.south_door = True
+            found_exit = self.__traverse(row - 1, col)  # north
+        if not found_exit:
+            if self.__is_valid_room(row, col - 1):
+                room.west_door = True
+                next_room = self.__dungeon[row][col - 1]
+                next_room.east_door = True
+            found_exit = self.__traverse(row, col - 1)  # west
+
     def __create_room(self):
         """
         Generates rooms to be input to the maze that are either impassable, pits and potions, potions, pits, or boring.
@@ -99,13 +135,11 @@ class Dungeon:
                 self.__dungeon[row][col] = new_room
 
     def __add_pillars(self):
-        pillars_left = len(self.__pillars)
         pillars = self.__copy_of_list(self.__pillars)
-        while pillars_left > 0:
+        while pillars:
             current = random.choice(self.__empty_rooms)
             self.__empty_rooms.remove(current)
             current.pillar = pillars.pop()
-            pillars_left -= 1
 
     @staticmethod
     def __copy_of_list(copied):
@@ -123,10 +157,14 @@ class Dungeon:
         reach_exit = False
         pillar_options = 0
         num_pillars = len(self.__pillars)
+        entrance = None
+        ent_row = ent_col = None
         while (not reach_exit) or (pillar_options < num_pillars):  # If can't traverse or spots for pillars, resets.
+            self.__empty_rooms = []
             self.__create_2d_room_maze()
             ent_row, ent_col = random.randint(0, self.__row_count-1), random.randint(0, self.__col_count-1)
-            exit_row, exit_col = random.randint(0, self.__row_count-1), random.randint(0, self.__col_count-1)
+            exit_row, exit_col = random.randint(0, self.__row_count-1), \
+                                 random.randint(0, self.__col_count-1)
             entrance = self.__dungeon[ent_row][ent_col]
             entrance.clear_room()
             entrance.entrance = True
@@ -136,6 +174,111 @@ class Dungeon:
             reach_exit = self.__traverse(ent_row, ent_col)
             pillar_options = len(self.__empty_rooms)
         self.__add_pillars()
+        self.__ent_row = ent_row
+        self.__ent_col = ent_col
+        return entrance
+
+    # initial call if you know entrance is 0,0 would be traverse(0, 0)
+    def __traverse(self, row, col):
+        found_exit = False
+        if self.__is_valid_room(row, col):
+            room = self.__dungeon[row][col]
+            if room.is_empty:
+                self.__empty_rooms.append(room)  # Places to put pillars later
+            # room.visited = True  # No coming back here!
+            # check for exit
+            if room.exit:
+                return True
+            # not at exit so try another room: south, east, north, west
+            else:
+                room_options = [1, 2, 3, 4]
+                num_choices = len(room_options)
+                while len(room_options) > 0 and not found_exit:
+                    choice = random.choice(room_options)
+                    room_options.remove(choice)
+                    if choice == 1:  # South
+                        if self.__is_valid_room(row + 1, col):
+                            room.south_door = True
+                            next_room = self.__dungeon[row + 1][col]
+                            next_room.north_door = True
+                        found_exit = self.__traverse(row + 1, col)
+                    if choice == 2:  # East
+                        if self.__is_valid_room(row, col + 1):
+                            room.east_door = True
+                            next_room = self.__dungeon[row][col + 1]
+                            next_room.west_door = True
+                        found_exit = self.__traverse(row, col + 1)
+                    if choice == 3:  # North
+                        if self.__is_valid_room(row - 1, col):
+                            room.north_door = True
+                            next_room = self.__dungeon[row - 1][col]
+                            next_room.south_door = True
+                        found_exit = self.__traverse(row - 1, col)
+                    if choice == 4:  # West
+                        if self.__is_valid_room(row, col - 1):
+                            room.west_door = True
+                            next_room = self.__dungeon[row][col - 1]
+                            next_room.east_door = True
+                        found_exit = self.__traverse(row, col - 1)
+                    choice = random.choice(room_options)
+                    room_options.remove(choice)
+            room.visited = True  # No coming back here!
+        return found_exit
+
+    def __is_valid_room(self, row, col):
+        """
+        Verifies location is a valid room for entry.  Helper function for traversal.
+        :param row: int between 0 and row_count
+        :param col: int between 0 and col_count
+        :return: boolean, true if untraversed valid room, false if not.
+        """
+        return (0 <= row < self.__row_count) and (col >= 0) and (col < self.__col_count) \
+               and self.__dungeon[row][col].can_enter()
+
+    def set_health_potion(self, row, col, num):
+        """
+        Sets the health potion quantity in a specific room to a specific value, such as setting to 0 when an adventurer
+        collects the health potions.
+        :param row: int to identify target row
+        :param col: int to identify target column
+        :param num: int to change the current health potions in a room to
+        :return:
+        """
+        self.__dungeon[row][col].health_potion = num
+
+    def set_vision_potion(self, row, col, num):
+        """
+        Sets the vision potion quantity in a specific room to a specific value, such as 0 after collecting.
+        :param row: int to identify target row
+        :param col: int to identify target column
+        :param num: int to change the current vision potions in a room to
+        :return:
+        """
+        self.__dungeon[row][col].vision_potion = num
+
+    def get_room(self, row, col):
+        """
+        Given a row and column, returns the room at those coordinates
+        :param row: int, 0 through __row_count-1
+        :param col: int, 0 through __col_count-1
+        :return: room at coordinates
+        """
+        return self.__dungeon[row][col]
+
+    def get_entrance(self):
+        return self.__entrance
+
+    @property
+    def entrance_col(self):
+        return self.__ent_col
+
+    @property
+    def entrance_row(self):
+        return self.__ent_row
+
+    @property
+    def pillars(self):
+        return self.__pillars
 
     def print_maze(self):
         # print(self.__maze)
@@ -145,75 +288,8 @@ class Dungeon:
                 print(self.__dungeon[row][col].__str__())
             print()
 
-    def set_health_potion(self, row, col, num):
-        self.__dungeon[row][col].health_potion = num
+    def create_room(self):
+        return self.__create_room()
 
-    def __try_a_room(self, row, col):
-        room = self.__dungeon[row][col]
-        if self.__is_valid_room(row + 1, col):
-            room.south_door = True
-            next_room = self.__dungeon[row + 1][col]
-            next_room.north_door = True
-        found_exit = self.__traverse(row + 1, col)  # south
-        if not found_exit:
-            if self.__is_valid_room(row, col + 1):
-                room.east_door = True
-                next_room = self.__dungeon[row][col + 1]
-                next_room.west_door = True
-            found_exit = self.__traverse(row, col + 1)  # east
-        if not found_exit:
-            if self.__is_valid_room(row - 1, col):
-                room.north_door = True
-                next_room = self.__dungeon[row - 1][col]
-                next_room.south_door = True
-            found_exit = self.__traverse(row - 1, col)  # north
-        if not found_exit:
-            if self.__is_valid_room(row, col - 1):
-                room.west_door = True
-                next_room = self.__dungeon[row][col - 1]
-                next_room.east_door = True
-            found_exit = self.__traverse(row, col - 1)  # west
-
-    # initial call if you know entrance is 0,0 would be traverse(0, 0)
-    def __traverse(self, row, col):
-        found_exit = False
-        if self.__is_valid_room(row, col):
-            room = self.__dungeon[row][col]
-            if self.__check_if_empty_room(room):
-                self.__empty_rooms.append(room)  # Places to put pillars later
-            room.visited = True  # No coming back here!
-            # check for exit
-            if room.exit:
-                return True
-            # not at exit so try another room: south, east, north, west
-            else:
-                room_options = [1, 2, 3, 4]
-                random.choice(room_options)
-                if self.__is_valid_room(row + 1, col):
-                    room.south_door = True
-                    next_room = self.__dungeon[row + 1][col]
-                    next_room.north_door = True
-                found_exit = self.__traverse(row + 1, col)  # south
-                if not found_exit:
-                    if self.__is_valid_room(row, col + 1):
-                        room.east_door = True
-                        next_room = self.__dungeon[row][col + 1]
-                        next_room.west_door = True
-                    found_exit = self.__traverse(row, col + 1)  # east
-                if not found_exit:
-                    if self.__is_valid_room(row - 1, col):
-                        room.north_door = True
-                        next_room = self.__dungeon[row - 1][col]
-                        next_room.south_door = True
-                    found_exit = self.__traverse(row - 1, col)  # north
-                if not found_exit:
-                    if self.__is_valid_room(row, col - 1):
-                        room.west_door = True
-                        next_room = self.__dungeon[row][col - 1]
-                        next_room.east_door = True
-                    found_exit = self.__traverse(row, col - 1)  # west
-        return found_exit
-
-    def __is_valid_room(self, row, col):
-        return (0 <= row < self.__row_count) and (col >= 0) and (col < self.__col_count) \
-               and self.__dungeon[row][col].can_enter()
+    def get_dungeon(self):
+        return self.__dungeon
