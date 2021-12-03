@@ -31,6 +31,5 @@ class DungeonIterator(Iterator):
                 self._col = 0
                 self._row += 1
 
-        if self._access_only:  ### TODO Write iteration code for only accessible areas.
+        if self._access_only:  # TODO Write iteration code for only accessible areas.
             pass
-

@@ -17,14 +17,6 @@ class TestDungeon(unittest.TestCase):
         except ValueError:
             self.assertEqual(True, True)
 
-    def test_create_a_room(self):
-        test = Dungeon(5, 5)
-        room1 = test.create_room()
-        room2 = test.create_room()
-        room1.clear_room()
-        room2.clear_room()
-        self.assertEqual(room1, room2, "Cleared rooms created from dungeon expected to be equal.")
-
     def test_get_room(self):
         test = Dungeon(5, 5)
         room1 = test.get_room(1, 1)

@@ -38,6 +38,7 @@ class Room:
             self.__entrance = entrance
             self.__impassable = impassable
             self.__visited = visited
+            self.__saved = False  # Variable used for tracking saved empty rooms for saving items to later.
         else:
             raise Exception("Value or TypeErrors should have been raised and they weren't.  Sound the alarm!")
 
@@ -297,3 +298,11 @@ class Room:
     def is_empty(self):
         return not self.exit and not self.pillar and not self.entrance and not self.health_potion \
                and not self.vision_potion and not self.pit_damage
+
+    @property
+    def saved(self):
+        return self.__saved
+
+    @saved.setter
+    def saved(self, boolean: bool):
+        self.__saved = boolean

@@ -4,9 +4,9 @@ Steph's Time Tracker~!
 """
 
 import random
-from room import Room
 from collections.abc import Iterable
 from dungeon_iterator import DungeonIterator
+from room_factory import RoomFactory
 
 
 class Dungeon(Iterable):
@@ -64,74 +64,18 @@ class Dungeon(Iterable):
     def __iter__(self):
         return DungeonIterator(self.__dungeon, 0, 0, self.__row_count, self.__col_count)
 
-    def __verify_can_complete_dungeon(self, row, col):  # Place holder for testing.  TODO finish this.
-        room = self.__dungeon[row][col]
-        collected_pillars = []
-        found_exit = False
-        if room.pillar and collected_pillars.count(room.pillar) == 0:
-            collected_pillars.append(room.pillar)
-        if room.exit:
-            found_exit = True
-        if self.__is_valid_room(row + 1, col):
-            next_room = self.__dungeon[row + 1][col]
-        found_exit = self.__traverse(row + 1, col)  # south
-        if not found_exit:
-            if self.__is_valid_room(row, col + 1):
-                room.east_door = True
-                next_room = self.__dungeon[row][col + 1]
-                next_room.west_door = True
-            found_exit = self.__traverse(row, col + 1)  # east
-        if not found_exit:
-            if self.__is_valid_room(row - 1, col):
-                room.north_door = True
-                next_room = self.__dungeon[row - 1][col]
-                next_room.south_door = True
-            found_exit = self.__traverse(row - 1, col)  # north
-        if not found_exit:
-            if self.__is_valid_room(row, col - 1):
-                room.west_door = True
-                next_room = self.__dungeon[row][col - 1]
-                next_room.east_door = True
-            found_exit = self.__traverse(row, col - 1)  # west
-
-    def __create_room(self):
-        """
-        Generates rooms to be input to the maze that are either impassable, pits and potions, potions, pits, or boring.
-        :return: room
-        """
-        total_rooms = self.__row_count * self.__col_count
-        random_number = random.randint(0, total_rooms)
-        intrigue = random_number / total_rooms
-        many_trigger = self.__impassable_chance + self.__many_chance  # range of impassable through many
-        hp_trigger = many_trigger + self.__hp_pot_chance  # range of many trigger through hp pot chance
-        vision_trigger = hp_trigger + self.__vision_chance  # range of hp trigger through vision trigger
-        pit_trigger = vision_trigger + self.__pit_chance
-        if intrigue <= self.__impassable_chance:
-            new_room = Room(impassable=True)
-        elif intrigue <= many_trigger:
-            new_room = Room(health_potion=random.randint(0, self.__max_hp_pots),
-                            vision_potion=random.randint(0, self.__max_vision),
-                            pit=random.randint(0, self.__pit_pain))
-        elif intrigue <= hp_trigger:
-            new_room = Room(health_potion=random.randint(0, self.__max_hp_pots))
-        elif intrigue <= vision_trigger:
-            new_room = Room(vision_potion=random.randint(0, self.__max_vision))
-        elif intrigue <= pit_trigger:
-            new_room = Room(pit=random.randint(1, self.__pit_pain))
-        else:  # Boring empty room.
-            new_room = Room()
-        return new_room
-
     def __create_2d_room_maze(self):
         """
 
         :return: None
         """
+        rf = RoomFactory()
         for row in range(0, self.__row_count):
             self.__dungeon.append([])
             for col in range(0, self.__col_count):
                 self.__dungeon[row].append([])
-                new_room = self.__create_room()
+                new_room = rf.create_room(self.__row_count * self.__col_count)
+                # new_room = self.__create_room()
                 self.__dungeon[row][col] = new_room
 
     def __add_pillars(self):
@@ -183,9 +127,9 @@ class Dungeon(Iterable):
         found_exit = False
         if self.__is_valid_room(row, col):
             room = self.__dungeon[row][col]
-            if room.is_empty:
+            if room.is_empty and not room.saved:
+                room.saved = True
                 self.__empty_rooms.append(room)  # Places to put pillars later
-            # room.visited = True  # No coming back here!
             # check for exit
             if room.exit:
                 return True
@@ -222,7 +166,7 @@ class Dungeon(Iterable):
                         found_exit = self.__traverse(row, col - 1)
                     choice = random.choice(room_options)
                     room_options.remove(choice)
-            room.visited = True  # No coming back here!
+            room.visited = True  # No coming back here! <-- need a flag for tracking rooms already stored in empty
         return found_exit
 
     def __is_valid_room(self, row, col):
@@ -288,8 +232,10 @@ class Dungeon(Iterable):
                 print(self.__dungeon[row][col].__str__())
             print()
 
-    def create_room(self):
-        return self.__create_room()
-
     def get_dungeon(self):
         return self.__dungeon
+
+
+# check = Dungeon(5, 5)
+# print(f"{check}")
+
