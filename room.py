@@ -1,50 +1,30 @@
 """
 Steph's portion~!
-Time tracker: 4 hours (with tests & dungeon algorithm )
+Time tracker: 5 hours (with tests & dungeon algorithm )
 """
 
 
 class Room:
-    def __init__(self, health_potion=0, vision_potion=0, pit=0, pillar="", north_door=False, east_door=False,
-                 south_door=False, west_door=False, is_exit=False, entrance=False, visited=False, contents=" "):
+    def __init__(self, health_potion=0, vision_potion=0, pit=0, contents=" "):
         """
         Creates a room with passed in parameters.  Defaults provided, so only values need to be provided if not the
         default.  Ex. new_room = Room(vision_potion=1, pit=10, north_door=True) should be valid.
         :param health_potion: integer value 0 or higher representing potions to be found in room
         :param vision_potion: integer value 0 or higher representing potions to be found in room
         :param pit: integer value 0 or higher representing damage dealt upon entry
-        :param pillar: string representing APIE pillar or...none at all.
-        :param north_door: bool, True means you can go to another room that way, False means no entrada.
-        :param east_door: bool, see above
-        :param south_door: bool, see above
-        :param west_door: bool, see above
-        :param is_exit: bool, True if it is the exit to the dungeon.
-        :param entrance: bool, True if it is the entrance to the dungeon.
-        :param visited: bool, True if visited.  Used to know where dungeon building built.
         """
-        data = (health_potion, vision_potion, pit, pillar, north_door, east_door, south_door, west_door,
-                is_exit, entrance, visited)  # validation is dependent on tuple being in correct-ish order.
-        if self.__is_valid_creation_data(data):
+        if self.__is_valid_creation_data(health_potion, vision_potion, pit, contents):
             self.__health_potion = health_potion
             self.__vision_potion = vision_potion
-            self.__north_door = north_door
-            self.__east_door = east_door
-            self.__south_door = south_door
-            self.__west_door = west_door
-            self.__pillar = pillar
+            self.__doors = {"north": False, "east": False, "south": False, "west": False}
             self.__pit = pit
-            self.__exit = is_exit
-            self.__entrance = entrance
             self.__contents = contents
-            self.__visited = visited
-            self.__saved = False  # Variable used for tracking saved empty rooms for saving items to later.
         else:
             raise Exception("Value or TypeErrors should have been raised and they weren't.  Sound the alarm!")
 
     def __str__(self):
         """
-        Converts room to string representation.  I'm really proud of my tuple boolean accessors.  Divine inspiration.
-        Paladins would be proud.  We agreed you should be able to find health potions and vision potions in the pit.
+        Converts room to string representation.  I'm really proud of my tuple boolean accessors.
         :return: string
         """
         string = ""
@@ -56,38 +36,10 @@ class Room:
     def __eq__(self, other):
         """
         For testing purposes.  Compares the strings of the two rooms.
-        :param other:
-        :return:
+        :param other: another room
+        :return: bool, True if the strings match, false if they don't.
         """
         return f"{self}" == f"{other}"
-
-    def string_top(self):
-        return ("*  *  *", "*  -  *")[self.__north_door]  # Appends *** if not north_door, *-* if north door
-
-    def string_middle(self):
-        string = ""
-        string += ("*  ", "|  ")[self.__west_door]  # Appends * if not west_door, | if west_door
-        if self.__pillar:
-            string += self.__pillar
-        elif self.__entrance:
-            string += "i"  # It's the entrance!
-        elif self.__exit:
-            string += "O"  # It's the exit!
-        elif int(self.__pit > 0) + int(self.__health_potion) + int(self.__vision_potion) >= 2:  # if 2 / 3 are true
-            string += "M"  # There be potions in this pit!  Or lots of potions in a treasure chest.
-        elif self.__pit:
-            string += "X"  # Death awaits ye!
-        elif self.__health_potion:
-            string += "H"  # Get healthy!
-        elif self.__vision_potion:
-            string += "V"  # See the world from the comfort of your own home!  JK it's a laptop.
-        else:
-            string += " "
-        string += ("  *", "  |")[self.__east_door]  # Appends | if east_door and * if not east_door.
-        return string
-
-    def string_bottom(self):
-        return ("*  *  *", "*  -  *")[self.__south_door]
 
     @staticmethod
     def __is_number_gt_eq_0(num):
@@ -118,46 +70,57 @@ class Room:
         return True
 
     @staticmethod
-    def __is_valid_pillar(pillar):
+    def __is_valid_contents(contents):
         """
         Verifies if pillar is valid (a string of values "", "A", "P", "I", "E")
-        :param pillar: string
+        :param contents: string
         :return: Bool
-        :raises: TypeError if pillar is not a string
-        :raises: ValueError if pillar is not empty or not A P I E (delicious <3)
+        :raises: TypeError if contents is not a string
+        :raises: ValueError if contents is not empty or not A P I E (delicious <3) or
+                 "i", "O", "*", "H", "V", "X", "M", " "
         """
-        valid_choices = ("", "A", "P", "I", "E")
-        if type(pillar) is not str:
-            raise TypeError("You must provide a string for the pillar as A P I E or empty")
+        valid_choices = [" ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"]
+        if type(contents) is not str:
+            raise TypeError('You must provide a string " ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"')
         else:
-            for valid in valid_choices:
-                if pillar == valid:
-                    return True
-            raise ValueError("Pillar must be empty or A P I E")
+            try:
+                valid_choices.index(contents)
+                return True
+            except ValueError:
+                print(f'{ValueError} Contents must be " ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"')
 
-    def __is_valid_creation_data(self, data):
+    def __is_valid_creation_data(self, health_potion: int, vision_potion: int, pit: int, contents: str) -> bool:
         """
         Validates all data passed in to create a room is valid for safe creation.
-        :param data: tuple of data in this order:
-            0 through 3: health_potion, vision_potion, pit - (checks all integers greater than 0)
-            4: pillar - string that's either empty ("") or "A" "P" "I" "E"
-            5 through 12: north_door, east_door, south_door, west_door, is_exit, entrance, impassable, visited - bool
+        :param health_potion: int
         :return: True if all data is valid, raises an error in helper functions if not
         """
-        valid_nums = valid_rooms = False
+        data = (health_potion, vision_potion, pit)
+        valid_nums = False
         for index in range(0, 3):
             valid_nums = self.__is_number_gt_eq_0(data[index])  # Will error and not finish if not True
-        valid_pillar = self.__is_valid_pillar(data[3])
-        for index in range(4, len(data)):
-            valid_rooms = self.__is_boolean(data[index])
-        return valid_nums and valid_pillar and valid_rooms
+        valid_contents = self.__is_valid_contents(contents)
+        return valid_nums and valid_contents
+
+    def string_top(self):
+        return ("*  *  *", "*  -  *")[self.__doors["north"]]  # Appends *** if not north_door, *-* if north door
+
+    def string_middle(self):
+        string = ""
+        string += ("*  ", "|  ")[self.__doors["west"]]  # Appends * if not west_door, | if west_door
+        string += self.__contents
+        string += ("  *", "  |")[self.__doors["east"]]  # Appends | if east_door and * if not east_door.
+        return string
+
+    def string_bottom(self):
+        return ("*  *  *", "*  -  *")[self.__doors["south"]]
 
     def can_enter(self):
         """
-        Returns True if can enter.  Not impassable and traversing algorithm hasn't explored it yet.
+        Returns True if can enter.  Not impassable and not visited.
         :return: bool
         """
-        return not self.__visited
+        return self.__contents != "*" and not self.visited
 
     def clear_room(self):
         """
@@ -166,12 +129,8 @@ class Room:
         """
         self.__health_potion = 0
         self.__vision_potion = 0
-        self.__pillar = ""
+        self.__contents = " "
         self.__pit = 0
-        self.__exit = False
-        self.__entrance = False
-        # self.__impassable = False
-        self.__visited = False
 
     @property
     def exit(self):
@@ -179,42 +138,35 @@ class Room:
         Returns if room is the exit.
         :return: bool True if it is, False if it isn't.
         """
-        return self.__exit
+        return self.__contents == "O"
 
     @exit.setter
-    def exit(self, is_exit):
+    def exit(self, is_exit: bool):
         """
         Sets exit to a new boolean provided.
         :param is_exit: bool, True if changing the room to being the exit, False if not
         """
-        if self.__is_boolean(is_exit):
-            self.__exit = is_exit
-
-    @property
-    def visited(self):
-        return self.__visited
-
-    @visited.setter
-    def visited(self, visited):
-        """
-        Sets visited to a new boolean provided.
-        :param visited: bool, True if changing the room to being visited, False if not
-        """
-        if self.__is_boolean(visited):
-            self.__visited = visited
+        if self.__is_boolean(is_exit) and is_exit:
+            self.clear_room()
+            self.__contents = "O"
+        else:
+            self.__contents = " "
 
     @property
     def entrance(self):
-        return self.__entrance
+        return self.__contents == "i"
 
     @entrance.setter
-    def entrance(self, is_entrance):
+    def entrance(self, is_entrance: bool):
         """
         Sets whether or not the room is an entrance or not.
         :param is_entrance: bool of whether or not the room is to be set as the entrance
         """
-        if self.__is_boolean(is_entrance):
-            self.__entrance = is_entrance
+        if self.__is_boolean(is_entrance) and is_entrance:
+            self.clear_room()
+            self.__contents = "i"
+        else:
+            self.__contents = " "
 
     @property
     def health_potion(self):
@@ -248,58 +200,52 @@ class Room:
 
     @property
     def north_door(self):
-        return self.__north_door
+        return self.__doors["north"]
 
     @north_door.setter
     def north_door(self, door_exists):
         if self.__is_boolean(door_exists):
-            self.__north_door = door_exists
+            self.__doors["north"] = door_exists
 
     @property
     def east_door(self):
-        return self.__east_door
+        return self.__doors["east"]
 
     @east_door.setter
     def east_door(self, door_exists):
         if self.__is_boolean(door_exists):
-            self.__east_door = door_exists
+            self.__doors["east"] = door_exists
 
     @property
     def south_door(self):
-        return self.__south_door
+        return self.__doors["south"]
 
     @south_door.setter
     def south_door(self, door_exists):
         if self.__is_boolean(door_exists):
-            self.__south_door = door_exists
+            self.__doors["south"] = door_exists
 
     @property
     def west_door(self):
-        return self.__west_door
+        return self.__doors["west"]
 
     @west_door.setter
     def west_door(self, door_exists):
         if self.__is_boolean(door_exists):
-            self.__west_door = door_exists
-
-    @property
-    def pillar(self):
-        return self.__pillar
-
-    @pillar.setter
-    def pillar(self, current_pillar):
-        if self.__is_valid_pillar(current_pillar):
-            self.__pillar = current_pillar
+            self.__doors["west"] = door_exists
 
     @property
     def is_empty(self):
-        return not self.exit and not self.pillar and not self.entrance and not self.health_potion \
-               and not self.vision_potion and not self.pit_damage
+        return self.__contents == " "
 
     @property
-    def saved(self):
-        return self.__saved
+    def contents(self):
+        return self.__contents
 
-    @saved.setter
-    def saved(self, boolean: bool):
-        self.__saved = boolean
+    @contents.setter
+    def contents(self, data: str):
+        self.__contents = data
+
+    @property
+    def visited(self):
+        return self.__doors["north"] and self.__doors["east"] and self.__doors["south"] and self.__doors["west"]

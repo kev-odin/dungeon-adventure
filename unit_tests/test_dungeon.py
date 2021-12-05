@@ -55,16 +55,24 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(expected, pillars, "Expect AEIP for all pillars.")
 
     def test_all_pillars_in_dungeon(self):
-        test = Dungeon(10, 10)
+        test = Dungeon(7, 7)
         print(f"{test}")
         found = []
         expected = test.pillars.copy()
         expected.sort()
         for room in test:
-            if room.pillar:
-                found.append(room.pillar)
+            if expected.count(room.contents) > 0:
+                found.append(room.contents)
         found.sort()
         self.assertEqual(expected, found, "Expected to find AEIP for all sorted pillars.")
+
+    def test_all_types_in_larger_dungeon(self):
+        expected_list = [" ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"]
+        found = []
+        test = Dungeon(10, 10)
+        for expected in expected_list:
+            found.append(f"{test}".count(expected))
+        self.assertEqual(len(expected_list), len(found), "Expected to find at least one of each in larger dungeon.")
 
 
     # def test_leave_entrance(self):
