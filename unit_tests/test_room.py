@@ -41,7 +41,7 @@ class TestRoom(unittest.TestCase):
 
     def test_can_enter_visited(self):
         test = Room()
-        test.north_door = True
+        test.set_door("north", True)
         expected = False
         self.assertEqual(expected, test.can_enter(), "Should not be able to enter already entered room with door.")
 
@@ -58,7 +58,7 @@ class TestRoom(unittest.TestCase):
     def test_is_visited_with_door_change(self):
         test = Room()
         expected = True
-        test.east_door = True
+        test.set_door("east", True)
         self.assertEqual(expected, test.visited, "Should be visited if door exists.")
 
     def test_setter_health_potion_2(self):
@@ -150,31 +150,31 @@ class TestRoom(unittest.TestCase):
         test.north_door = True
         self.assertEqual(True, test.north_door, "Check init for partial variables.  north door should be True.")
 
-    def test_partial_init_doors(self):
+    def test_set_doors(self):
         test = Room()
-        test.north_door = True
-        test.south_door = True
-        test.east_door = True
-        test.west_door = True
-        self.assertEqual(True, test.north_door, "Check door inits or getters north")
-        self.assertEqual(True, test.south_door, "Check door inits or getters south")
-        self.assertEqual(True, test.east_door, "Check door inits or getters east")
-        self.assertEqual(True, test.west_door, "Check door inits or getters west")
+        test.set_door("north", True)
+        test.set_door("south", True)
+        test.set_door("east", True)
+        test.set_door("west", True)
+        self.assertEqual(True, test.get_door("north"), "Check door inits or getters north")
+        self.assertEqual(True, test.get_door("south"), "Check door inits or getters south")
+        self.assertEqual(True, test.get_door("east"), "Check door inits or getters east")
+        self.assertEqual(True, test.get_door("west"), "Check door inits or getters west")
 
     def test_create_doors_strings(self):
         test = Room()
-        test.north_door = True
-        test.south_door = True
-        test.east_door = True
-        test.west_door = True
+        test.set_door("north", True)
+        test.set_door("south", True)
+        test.set_door("east", True)
+        test.set_door("west", True)
         self.assertEqual("*  -  *\n|     |\n*  -  *\n", test.__str__(), "Check string for opening doors")
 
     def test_partial_init_potions(self):
         test = Room(vision_potion=2, health_potion=1, contents="M")
-        self.assertEqual(False, test.north_door, "Check door inits or getters north")  # Juuuust in case.
-        self.assertEqual(False, test.south_door, "Check door inits or getters south")
-        self.assertEqual(False, test.east_door, "Check door inits or getters east")
-        self.assertEqual(False, test.west_door, "Check door inits or getters west")
+        self.assertEqual(False, test.get_door("north"), "Check door inits or getters north")  # Juuuust in case.
+        self.assertEqual(False, test.get_door("south"), "Check door inits or getters south")
+        self.assertEqual(False, test.get_door("east"), "Check door inits or getters east")
+        self.assertEqual(False, test.get_door("west"), "Check door inits or getters west")
         self.assertEqual(2, test.vision_potion, "Check init for vision potions")
         self.assertEqual(1, test.health_potion, "Check init for health potions")
 

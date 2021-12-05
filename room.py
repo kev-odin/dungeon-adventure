@@ -198,41 +198,31 @@ class Room:
     def pit_damage(self):
         return self.__pit
 
-    @property
-    def north_door(self):
-        return self.__doors["north"]
+    def get_door(self, direction):
+        """
+        Given a direction, returns a boolean for if the door exists.
+        :param direction: string either 'north', 'east', 'west', or 'south'
+        :return: bool, True for if there is a door, False for if there isn't
+        """
+        try:
+            return self.__doors[direction]
+        except KeyError as e:
+            print(f"{e} is not a valid key!  Must be 'north', east', west', or 'south' as a string.")
 
-    @north_door.setter
-    def north_door(self, door_exists):
+    def set_door(self, direction, door_exists):
+        """
+        Given a direction and a boolean, sets the door in that direction to match the boolean.
+        :param direction: string either 'north', 'east', 'west', or 'south'
+        :param door_exists: bool of whether door exists or not (True for yes, False for no)
+        :raises KeyError: if direction isn't a valid door
+        :raises TypeError: if door_exists is not a boolean
+        :return: None
+        """
         if self.__is_boolean(door_exists):
-            self.__doors["north"] = door_exists
-
-    @property
-    def east_door(self):
-        return self.__doors["east"]
-
-    @east_door.setter
-    def east_door(self, door_exists):
-        if self.__is_boolean(door_exists):
-            self.__doors["east"] = door_exists
-
-    @property
-    def south_door(self):
-        return self.__doors["south"]
-
-    @south_door.setter
-    def south_door(self, door_exists):
-        if self.__is_boolean(door_exists):
-            self.__doors["south"] = door_exists
-
-    @property
-    def west_door(self):
-        return self.__doors["west"]
-
-    @west_door.setter
-    def west_door(self, door_exists):
-        if self.__is_boolean(door_exists):
-            self.__doors["west"] = door_exists
+            try:
+                self.__doors[direction] = door_exists
+            except KeyError as e:
+                print(f"{e} Not a valid key!  Most be north, east, west, south as a string.")
 
     @property
     def is_empty(self):

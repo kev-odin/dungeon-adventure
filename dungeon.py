@@ -1,8 +1,6 @@
 """
 Steph's Time Tracker~!
-7 hours to working properly with no error checking or fun.
-
-TODO Now will occasionally stack overflow after removing visited tag.  Make alternative in build maze.
+10 hours to working properly with no error checking or fun.
 """
 
 import random
@@ -56,6 +54,7 @@ class Dungeon(Iterable):
             self.__exit = None  # Will be stored as a row, col tuple when building maze.
             self.__build_maze()  # Sets entrance and exit.
             self.__add_pillars()
+            self.__adventurer_loc = self.__entrance
         else:
             raise ValueError("row_count * col_count * (impassable_chance + pit_chance + hp_pot_chance + vision_chance"
                              " + many_chance) must be greater than len(pillars) + 2.")
@@ -130,22 +129,18 @@ class Dungeon(Iterable):
                 return True
             # not at exit so try another room:
             else:
-                room_options = [1, 2, 3, 4]
+                room_options = [0, 1, 2, 3]
                 while len(room_options) > 0 and not found_exit:  # Will test all options in a room.
                     choice = random.choice(room_options)
                     room_options.remove(choice)
-                    if choice == 1 and self.__is_traversable(row + 1, col):  # South
-                        room.south_door = self.__dungeon[row + 1][col].north_door = True  # Opens doors to connect
-                        found_exit = self.__traverse(row + 1, col)
-                    if choice == 2 and self.__is_traversable(row, col + 1):  # East
-                        room.east_door = self.__dungeon[row][col + 1].west_door = True
-                        found_exit = self.__traverse(row, col + 1)
-                    if choice == 3 and self.__is_traversable(row - 1, col):  # North
-                        room.north_door = self.__dungeon[row - 1][col].south_door = True
-                        found_exit = self.__traverse(row - 1, col)
-                    if choice == 4 and self.__is_traversable(row, col - 1):  # West
-                        room.west_door = self.__dungeon[row][col - 1].east_door = True
-                        found_exit = self.__traverse(row, col - 1)
+                    # index 0 takes you south, 1 -> east, 2 -> North, 3 -> West from choices.
+                    inputs = (("south", "north", 1, 0), ("east", "west", 0, 1), ("north", "south", -1, 0),
+                              ("west", "east", 0, -1))[choice]
+                    next_row, next_col = inputs[2] + row, inputs[3] + col
+                    if self.__is_traversable(next_row, next_col):
+                        room.set_door(inputs[0], True)
+                        self.__dungeon[next_row][next_col].set_door(inputs[1], True)  # next room
+                        found_exit = self.__traverse(next_row, next_col)
         return found_exit
 
     def __is_traversable(self, row, col):
@@ -205,3 +200,18 @@ class Dungeon(Iterable):
     @property
     def dungeon(self):
         return self.__dungeon
+
+    def move_adventurer(self, direction: str):
+        current_room = self.__dungeon[self.__adventurer_loc[0]][self.__adventurer_loc[1]]
+        if current_room.door(direction):
+            coord_dict = {"north": (-1, 0), "east": (0, 1), "south": (1, 0), "west": (0, -1)}
+            adjust_coords = coord_dict[direction]
+            new_row = self.__adventurer_loc[0] + adjust_coords[0]
+            new_col = self.__adventurer_loc[1] + adjust_coords[1]
+        else:
+            raise ValueError("Value must be north, east, south, or west, and there must be a door in that direction.")
+        if self.__is_valid_room(new_row, new_col):
+            self.__adventurer_loc = (new_row, new_col)
+            return self.get_room(new_row, new_col)
+        else:
+            raise ValueError("There's no room that way!  Check the map!")
