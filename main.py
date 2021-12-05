@@ -1,9 +1,22 @@
-from adventurer import Adventurer
-from map import Map
-from dungeon import Dungeon
+'''
+Time used: 4 hours
+xingguo
+'''
 
+# from adventurer import Adventurer
+# from map import Map
+# from dungeon import Dungeon
+
+# • Contains the main logic for playing the game
+#       when run the game, there should be a welcome page show up
+#       this is the first receiption desk menu
+# • Introduces the game describing what the game is about and how to play
+# • Creates a Dungeon Object and a Adventurer Object
+# • Obtains the name of the adventurer from the user
 
 class Main:
+
+    # what to do with the init?
     def __init__(self):
         pass
 
@@ -28,6 +41,8 @@ class Main:
             else:
                 self.startGame()
             # handle exceptions(illegal inputs)
+    def show_ingame_menu(self):
+        pass
 
     def start_game(self):
         pass
@@ -56,8 +71,11 @@ if __name__ == "__main__": # when this file is run,
 
 
 
-"""
-                                                                                                                     
+
+
+
+
+"""                                                                                                                   
 88888888ba,                                                                                                          
 88      `"8b                                                                                                         
 88        `8b                                                                                                        
@@ -72,7 +90,5 @@ if __name__ == "__main__": # when this file is run,
    d8YaaaaY8b    a8"    `Y88  `8b     d8'  a8P_____88  88P'   `"8a   88     88       88  88P'   "Y8  a8P_____88      
   d8""""""""8b   8b       88   `8b   d8'   8PP"""""""  88       88   88     88       88  88          8PP"""""""      
  d8'        `8b  "8a,   ,d88    `8b,d8'    "8b,   ,aa  88       88   88,    "8a,   ,a88  88          "8b,   ,aa      
-d8'          `8b  `"8bbdP"Y8      "8"       `"Ybbd8"'  88       88   "Y888   `"YbbdP'Y8  88           `"Ybbd8"'      
-                                                                                                                     
-                                                                                                                     
+d8'          `8b  `"8bbdP"Y8      "8"       `"Ybbd8"'  88       88   "Y888   `"YbbdP'Y8  88           `"Ybbd8"'                                                                                                                                                                                                                                          
 """
