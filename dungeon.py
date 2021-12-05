@@ -98,10 +98,6 @@ class Dungeon(Iterable):
             room.contents = pillars.pop()
         self.__empty_rooms = empty_rooms.copy()
 
-    @staticmethod
-    def __check_if_empty_room(a_room):
-        return a_room.contents == " "
-
     def __build_maze(self):
         """
         Builds the maze.  Sets member entrance and exit to tuple coordinates.  Creates list of
@@ -110,9 +106,9 @@ class Dungeon(Iterable):
         reach_exit = False
         pillar_options = 0
         num_pillars = len(self.__pillars) * 2  # Dungeons with only the pillars will not be generated.
-        ent_row = ent_col = None
+        ent_row = ent_col = exit_row = exit_col = None
         while (not reach_exit) or (pillar_options < num_pillars):  # If can't traverse or spots for pillars, resets.
-            # self.__empty_rooms = []  # Storage
+            self.__empty_rooms = []  # Storage
             self.__create_2d_room_maze()  # Builds the 2d maze full of random rooms with varied interest.
             ent_row, ent_col = random.randint(0, self.__row_count-1), random.randint(0, self.__col_count-1)
             exit_row, exit_col = random.randint(0, self.__row_count-1), random.randint(0, self.__col_count-1)
@@ -135,48 +131,34 @@ class Dungeon(Iterable):
             # not at exit so try another room:
             else:
                 room_options = [1, 2, 3, 4]
-                num_choices = len(room_options)
-                while num_choices > 1 and not found_exit:  # Can modify to increase dead ends.
+                while len(room_options) > 0 and not found_exit:  # Will test all options in a room.
                     choice = random.choice(room_options)
                     room_options.remove(choice)
-                    if choice == 1:  # South
-                        if self.__is_valid_room(row + 1, col):
-                            room.south_door = True
-                            next_room = self.__dungeon[row + 1][col]
-                            next_room.north_door = True
-                            found_exit = self.__traverse(row + 1, col)
-                    if choice == 2:  # East
-                        if self.__is_valid_room(row, col + 1):
-                            room.east_door = True
-                            next_room = self.__dungeon[row][col + 1]
-                            next_room.west_door = True
-                            found_exit = self.__traverse(row, col + 1)
-                    if choice == 3:  # North
-                        if self.__is_valid_room(row - 1, col):
-                            room.north_door = True
-                            next_room = self.__dungeon[row - 1][col]
-                            next_room.south_door = True
-                            found_exit = self.__traverse(row - 1, col)
-                    if choice == 4:  # West
-                        if self.__is_valid_room(row, col - 1):
-                            room.west_door = True
-                            next_room = self.__dungeon[row][col - 1]
-                            next_room.east_door = True
-                            found_exit = self.__traverse(row, col - 1)
-                    choice = random.choice(room_options)
-                    room_options.remove(choice)
-                    num_choices = len(room_options)
+                    if choice == 1 and self.__is_traversable(row + 1, col):  # South
+                        room.south_door = self.__dungeon[row + 1][col].north_door = True  # Opens doors to connect
+                        found_exit = self.__traverse(row + 1, col)
+                    if choice == 2 and self.__is_traversable(row, col + 1):  # East
+                        room.east_door = self.__dungeon[row][col + 1].west_door = True
+                        found_exit = self.__traverse(row, col + 1)
+                    if choice == 3 and self.__is_traversable(row - 1, col):  # North
+                        room.north_door = self.__dungeon[row - 1][col].south_door = True
+                        found_exit = self.__traverse(row - 1, col)
+                    if choice == 4 and self.__is_traversable(row, col - 1):  # West
+                        room.west_door = self.__dungeon[row][col - 1].east_door = True
+                        found_exit = self.__traverse(row, col - 1)
         return found_exit
 
-    def __is_valid_room(self, row, col):
+    def __is_traversable(self, row, col):
         """
         Verifies location is a valid room for entry.  Helper function for traversal.
         :param row: int between 0 and row_count
         :param col: int between 0 and col_count
         :return: boolean, true if untraversed valid room, false if not.
         """
-        return (0 <= row < self.__row_count) and (col >= 0) and (col < self.__col_count) and \
-            self.__dungeon[row][col].can_enter()
+        return (0 <= row < self.__row_count) and (0 <= col < self.__col_count) and self.__dungeon[row][col].can_enter()
+
+    def __is_valid_room(self, row, col):
+        return (0 <= row < self.__row_count) and (0 <= col < self.__col_count)
 
     def set_health_potion(self, row, col, num):
         """
@@ -207,7 +189,10 @@ class Dungeon(Iterable):
         """
         row = coordinates[0]
         col = coordinates[1]
-        return self.__dungeon[row][col]
+        if self.__is_valid_room(row, col):
+            return self.__dungeon[row][col]
+        else:
+            raise ValueError("Coordinates must be a tuple of ints x and y within the range of the dungeon.")
 
     @property
     def entrance(self):

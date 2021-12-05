@@ -34,6 +34,17 @@ class TestRoom(unittest.TestCase):
         expected = True
         self.assertEqual(expected, test.can_enter(), "Should be able to enter a room by default.")
 
+    def test_can_enter(self):
+        test = Room(contents="*")
+        expected = False
+        self.assertEqual(expected, test.can_enter(), "Should not be able to enter impassable room.")
+
+    def test_can_enter_visited(self):
+        test = Room()
+        test.north_door = True
+        expected = False
+        self.assertEqual(expected, test.can_enter(), "Should not be able to enter already entered room with door.")
+
     def test_init_default_is_exit(self):
         test = Room()
         expected = False
@@ -41,9 +52,14 @@ class TestRoom(unittest.TestCase):
 
     def test_init_default_is_visited(self):
         test = Room()
-        test.visited
         expected = False
         self.assertEqual(expected, test.visited, "Should be visited by default.")
+
+    def test_is_visited_with_door_change(self):
+        test = Room()
+        expected = True
+        test.east_door = True
+        self.assertEqual(expected, test.visited, "Should be visited if door exists.")
 
     def test_setter_health_potion_2(self):
         test = Room()

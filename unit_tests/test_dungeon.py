@@ -13,7 +13,7 @@ from dungeon import Dungeon
 class TestDungeon(unittest.TestCase):
     def test_dungeon_init_big_enough(self):
         try:
-            test = Dungeon(5, 5)
+            test = Dungeon(7, 7)
             self.assertEqual(True, True)  # add assertion here
         except ValueError:
             self.assertEqual(True, False, "5, 5 should be large enough grid with 4 pillars.")
@@ -26,14 +26,14 @@ class TestDungeon(unittest.TestCase):
             self.assertEqual(True, True)
 
     def test_get_room(self):
-        test = Dungeon(5, 5)
+        test = Dungeon(7, 7)
         room1 = test.get_room((1, 1))
         # print(f"{test}")
         # print(f"{room1}")
         self.assertEqual(room1, room1, "It should be itself.  Check print map above.")
 
     def test_get_entrance(self):
-        test = Dungeon(5, 5)
+        test = Dungeon(7, 7)
         entrance_room = test.get_room(test.entrance)
         # print(f"{test}")
         # print(f"{entrance}")
@@ -48,7 +48,7 @@ class TestDungeon(unittest.TestCase):
     """
 
     def test_pillars(self):
-        test = Dungeon(5, 5)
+        test = Dungeon(7, 7)
         pillars = test.pillars
         pillars.sort()
         expected = ["A", "E", "I", "P"]

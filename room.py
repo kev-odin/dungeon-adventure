@@ -149,7 +149,7 @@ class Room:
         if self.__is_boolean(is_exit) and is_exit:
             self.clear_room()
             self.__contents = "O"
-        else:
+        elif not is_exit:
             self.__contents = " "
 
     @property
@@ -165,7 +165,7 @@ class Room:
         if self.__is_boolean(is_entrance) and is_entrance:
             self.clear_room()
             self.__contents = "i"
-        else:
+        elif not is_entrance:
             self.__contents = " "
 
     @property
@@ -248,4 +248,4 @@ class Room:
 
     @property
     def visited(self):
-        return self.__doors["north"] and self.__doors["east"] and self.__doors["south"] and self.__doors["west"]
+        return self.__doors["north"] or self.__doors["east"] or self.__doors["south"] or self.__doors["west"]
