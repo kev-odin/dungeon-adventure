@@ -1,16 +1,43 @@
 """
 Steph's Time Tracker~!
-6 hours to working properly with no error checking or fun.
+7 hours to working properly with no error checking or fun.
+
+TODO line 85 -> figure out why that solved the issue.  Suspicion is not deleting room.  Consider hashing rooms to store
+as dictionary maybe?
 """
 
 import random
-from collections.abc import Iterable
-from dungeon_iterator import DungeonIterator
+from collections.abc import Iterable, Iterator
+# from dungeon_iterator import DungeonIterator
 from room_factory import RoomFactory
 
 
 class Dungeon(Iterable):
-    def __init__(self, row_count, col_count, impassable_chance=0.05, pillars=["A", "P", "I", "E"], hp_pot_chance=0.1,
+    class DungeonIterator(Iterator):
+        def __init__(self, dungeon, row: int, col: int, row_count: int, col_count: int, access_only=False) -> None:
+            self.__collection = dungeon
+            self.__access_only = access_only
+            self.__position = row * col_count + col
+            self.__row = row
+            self.__col = col
+            self.__row_count = row_count
+            self.__col_count = col_count
+
+        def __next__(self):
+            try:
+                current_room = self.__collection[self.__row][self.__col]
+                self.__increment()
+            except IndexError:
+                raise StopIteration()
+            return current_room
+
+        def __increment(self):
+            if not self.__access_only:
+                self.__col += 1
+                if self.__col >= self.__col_count:
+                    self.__col = 0
+                    self.__row += 1
+    def __init__(self, row_count, col_count, pillars=["A", "P", "I", "E"], hp_pot_chance=0.1,
                  vision_chance=0.05, many_chance=0.05, pit_chance=0.1, max_hp_pots=2, max_vision=1, max_pit_damage=20):
         """
         Welcome to the dungeon!  Allows for hardcoded difficulty to be adjusted in the event we want to add different
@@ -27,24 +54,15 @@ class Dungeon(Iterable):
         :param max_vision: int, maximum number of vision potions possible to be found in a room.
         :param max_pit_damage: int, maximum amount of damage an adventurer can experience if they land in a pit.
         """
-        if len(pillars) + 2 < (row_count * col_count * (impassable_chance + pit_chance + hp_pot_chance + vision_chance +
+        if len(pillars) + 2 < (row_count * col_count * (pit_chance + hp_pot_chance + vision_chance +
                                many_chance)):  # If not, very unlikely maze will successfully generate
             self.__dungeon = []
             self.__row_count = row_count
             self.__col_count = col_count
             self.__empty_rooms = []  # Stores list of empty rooms to be used later for pillar placement
             self.__pillars = pillars  # To be popped into rooms
-            self.__impassable_chance = impassable_chance  # 5% of rooms will be impassable
-            self.__hp_pot_chance = hp_pot_chance  # max number of potions vs. max damage pits do
-            self.__vision_chance = vision_chance
-            self.__many_chance = many_chance  # It is vital to fall in a pit and find potions on bodies of unfortunates.
-            self.__pit_chance = pit_chance
-            self.__max_hp_pots = max_hp_pots
-            self.__max_vision = max_vision
-            self.__pit_pain = max_pit_damage  # max number of damage a pit can do.
-            self.__ent_col = None
-            self.__ent_row = None
-            self.__entrance = self.__build_maze()
+            self.__entrance = None  # Will be stored as a row, col tuple at maze building.
+            self.__build_maze()
         else:
             raise ValueError("row_count * col_count * (impassable_chance + pit_chance + hp_pot_chance + vision_chance"
                              " + many_chance) must be greater than len(pillars) + 2.")
@@ -62,7 +80,7 @@ class Dungeon(Iterable):
         return string
 
     def __iter__(self):
-        return DungeonIterator(self.__dungeon, 0, 0, self.__row_count, self.__col_count)
+        return self.DungeonIterator(self.__dungeon, 0, 0, self.__row_count, self.__col_count)
 
     def __create_2d_room_maze(self):
         """
@@ -75,22 +93,17 @@ class Dungeon(Iterable):
             for col in range(0, self.__col_count):
                 self.__dungeon[row].append([])
                 new_room = rf.create_room(self.__row_count * self.__col_count)
-                # new_room = self.__create_room()
                 self.__dungeon[row][col] = new_room
 
     def __add_pillars(self):
-        pillars = self.__copy_of_list(self.__pillars)
+        pillars = self.__pillars.copy()
+        empty_rooms = self.__empty_rooms.copy()
         while pillars:
-            current = random.choice(self.__empty_rooms)
-            self.__empty_rooms.remove(current)
-            current.pillar = pillars.pop()
-
-    @staticmethod
-    def __copy_of_list(copied):
-        copy = []
-        for datum in copied:
-            copy.append(datum)
-        return copy
+            current = random.choice(empty_rooms)  # Assumes rooms already entered in semi-random order due to generation
+            empty_rooms.remove(current)  # Suspicion is this isn't properly removing the room.
+            if current.is_empty and current.visited:  # TODO Figure out why this solves the issue.
+                current.pillar = pillars.pop()
+        self.__empty_rooms = empty_rooms.copy()
 
     @staticmethod
     def __check_if_empty_room(a_room):
@@ -118,8 +131,8 @@ class Dungeon(Iterable):
             reach_exit = self.__traverse(ent_row, ent_col)
             pillar_options = len(self.__empty_rooms)
         self.__add_pillars()
-        self.__ent_row = ent_row
-        self.__ent_col = ent_col
+        self.__entrance = (ent_row, ent_col)
+        self.__exit = (exit_row, exit_col)
         return entrance
 
     # initial call if you know entrance is 0,0 would be traverse(0, 0)
@@ -200,42 +213,25 @@ class Dungeon(Iterable):
         """
         self.__dungeon[row][col].vision_potion = num
 
-    def get_room(self, row, col):
+    def get_room(self, coordinates):
         """
         Given a row and column, returns the room at those coordinates
         :param row: int, 0 through __row_count-1
         :param col: int, 0 through __col_count-1
         :return: room at coordinates
         """
+        row = coordinates[0]
+        col = coordinates[1]
         return self.__dungeon[row][col]
 
-    def get_entrance(self):
+    @property
+    def entrance(self):
         return self.__entrance
-
-    @property
-    def entrance_col(self):
-        return self.__ent_col
-
-    @property
-    def entrance_row(self):
-        return self.__ent_row
 
     @property
     def pillars(self):
         return self.__pillars
 
-    def print_maze(self):
-        # print(self.__maze)
-        for row in range(0, self.__row_count):
-            print("row ", row)
-            for col in range(0, self.__col_count):
-                print(self.__dungeon[row][col].__str__())
-            print()
-
-    def get_dungeon(self):
+    @property
+    def dungeon(self):
         return self.__dungeon
-
-
-# check = Dungeon(5, 5)
-# print(f"{check}")
-

@@ -2,6 +2,7 @@ import unittest
 from dungeon import Dungeon
 from dungeon_iterator import DungeonIterator
 
+
 class TestDungeonIterator(unittest.TestCase):
     def test_iterator_whole_dungeon(self):
         test = Dungeon(5, 5)

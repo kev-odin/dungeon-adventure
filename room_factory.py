@@ -10,27 +10,36 @@ import random
 
 
 class RoomFactory:
-    @staticmethod
-    def create_room(total_rooms: int, impassable_chance=0.05, hp_pot_chance=0.1, vision_chance=0.05, many_chance=0.05,
-                    pit_chance=0.1, max_hp_pots=2, max_vision=1, max_pit_damage=20):
+    def __init__(self, difficulty="easy"):
+        diff_dict = {"easy": 0, "medium": 1, "hard": 2, "inhumane": 3}
+        index = diff_dict[difficulty]
+        if index is not None and index >= 0:
+            self.__hp_pot_chance = (0.1, 0.1, 0.1, 0.01)[index]
+            self.__vision_chance = (0.1, 0.08, 0.05, 0.01)[index]
+            self.__many_chance = (0.1, 0.15, 0.2, 0.3)[index]
+            self.__pit_chance = (0.1, 0.12, 0.15, 0.2)[index]
+            self.__max_hp_pots = (2, 2, 1, 1)[index]
+            self.__max_vision = (1, 1, 1, 0)[index]
+            self.__max_pit_damage = (10, 20, 30, 80)[index]
+        else:
+            raise ValueError("difficulty must be easy, medium, hard, or inhumane")
+
+    def create_room(self, total_rooms: int):
         random_number = random.randint(0, total_rooms)
         intrigue = random_number / total_rooms
-        many_trigger = impassable_chance + many_chance  # range of impassable through many
-        hp_trigger = many_trigger + hp_pot_chance  # range of many trigger through hp pot chance
-        vision_trigger = hp_trigger + vision_chance  # range of hp trigger through vision trigger
-        pit_trigger = vision_trigger + pit_chance
-        if intrigue <= impassable_chance:
-            new_room = Room(impassable=True)
-        elif intrigue <= many_trigger:
-            new_room = Room(health_potion=random.randint(0, max_hp_pots),
-                            vision_potion=random.randint(0, max_vision),
-                            pit=random.randint(0, max_pit_damage))
+        hp_trigger = self.__many_chance + self.__hp_pot_chance  # range of many trigger through hp pot chance
+        vision_trigger = hp_trigger + self.__vision_chance  # range of hp trigger through vision trigger
+        pit_trigger = vision_trigger + self.__pit_chance
+        if intrigue <= self.__many_chance:
+            new_room = Room(health_potion=random.randint(1, self.__max_hp_pots),
+                            vision_potion=random.randint(0, self.__max_vision),
+                            pit=random.randint(1, self.__max_pit_damage), contents="M")
         elif intrigue <= hp_trigger:
-            new_room = Room(health_potion=random.randint(0, max_hp_pots))
+            new_room = Room(health_potion=random.randint(0, self.__max_hp_pots), contents="H")
         elif intrigue <= vision_trigger:
-            new_room = Room(vision_potion=random.randint(0, max_vision))
+            new_room = Room(vision_potion=random.randint(0, self.__max_vision), contents="V")
         elif intrigue <= pit_trigger:
-            new_room = Room(pit=random.randint(1, max_pit_damage))
+            new_room = Room(pit=random.randint(1, self.__max_pit_damage), contents="X")
         else:  # Boring empty room.
             new_room = Room()
         return new_room

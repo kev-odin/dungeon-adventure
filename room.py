@@ -6,7 +6,7 @@ Time tracker: 4 hours (with tests & dungeon algorithm )
 
 class Room:
     def __init__(self, health_potion=0, vision_potion=0, pit=0, pillar="", north_door=False, east_door=False,
-                 south_door=False, west_door=False, is_exit=False, entrance=False, impassable=False, visited=False):
+                 south_door=False, west_door=False, is_exit=False, entrance=False, visited=False, contents=" "):
         """
         Creates a room with passed in parameters.  Defaults provided, so only values need to be provided if not the
         default.  Ex. new_room = Room(vision_potion=1, pit=10, north_door=True) should be valid.
@@ -20,11 +20,10 @@ class Room:
         :param west_door: bool, see above
         :param is_exit: bool, True if it is the exit to the dungeon.
         :param entrance: bool, True if it is the entrance to the dungeon.
-        :param impassable: bool, True if impassable with current dungeon layout.  Used for dungeon building.
         :param visited: bool, True if visited.  Used to know where dungeon building built.
         """
         data = (health_potion, vision_potion, pit, pillar, north_door, east_door, south_door, west_door,
-                is_exit, entrance, impassable, visited)  # validation is dependent on tuple being in correct-ish order.
+                is_exit, entrance, visited)  # validation is dependent on tuple being in correct-ish order.
         if self.__is_valid_creation_data(data):
             self.__health_potion = health_potion
             self.__vision_potion = vision_potion
@@ -36,7 +35,7 @@ class Room:
             self.__pit = pit
             self.__exit = is_exit
             self.__entrance = entrance
-            self.__impassable = impassable
+            self.__contents = contents
             self.__visited = visited
             self.__saved = False  # Variable used for tracking saved empty rooms for saving items to later.
         else:
@@ -82,8 +81,6 @@ class Room:
             string += "H"  # Get healthy!
         elif self.__vision_potion:
             string += "V"  # See the world from the comfort of your own home!  JK it's a laptop.
-        elif self.__impassable:
-            string += "*"  # More rocks here!  Not for human entrance.
         else:
             string += " "
         string += ("  *", "  |")[self.__east_door]  # Appends | if east_door and * if not east_door.
@@ -160,7 +157,7 @@ class Room:
         Returns True if can enter.  Not impassable and traversing algorithm hasn't explored it yet.
         :return: bool
         """
-        return not self.__impassable and not self.__visited
+        return not self.__visited
 
     def clear_room(self):
         """
@@ -173,7 +170,7 @@ class Room:
         self.__pit = 0
         self.__exit = False
         self.__entrance = False
-        self.__impassable = False
+        # self.__impassable = False
         self.__visited = False
 
     @property
