@@ -1,33 +1,71 @@
-# Kevin's Time Tracker: 1.5 hours
+# Kevin's Time Tracker: 2.5 hours
+import random
 
 class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
+    # TODO:
+    # 1) Determine how to manage potion inventory
+    # 2) How does adventurer check the state of the room?
+    # 3) Auto pick up potion in a room
+    # 4) Working observer pattern with adventurer and potion factory?
+    # 5) Random hitpoint generator <-
+    # 6) Write tests
 
-    def __init__(self, name = None):
-        self.name = name
-        self.dev_powers = False
-        self.hitpoints = 75
-        self.health_pots = 0
-        self.vision_pots = 0
-        self.pillars = {
+
+    def __init__(self, name = None, challenge = 'easy'):
+        self.__name = name
+        self.__dev_powers = False
+        self.__hitpoints = 75
+        self.__health_pots = 0
+        self.__vision_pots = 0
+        self.__pillars = {
             'A' : False,
             'P' : False,
             'I' : False,
             'E' : False
         }
-        self.dev_abilities = {
-            'fullmap' : 'something that allows visions',
-            'tank' : 'unlimited health',
-            'alchemist' : 'unlimited potions'
-        }
 
-    def __is_alive(self):
+        self._create_adventurer(name, challenge)
+
+    def is_alive(self):
         return self.hitpoints > 0
 
+    def _create_adventurer(self, name, challenge):
+        """Helper method for character creation. Difficulty and name are checked,
+        based on those values, create an adventurer with modified base values.
+
+        :param name: str if found in cheat_code dictionary, modification applied to adventurer
+        :param challenge: str sets to following challenge level 'easy' 3x, 'medium' 2x, 'hard' 1x, 'inhumane' 0x
+        """
+        difficulty = {
+            'easy' : 3,
+            'medium' : 2,
+            'hard' : 1,
+            'inhumane' : 0
+        }
+
+        cheat_codes = {
+            'tom' : 'no health lost',
+            'kevin' : 'unlimited potions'
+        }
+
+        if name in cheat_codes:
+            self.dev_powers = True
+
+        hp_mod = 1
+
+        if challenge in difficulty:
+            hp_mod = difficulty[challenge]
+            self.hitpoints += hp_mod * random.randint(0, 10)
+
+        self.health_pots = 0
+        self.vision_pots = 0
+
     def __str__(self):
-        player_stats = f'{self.name}\n{self.hitpoints}\n{self.health_pots}\n{self.vision_pots}\n{self.pillars}'
+        player_stats = f'Name: {self.name}\nHP: {self.hitpoints}\nHealth potions: {self.health_pots} \
+                        \nVision potions: {self.vision_pots}\nPillars collected: {self.__pillars}'
         return player_stats
 
     @property
@@ -48,6 +86,24 @@ class Adventurer:
         """
         if isinstance(value, str):
             self.__name = value
+
+    @property
+    def dev_powers(self):
+        """Getter for the dev_powers property
+
+        :return: status if cheat codes are enabled
+        :rtype: bool
+        """
+        return self.__dev_powers
+
+    @dev_powers.setter
+    def dev_powers(self, value):
+        """Setter for the dev_powers property
+
+        :param value: boolean if cheat codes are enabled
+        """
+        if isinstance(value, bool):
+            self.__dev_powers = value
 
     @property
     def hitpoints(self):
