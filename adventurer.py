@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 2.5 hours
+# Kevin's Time Tracker: 3.5 hours
 import random
 
 class Adventurer:
@@ -30,6 +30,9 @@ class Adventurer:
         self._create_adventurer(name, challenge)
 
     def is_alive(self):
+        """Helper method to determine that the adventure is alive during the dungeon adventure
+        return: True if hitpoints are greater than 0
+        """
         return self.hitpoints > 0
 
     def _create_adventurer(self, name, challenge):
@@ -64,8 +67,11 @@ class Adventurer:
         self.vision_pots = 0
 
     def __str__(self):
-        player_stats = f'Name: {self.name}\nHP: {self.hitpoints}\nHealth potions: {self.health_pots} \
-                        \nVision potions: {self.vision_pots}\nPillars collected: {self.__pillars}'
+        player_stats = f'Name: {self.name}\n'
+        player_stats += f'HP: {self.hitpoints}\n'
+        player_stats += f'Health potions: {self.health_pots}\n'
+        player_stats += f'Vision potions: {self.vision_pots}\n'
+        player_stats += f'Pillars collected: {self.pillars}'
         return player_stats
 
     @property
@@ -139,9 +145,13 @@ class Adventurer:
 
         :param value: number of potions found in the room
         :type value: int
+        :raises ValueError for values that are negative
         """
         if isinstance(value, int):
-            self.__health_pots = value
+            if value >= 0:
+                self.__health_pots = value
+            else:
+                raise ValueError('Cannot set health potions to a negative value.')
 
     @property
     def vision_pots(self):
@@ -156,8 +166,16 @@ class Adventurer:
     def vision_pots(self, value):
         """Setter for the health pots property
 
-        :param value: number of potions found in the room
+        :param value: number of potions found in the room, value can not be negative
         :type value: int
+        :raises ValueError for values that are negative
         """
         if isinstance(value, int):
-            self.__vision_pots = value
+            if value >= 0:
+                self.__vision_pots = value
+            else:
+                raise ValueError('Cannot set vision potions to a negative value.')
+
+    @property
+    def pillars(self):
+        return self.__pillars
