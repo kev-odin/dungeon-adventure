@@ -1,22 +1,29 @@
 '''
-Time used: 4 hours
+Time used: 5 hours
 xingguo
 '''
 
 # from adventurer import Adventurer
 # from map import Map
 # from dungeon import Dungeon
+"""
+Contains the main logic for playing the game
+• Introduces the game describing what the game is about and how to play
+• Creates a Dungeon Object and a Adventurer Object
+• Obtains the name of the adventurer from the user
+• Does the following repetitively:
+    o Prints the current room (this is based on the Adventurer's current location)
+    o Determines the Adventurer's options (Move, Use a Potion)
+    o Continues this process until the Adventurer wins or dies
+    o NOTE: Include a hidden menu option for testing that prints out the entire Dungeon -- specify what the menu option
+        is in your documentation for the DungeonAdventure class
+"""
 
-# • Contains the main logic for playing the game
-#       when run the game, there should be a welcome page show up
-#       this is the first receiption desk menu
-# • Introduces the game describing what the game is about and how to play
-# • Creates a Dungeon Object and a Adventurer Object
-# • Obtains the name of the adventurer from the user
 
 class Main:
 
     # what to do with the init?
+    # to create
     def __init__(self):
         pass
 
@@ -29,8 +36,21 @@ class Main:
             # i for player current info health, pillar...
             # p for health pots
             # v for vision pots
-        print("Instruction") # read a text file to display the game logo
-        print("please enter command: ")
+
+        print("\nWelcome! Game logo/rules/info")  # read a text file to display the game logo
+        help_or_continue = input("Please enter \'h\' for all commands of the game, or \'c\' for continue.")
+        while True:
+            if help_or_continue == 'h':
+                print("complete commands of the game: \n"
+                      "w: move up\n"
+                      "s: move down\n"
+                      "a: move left\n"
+                      "d: move right"
+                      "----to be continue----")
+            if help_or_continue == 'c':
+                break
+        adventurer_name = input("Please enter a name for your adventurer: ")
+        command = input("Please enter command: ")
         while True:
             command = input("")
             if command == 'h':
@@ -49,7 +69,7 @@ class Main:
         # create 1, 2, 3
         # get user command
 
-    def move(self):
+    def move_adventurer(self):
         # adventurer interates with dun
         # if alive let the user to interacte if dead, exit
         # if adv at the exit? if adv has all the pillars?
@@ -60,8 +80,8 @@ class Main:
         # print out ....   test it works correctly
         pass
 
-    def display_player_info(self):
-        playe_name = input("Welcome to Dnd, Please enter your player's name: ")
+    def display_adventurer_info(self):
+        # to call __str__ function of ....?
         pass
 
 
@@ -75,20 +95,30 @@ if __name__ == "__main__": # when this file is run,
 
 
 
-"""                                                                                                                   
-88888888ba,                                                                                                          
-88      `"8b                                                                                                         
-88        `8b                                                                                                        
-88         88  88       88  8b,dPPYba,    ,adPPYb,d8   ,adPPYba,   ,adPPYba,   8b,dPPYba,                            
-88         88  88       88  88P'   `"8a  a8"    `Y88  a8P_____88  a8"     "8a  88P'   `"8a                           
-88         8P  88       88  88       88  8b       88  8PP"""""""  8b       d8  88       88                           
-88      .a8P   "8a,   ,a88  88       88  "8a,   ,d88  "8b,   ,aa  "8a,   ,a8"  88       88                           
-8888888db"'     `"YbbdP'Y88888       88   `"YbbdP"Y8   `"Ybbd8"'   `"YbbdP"'   88       88                           
-      d88b                88              aa,    ,88                 ,d                                              
-     d8'`8b               88               "Y8bbdP"                  88                                              
-    d8'  `8b      ,adPPYb,88  8b       d8   ,adPPYba,  8b,dPPYba,  MM88MMM  88       88  8b,dPPYba,   ,adPPYba,      
-   d8YaaaaY8b    a8"    `Y88  `8b     d8'  a8P_____88  88P'   `"8a   88     88       88  88P'   "Y8  a8P_____88      
-  d8""""""""8b   8b       88   `8b   d8'   8PP"""""""  88       88   88     88       88  88          8PP"""""""      
- d8'        `8b  "8a,   ,d88    `8b,d8'    "8b,   ,aa  88       88   88,    "8a,   ,a88  88          "8b,   ,aa      
-d8'          `8b  `"8bbdP"Y8      "8"       `"Ybbd8"'  88       88   "Y888   `"YbbdP'Y8  88           `"Ybbd8"'                                                                                                                                                                                                                                          
+"""
+____                                          
+|    \  _ _  ___  ___  ___  ___  ___           
+|  |  || | ||   || . || -_|| . ||   |          
+|____/ |___||_|_||_  ||___||___||_|_|          
+                 |___|                         
+                                               
+ _____    _                 _                  
+|  _  | _| | _ _  ___  ___ | |_  _ _  ___  ___ 
+|     || . || | || -_||   ||  _|| | ||  _|| -_|
+|__|__||___| \_/ |___||_|_||_|  |___||_|  |___|  
+
+
+Welcome to Dungeon Adventure! 
+
+Your goal is to find all the four pillars of OOP and get to the exit safely. 
+
+Each room of the dungeon will be randomly placed with the following items: 1⃣ Healing potion, 2⃣ Vision potion, 3⃣ Pit, 4⃣ OOP pillars, or nothing
+
+If there are any items listed above 1⃣ -- 4⃣ in the room, you will automatically pick up the item(s) or take the damage.
+
+For the Healing potion and Vision potion, you can choose to use them anytime you want. 
+
+Beware that you have a limited amount of health pot, think before you jump to any room, and use the items wisely.
+
+Good luck!!! 
 """
