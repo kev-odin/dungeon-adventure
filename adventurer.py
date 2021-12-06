@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 3.5 hours
+# Kevin's Time Tracker: 5.5 hours
 import random
 
 class Adventurer:
@@ -21,19 +21,25 @@ class Adventurer:
         self.__health_pots = 0
         self.__vision_pots = 0
         self.__pillars = {
-            'A' : False,
-            'P' : False,
-            'I' : False,
-            'E' : False
+            "A" : False,
+            "P" : False,
+            "I" : False,
+            "E" : False
         }
 
         self._create_adventurer(name, challenge)
 
     def is_alive(self):
-        """Helper method to determine that the adventure is alive during the dungeon adventure
-        return: True if hitpoints are greater than 0
+        """Helper method to determine that the adventurer is alive during the dungeon adventure
+        :return: True if hitpoints are greater than 0
         """
         return self.hitpoints > 0
+
+    def has_all_pillars(self):
+        """ Helper method to determine when all pillars have been collected by the adventurer
+        :return: True if all pillars are collected
+        """
+        return all(pillar == True for pillar in self.__pillars.values())
 
     def _create_adventurer(self, name, challenge):
         """Helper method for character creation. Difficulty and name are checked,
@@ -65,6 +71,22 @@ class Adventurer:
 
         self.health_pots = 0
         self.vision_pots = 0
+
+    def _update_found_potions(self, *args):
+        """ Helper method to add potions found in a room to the adventurer's 
+        inventory. Checks and unpacks a tuple (health_potions : int, vision_potions : int)
+        """
+        if len(args) == 2:
+            room_health, room_vision = args
+            self.health_pots += room_health
+            self.vision_pots += room_vision
+        else:
+            raise TypeError('Incorrect number of potions.')
+
+    def _update_pillars_collected(self, found):
+        if found in self.__pillars:
+            self.__pillars[found] = True
+
 
     def __str__(self):
         player_stats = f'Name: {self.name}\n'
