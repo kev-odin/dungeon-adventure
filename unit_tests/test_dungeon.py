@@ -232,6 +232,22 @@ class TestDungeon(unittest.TestCase):
         after = (room.health_potion, room.vision_potion)
         self.assertEqual((0, 0), after, "Check adventurer location updated with move properly.")
 
+    def test_collect_pillars(self):
+        dungeon = Dungeon(5, 5)
+        directions = ["north", "east", "south", "west"]
+        current_room = dungeon.get_room(dungeon.adventurer_loc)
+        for direction in directions:
+            if current_room.get_door(direction):
+                directions = direction
+                break
+        room = dungeon.move_adventurer(directions)
+        if room.contents == "A" or room.contents == "I" or room.contents == "P" or room.contents == "E":
+            expected = room.contents
+        else:
+            expected = None
+        actual = dungeon.collect_pillars()
+        self.assertEqual(expected, actual, "Check pillar string returned properly.")
+
     def test_adventurer_find_exit_and_pillars(self):  # This could probably be significantly simplied buuuut...
         dungeon = Dungeon(5, 5)  # Also is this a unit test or a system test?
         to_visit = visited = []  # Tracks queue to go to and stack of visited locations to not add to queue of go to

@@ -240,6 +240,15 @@ class Dungeon(Iterable):
         """
         return self.__adventurer_loc
 
+    @property
+    def pit_damage(self):
+        """
+        Gets pit damage adventurer should receive in their current room.
+        :return: int of damage
+        """
+        room = self.get_room(self.__adventurer_loc)
+        return room.pit_damage
+
     def move_adventurer(self, direction: str):
         """
         Moves the adventurer in the indicated direction as long as they are able.
@@ -271,11 +280,14 @@ class Dungeon(Iterable):
         room.vision_potion = 0
         return pots
 
-    @property
-    def pit_damage(self):
+    def collect_pillars(self):
         """
-        Gets pit damage adventurer should receive in their current room.
-        :return: int of damage
+        Removes pillar from the room and returns it if a pillar exists in the room.
+        :return: str pillar, else None
         """
         room = self.get_room(self.__adventurer_loc)
-        return room.pit_damage
+        pillar = None
+        if self.__pillars.count(room.contents) > 0:
+            pillar = room.contents
+            room.contents = " "  # Since rooms with pillars are otherwise empty, no other updating necessary.
+        return pillar
