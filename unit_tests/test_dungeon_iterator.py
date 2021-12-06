@@ -5,7 +5,7 @@ from dungeon import Dungeon
 class TestDungeonIterator(unittest.TestCase):
     def test_iterator_whole_dungeon(self):
         test = Dungeon(5, 5)
-        test_iter = test.DungeonIterator(test.dungeon, 0, 0, 5, 5)
+        test_iter = test.DungeonIterator(test.dungeon, 5)
         row_max = 5
         col_max = 5
         index = 0

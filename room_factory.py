@@ -1,8 +1,6 @@
 """
-Steph time tracker:
+Time tracker:
 5 minutes (copy pastaed from dungeon and moved it here with some minor edits to make a static simple factory)
-Limitations: Currently has hardcoded defaults.  We could modify this somewhat simply with a difficulty setting parameter
-instead.  May possibly implement once most refactoring is done to keep that over 100% grade ;)
 """
 
 from room import Room

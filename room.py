@@ -1,6 +1,5 @@
 """
-Steph's portion~!
-Time tracker: 5 hours (with tests & dungeon algorithm )
+Time tracker: 6 hours (with tests & dungeon algorithm)
 """
 
 
@@ -103,9 +102,17 @@ class Room:
         return valid_nums and valid_contents
 
     def string_top(self):
+        """
+        Creates top portion of the room's string including doors.
+        :return: string representing top of room.
+        """
         return ("*  *  *", "*  -  *")[self.__doors["north"]]  # Appends *** if not north_door, *-* if north door
 
     def string_middle(self):
+        """
+        Creates middle portion of the room's string including contents and doors east or west.
+        :return: string representing middle and contents of room.
+        """
         string = ""
         string += ("*  ", "|  ")[self.__doors["west"]]  # Appends * if not west_door, | if west_door
         string += self.__contents
@@ -113,6 +120,10 @@ class Room:
         return string
 
     def string_bottom(self):
+        """
+        Creates bottom of string including contents and doors south.
+        :return: string representing bottom of room
+        """
         return ("*  *  *", "*  -  *")[self.__doors["south"]]
 
     def can_enter(self):
@@ -154,6 +165,10 @@ class Room:
 
     @property
     def entrance(self):
+        """
+        Returns if current room is the entrance.
+        :return: bool, True if it is the entrance, False if not
+        """
         return self.__contents == "i"
 
     @entrance.setter
@@ -170,6 +185,10 @@ class Room:
 
     @property
     def health_potion(self):
+        """
+        Returns current quantity of health_potions in the room as int
+        :return: int of current number of health_potions.
+        """
         return self.__health_potion
 
     @health_potion.setter
@@ -180,9 +199,21 @@ class Room:
         """
         if self.__is_number_gt_eq_0(num_pots):
             self.__health_potion = num_pots
+            if bool(self.__vision_potion) + bool(self.__health_potion) + bool(self.__pit) >= 2:
+                self.__contents = "M"
+            elif self.__pit and (not self.__vision_potion and not self.__health_potion):
+                self.__contents = "X"
+            elif self.__health_potion > 0:
+                self.__contents = "H"
+            else:
+                self.__contents = " "
 
     @property
     def vision_potion(self):
+        """
+        Getter for current number of vision potions in a room.
+        :return: int for current quantity of vision_potions
+        """
         return self.__vision_potion
 
     @vision_potion.setter
@@ -193,9 +224,21 @@ class Room:
         """
         if self.__is_number_gt_eq_0(num_pots):
             self.__vision_potion = num_pots
+            if bool(self.__vision_potion) + bool(self.__health_potion) + bool(self.__pit) >= 2:
+                self.__contents = "M"
+            elif self.__pit and (not self.__vision_potion and not self.__health_potion):
+                self.__contents = "X"
+            elif self.__vision_potion > 0:
+                self.__contents = "V"
+            else:
+                self.__contents = " "
 
     @property
     def pit_damage(self):
+        """
+        Returns int representing damage the pit will do when someone enters the room.  0 no damage.
+        :return: int
+        """
         return self.__pit
 
     def get_door(self, direction):
@@ -206,8 +249,8 @@ class Room:
         """
         try:
             return self.__doors[direction]
-        except KeyError as e:
-            print(f"{e} is not a valid key!  Must be 'north', east', west', or 'south' as a string.")
+        except KeyError:
+            raise KeyError(f"{direction} is not a valid key!  Must be 'north', east', west', or 'south' as a string.")
 
     def set_door(self, direction, door_exists):
         """
@@ -220,22 +263,49 @@ class Room:
         """
         if self.__is_boolean(door_exists):
             try:
+                self.__doors[direction]  # Verifies is valid direction.  I'm sure there's a better way to do this.
                 self.__doors[direction] = door_exists
-            except KeyError as e:
-                print(f"{e} Not a valid key!  Most be north, east, west, south as a string.")
+            except KeyError:
+                raise KeyError(f"{direction} is not a valid key!  Most be north, east, west, south as a string.")
 
     @property
     def is_empty(self):
+        """
+        Returns bool if room is empty or not.  True if it is, False if it isn't.
+        :return: bool
+        """
         return self.__contents == " "
 
     @property
     def contents(self):
+        """
+        Returns current contents of a room as a string.
+        " ": empty
+        "A", "P", "I", "E": one of the pillars
+        "i": in, entrance
+        "O": out, exit
+        "*": Impassabl
+        "H": HP potion
+        "V": Vision potion
+        "X": Pit
+        "M": Multiple potions or a potion + a pit.
+        :return: str
+        """
         return self.__contents
 
     @contents.setter
     def contents(self, data: str):
-        self.__contents = data
+        """
+        Setter for contents if contents are valid.
+        :param data: str " ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"
+        """
+        if self.__is_valid_contents(data):
+            self.__contents = data
 
     @property
     def visited(self):
+        """
+        Checks if any of the rooms were visited during creation of the dungeon / traversal.
+        :return: bool, True if any doors exist
+        """
         return self.__doors["north"] or self.__doors["east"] or self.__doors["south"] or self.__doors["west"]

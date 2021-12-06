@@ -1,13 +1,7 @@
 import unittest
 from room import Room
 
-"""
-TODO
-REMOVE TESTS for not content setters.
-Add tests for door setters
-Add tests for impassable
-Add tests for saved.
-"""
+
 class TestRoom(unittest.TestCase):
     def test_init_default_str(self):
         test = Room()
@@ -60,6 +54,19 @@ class TestRoom(unittest.TestCase):
         expected = True
         test.set_door("east", True)
         self.assertEqual(expected, test.visited, "Should be visited if door exists.")
+
+    def test_is_eq(self):
+        test = Room()
+        expected = True
+        check = test == test
+        self.assertEqual(expected, check, "Room should equal itself.  Check __eq__ and strings.")
+
+    def test_is_not_eq(self):
+        test1 = Room()
+        test2 = Room(contents="i")
+        expected = False
+        check = test1 == test2
+        self.assertEqual(expected, check, "Empty room should not equal an entrance.")
 
     def test_setter_health_potion_2(self):
         test = Room()
@@ -119,6 +126,16 @@ class TestRoom(unittest.TestCase):
         except TypeError:
             self.assertEqual(True, True)
 
+    def test_entrance_setter_changed_contents(self):
+        test = Room(pit=10, contents="X")
+        test.entrance = True
+        self.assertEqual("i", test.contents, "Contents should have been updated to 'i'")
+
+    def test_entrance_setter_cleared_room(self):
+        test = Room(pit=10, contents="X")
+        test.entrance = True
+        self.assertEqual(0, test.pit_damage, "Pit should have been wiped out to 0")
+
     def test_exit_setter_valid(self):
         test = Room()
         expected = True
@@ -132,6 +149,16 @@ class TestRoom(unittest.TestCase):
             self.assertEqual(True, False, "TypeError expected for string setter with exit")
         except TypeError:
             self.assertEqual(True, True)
+
+    def test_exit_setter_changed_contents(self):
+        test = Room(pit=20, contents="X")
+        test.exit = True
+        self.assertEqual("O", test.contents, "Contents once set exit should be 'O'")
+
+    def test_exit_setter_cleared_pit(self):
+        test = Room(pit=20, contents="X")
+        test.exit = True
+        self.assertEqual(0, test.pit_damage, "Contents once set exit should be 'O'")
 
     def test_partial_init_string(self):
         test = Room(health_potion=2, pit=10, contents="M")
@@ -149,6 +176,10 @@ class TestRoom(unittest.TestCase):
         test = Room(health_potion=2, pit=10, contents="M")
         test.north_door = True
         self.assertEqual(True, test.north_door, "Check init for partial variables.  north door should be True.")
+
+    def test_pit_damage_getter(self):
+        test = Room(health_potion=2, pit=10, contents="M")
+        self.assertEqual(10, test.pit_damage, "Check init for partial variables.  north door should be True.")
 
     def test_set_doors(self):
         test = Room()
@@ -222,5 +253,54 @@ class TestRoom(unittest.TestCase):
         empty_room = Room()
         self.assertEqual(f"{empty_room}", f"{test}", "Check if room is clearing properly.")
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_remove_HP_potions_contents(self):
+        test = Room(health_potion=1)
+        test.health_potion = 0
+        self.assertEqual(" ", test.contents, "Room contents should be open after removing potion.")
+
+    def test_remove_HP_potions(self):
+        test = Room(health_potion=1)
+        test.health_potion = 0
+        self.assertEqual(0, test.health_potion, "Health potions should be nothing.")
+
+    def test_remove_vision_potions(self):
+        test = Room(vision_potion=1)
+        test.vision_potion = 0
+        self.assertEqual(" ", test.contents, "Room contents should be clear after removing potion.")
+
+    def test_remove_hp_potion_still_pit(self):
+        test = Room(pit=10, health_potion=1)
+        test.health_potion = 0
+        self.assertEqual("X", test.contents, "Room should have a pit still.")
+
+    def test_remove_vision_potion_still_pit(self):
+        test = Room(pit=10, vision_potion=1)
+        test.vision_potion = 0
+        self.assertEqual("X", test.contents, "Room should have a pit still.")
+
+    def test_remove_vision_potion_still_hp_and_pit(self):
+        test = Room(pit=10, vision_potion=1, health_potion=1)
+        test.vision_potion = 0
+        self.assertEqual("M", test.contents, "Should still have multiple - HP potion and pit, after removing vision")
+
+    def test_remove_hp_potion_still_vision_and_pit(self):
+        test = Room(pit=10, vision_potion=1, health_potion=1)
+        test.health_potion = 0
+        self.assertEqual("M", test.contents, "Should still have multiple - HP potion and pit, after removing vision")
+
+    def test_get_door_invalid_key(self):
+        test = Room()
+        test.set_door("east", True)
+        try:
+            test.get_door("Joy")
+            self.assertEqual(True, False, "Expected KeyError with invalid key")
+        except KeyError:
+            self.assertEqual(True, True)
+
+    def test_set_door_invalid_key(self):
+        test = Room()
+        try:
+            test.set_door(0, True)
+            self.assertEqual(True, False, "Expected KeyError with invalid key")
+        except KeyError:
+            self.assertEqual(True, True)
