@@ -1,5 +1,7 @@
 """
 Time tracker: 6 hours (with tests & dungeon algorithm)
+WARNING: Pillars are currently hard-coded in string validation for contents.  To allow flexible pillars, we need
+to modify this.
 """
 
 

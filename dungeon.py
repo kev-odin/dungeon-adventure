@@ -1,6 +1,6 @@
 """
 Time Tracker~!
-15 hours to working properly with no error checking or fun.
+17 hours
 Ask Tom about how to clean up no longer needed data better.
 """
 
@@ -35,7 +35,7 @@ class Dungeon(Iterable):
                 raise StopIteration()
             return current_room
 
-    def __init__(self, row_count=5, col_count=5, pillars=["A", "P", "I", "E"]):
+    def __init__(self, row_count=5, col_count=5):
         """
         Welcome to the dungeon!  Allows for hardcoded difficulty to be adjusted in the event we want to add different
         difficulty settings as an extra credit feature (ex. increase pit chance and damage)
@@ -43,12 +43,13 @@ class Dungeon(Iterable):
         :param col_count: int between 0 and stack overflow
         :param pillars: list of strings, though current room coding will error if not A P I E due to hardcoding.
         """
-        if len(pillars) + 2 < row_count*col_count*.5:  # If not, very unlikely maze will successfully generate
+        pillars = ["A", "P", "I", "E"]
+        if len(pillars) + 2 < row_count*col_count*.5:  # Verify enough room for pillars + ent/exit.
             self.__dungeon = []
             self.__row_count = row_count
             self.__col_count = col_count
             self.__empty_rooms = []  # Stores list of empty rooms to be used later for pillar placement
-            self.__pillars = pillars  # To be popped into rooms
+            self.__pillars = pillars  # To be popped into rooms, currently hard-coded.
             self.__entrance = None  # Will be stored as a row, col tuple at maze building.
             self.__exit = None  # Will be stored as a row, col tuple when building maze.
             self.__build_maze()  # Sets entrance and exit.
@@ -187,33 +188,6 @@ class Dungeon(Iterable):
         """
         return (0 <= row < self.__row_count) and (0 <= col < self.__col_count)
 
-    def set_health_potion(self, row: int, col: int, num: int):
-        """
-        Sets the health potion quantity in a specific room to a specific value, such as setting to 0 when an adventurer
-        collects the health potions.
-        :param row: int to identify target row
-        :param col: int to identify target column
-        :param num: int to change the current health potions in a room to
-        :return:
-        """
-        if type(row) == int and type(col) == int and self.__is_valid_room(row, col):
-            self.__dungeon[row][col].health_potion = num
-        else:
-            raise ValueError("Row and column must be integers within coordinates of dungeon.")
-
-    def set_vision_potion(self, row, col, num):
-        """
-        Sets the vision potion quantity in a specific room to a specific value, such as 0 after collecting.
-        :param row: int to identify target row
-        :param col: int to identify target column
-        :param num: int to change the current vision potions in a room to
-        :return:
-        """
-        if type(row) == int and type(col) == int and self.__is_valid_room(row, col):
-            self.__dungeon[row][col].vision_potion = num
-        else:
-            raise ValueError("Row and column must be integers within coordinates of dungeon.")
-
     def get_room(self, coordinates):
         """
         Given a row and column, returns the room at those coordinates
@@ -281,6 +255,27 @@ class Dungeon(Iterable):
             raise ValueError("Value must be north, east, south, or west, and there must be a door in that direction.")
         if self.__is_valid_room(new_row, new_col):
             self.__adventurer_loc = (new_row, new_col)
-            return self.get_room((new_row, new_col))
+            new_room = self.get_room((new_row, new_col))
+            return new_room
         else:
             raise ValueError("There's no room that way!  Check the map!")
+
+    def collect_potions(self):
+        """
+        Collections all potions in adventurer's location.  Returns as tuple of ints, HP then vision.
+        :return: tuple of ints, HP then vision.
+        """
+        room = self.get_room(self.__adventurer_loc)
+        pots = (room.health_potion, room.vision_potion)
+        room.health_potion = 0
+        room.vision_potion = 0
+        return pots
+
+    @property
+    def pit_damage(self):
+        """
+        Gets pit damage adventurer should receive in their current room.
+        :return: int of damage
+        """
+        room = self.get_room(self.__adventurer_loc)
+        return room.pit_damage

@@ -1,18 +1,18 @@
 """
 Time tracker:
-Shared with dungeon time + 2 hours because I HAD A MOMENT OF TIME CONSUMING BRILLANCE that lead to late night spaghetti.
+Shared with dungeon time + 2 hours because I HAD A MOMENT OF TIME CONSUMING BRILLIANCE that lead to late night spaghetti
 test_adventurer_find_exit_and_pillars - Breadth first search w/ pillar pick up and exit finding.
 
 Mock tests would be more robust since I had to delete most of my private method tests once methods were no longer
 private or no longer predictable.  Testing successful traversal is an okay compromise?  But less helpful if something
 more specific breaks with modification.
 
-TODO Verify all setters and getters are tested.  Stop programming late at night.
+TODO stop programming late at night.
 """
 
 import unittest
 from dungeon import Dungeon
-
+from room import Room
 
 class TestDungeon(unittest.TestCase):
     def test_dungeon_init_big_enough(self):
@@ -136,7 +136,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(expected, found, "Expected to find AEIP for all sorted pillars.")
 
     def test_random_dungeon_generation(self):  # TECHNICALLY could cause failure, but surely the universe won't align.
-        test1 = Dungeon(5, 5)
+        test1 = Dungeon(5, 5)  # Actually, yeah, this seems like a bad thing to test.  LET'S DO IT ANYWAY! :D
         test2 = Dungeon(5, 5)
         test3 = Dungeon(5, 5)
         improbable = test1 == test2 and test1 == test3 and test2 == test3
@@ -173,9 +173,67 @@ class TestDungeon(unittest.TestCase):
         new_loc = (coord_dict[directions][0] + current_loc[0], coord_dict[directions][1] + current_loc[1])
         self.assertEqual(new_loc, dungeon.adventurer_loc, "Check adventurer location updated with move properly.")
 
-    def test_adventurer_find_exit_and_pillars(self):  # This could probably be significantly simplied buuuut...
+    def test_adventurer_move_return_expected_room(self):
         dungeon = Dungeon(5, 5)
-        print(dungeon)
+        directions = ["north", "east", "south", "west"]
+        current_room = dungeon.get_room(dungeon.adventurer_loc)
+        for direction in directions:
+            if current_room.get_door(direction):
+                directions = direction
+                break
+        coord_dict = {"south": (1, 0), "east": (0, 1), "north": (-1, 0), "west": (0, -1)}
+        current_loc = dungeon.adventurer_loc
+        actual = dungeon.move_adventurer(directions)
+        new_loc = (coord_dict[directions][0] + current_loc[0], coord_dict[directions][1] + current_loc[1])
+        expected = dungeon.get_room(new_loc)
+        self.assertEqual(expected, actual, "Check returned proper room when moving adventurer.")
+
+    def test_get_potions(self):
+        dungeon = Dungeon(5, 5)
+        directions = ["north", "east", "south", "west"]
+        current_room = dungeon.get_room(dungeon.adventurer_loc)
+        for direction in directions:
+            if current_room.get_door(direction):
+                directions = direction
+                break
+        room = dungeon.move_adventurer(directions)
+        hp = room.health_potion
+        vp = room.vision_potion
+        expected = (hp, vp)
+        actual = dungeon.collect_potions()
+        self.assertEqual(expected, actual, "Check adventurer location updated with move properly.")
+
+    def test_pit_damage(self):  # Was tested more robustly before I removed some game-breaking setters.
+        dungeon = Dungeon(5, 5)
+        directions = ["north", "east", "south", "west"]
+        current_room = dungeon.get_room(dungeon.adventurer_loc)
+        for direction in directions:
+            if current_room.get_door(direction):
+                directions = direction
+                break
+        room = dungeon.move_adventurer(directions)
+        damage = room.pit_damage
+        dun_damage = dungeon.pit_damage
+        self.assertEqual(damage, dun_damage, "Room's damage and dungeon's damage should return the same.")
+
+    def test_room_has_no_potions_after_collection(self):
+        dungeon = Dungeon(5, 5)
+        directions = ["north", "east", "south", "west"]
+        current_room = dungeon.get_room(dungeon.adventurer_loc)
+        for direction in directions:
+            if current_room.get_door(direction):
+                directions = direction
+                break
+        room = dungeon.move_adventurer(directions)
+        hp = room.health_potion
+        vp = room.vision_potion
+        before = (hp, vp)
+        collected = dungeon.collect_potions()
+        after = (room.health_potion, room.vision_potion)
+        self.assertEqual((0, 0), after, "Check adventurer location updated with move properly.")
+
+    def test_adventurer_find_exit_and_pillars(self):  # This could probably be significantly simplied buuuut...
+        dungeon = Dungeon(5, 5)  # Also is this a unit test or a system test?
         to_visit = visited = []  # Tracks queue to go to and stack of visited locations to not add to queue of go to
         my_pillars = []  # Pillars adventurer has collected
         pillars = ["A", "E", "I", "P"]
