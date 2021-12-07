@@ -192,5 +192,5 @@ class DungeonBuilder:
         self.__entrance = (ent_row, ent_col)
         self.__exit = (exit_row, exit_col)
         self.__build_pillars()
-        self.__set_dungeon()  # Officially builds the dungeon and saves it!
+        self.__set_dungeon()  # Officially builds the dungeon and saves it!  Perhaps shouldn't save it.
         return self.__complete_dungeon
