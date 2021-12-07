@@ -4,7 +4,7 @@ from dungeon import Dungeon
 
 class TestDungeonIterator(unittest.TestCase):
     def test_iterator_whole_dungeon(self):
-        test = Dungeon(5, 5)
+        test = Dungeon()
         test_iter = test.DungeonIterator(test.dungeon, 5)
         row_max = 5
         col_max = 5
@@ -16,7 +16,7 @@ class TestDungeonIterator(unittest.TestCase):
             next(test_iter)
 
     def test_iterator_get_correct_room_full_access(self):
-        test = Dungeon(5, 5)
+        test = Dungeon()
         row = col = 0
         col_max = 5
         for room in test:

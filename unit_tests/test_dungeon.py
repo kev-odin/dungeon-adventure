@@ -7,43 +7,41 @@ Mock tests would be more robust since I had to delete most of my private method 
 private or no longer predictable.  Testing successful traversal is an okay compromise?  But less helpful if something
 more specific breaks with modification.
 
-TODO stop programming late at night.
+TODO stop programming late at night.  Clean up your spaghetti code, girl.
 """
 
 import unittest
-from dungeon import Dungeon
-from room import Room
+from dungeon_builder import DungeonBuilder
+
 
 class TestDungeon(unittest.TestCase):
+    def init_dungeon(self, difficulty="easy"):
+        db = DungeonBuilder(difficulty)
+        built = db.build_dungeon(difficulty)  # Also is this a unit test or a system test?
+        return built
+
     def test_dungeon_init_big_enough(self):
         try:
-            Dungeon(5, 5)
+            self.init_dungeon()
             self.assertEqual(True, True)  # add assertion here
         except ValueError:
             self.assertEqual(True, False, "5, 5 should be large enough grid with 4 pillars.")
 
-    def test_dungeon_init_too_small(self):
-        try:
-            Dungeon(1, 1)
-            self.assertEqual(True, False, "Check verification dungeon is large enough to hold pillars.")
-        except ValueError:
-            self.assertEqual(True, True)
-
     def test_get_room(self):
-        test = Dungeon(7, 7)
+        test = self.init_dungeon()
         room1 = test.get_room((1, 1))
         room2 = test.dungeon[1][1]
         self.assertEqual(room1, room2, "It should be itself.  Check print map above.  Getter or .dungeon  has issues")
 
     def test_entrance_exists(self):
-        test = Dungeon(7, 7)
+        test = self.init_dungeon()
         entrance_room = test.get_room(test.entrance)
         if entrance_room is not None:
             boolean = True
         self.assertEqual(True, boolean, "Entrance should be True.  Check print map above.")
 
     def test_get_entrance_by_search_coordinates(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         entrance = test.entrance
         coors = None
         for row in range(0, 5):
@@ -53,25 +51,25 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(coors, entrance, "Entrance found in dungeon should be same as listed.")
 
     def test_get_entrance_by_coords(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         entrance_room = test.get_room(test.entrance)
         ent_string = entrance_room.string_middle()
         self.assertEqual(True, ent_string.count("i") == 1, "The entrance contains expected character")
 
     def test_entrance_accessible(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         entrance_room = test.get_room(test.entrance)
         self.assertEqual(True, entrance_room.visited, "The entrance should contain at least one door.")
 
     def test_exit_exists(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         exit_room = test.get_room(test.exit)
         if exit_room is not None:
             boolean = True
         self.assertEqual(True, boolean, "Exit expected to exist!")
 
     def test_get_exit_by_search_coordinates(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         exit = test.exit
         coors = None
         for row in range(0, 5):
@@ -81,31 +79,31 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(coors, exit, "Exit found in dungeon should be same as listed in room with 'O'.")
 
     def test_get_exit_by_coords(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         exit_room = test.get_room(test.exit)
         exit_string = exit_room.string_middle()
         self.assertEqual(True, exit_string.count("O") == 1, "The exit should contain expected 'O' for out.")
 
     def test_exit_is_accessible(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         exit_room = test.get_room(test.exit)
         self.assertEqual(True, exit_room.visited, "The exit should have at least one door to be accessible")
 
     def test_exit_by_contents(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         exit_room = test.get_room(test.exit)
         exit_contents = exit_room.contents
         self.assertEqual("O", exit_contents, "The exit should contain expected 'O' for out.")
 
     def test_pillars(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         pillars = test.pillars
         pillars.sort()
         expected = ["A", "E", "I", "P"]
         self.assertEqual(expected, pillars, "Expect AEIP for all pillars.")
 
     def test_all_pillars_in_dungeon(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         found = []
         expected = test.pillars.copy()
         expected.sort()
@@ -118,13 +116,13 @@ class TestDungeon(unittest.TestCase):
     def test_all_types_in_larger_dungeon(self):
         expected_list = [" ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"]
         found = []
-        test = Dungeon(5, 5)
+        test = self.init_dungeon("hard")
         for expected in expected_list:
             found.append(f"{test}".count(expected))
         self.assertEqual(len(expected_list), len(found), "Expected to find at least one of each in larger dungeon.")
 
     def test_pillars_accessible(self):
-        test = Dungeon(5, 5)
+        test = self.init_dungeon()
         found = []
         expected = test.pillars.copy()
         expected.sort()
@@ -135,20 +133,8 @@ class TestDungeon(unittest.TestCase):
         found.sort()
         self.assertEqual(expected, found, "Expected to find AEIP for all sorted pillars.")
 
-    def test_random_dungeon_generation(self):  # TECHNICALLY could cause failure, but surely the universe won't align.
-        test1 = Dungeon(5, 5)  # Actually, yeah, this seems like a bad thing to test.  LET'S DO IT ANYWAY! :D
-        test2 = Dungeon(5, 5)
-        test3 = Dungeon(5, 5)
-        improbable = test1 == test2 and test1 == test3 and test2 == test3
-        improbable_exit = test1.exit == test2.exit and test1.exit == test3.exit and test2.exit == test3.exit
-        improbable_entrance = test1.entrance == test2.entrance and test1.entrance == test3.entrance and \
-                              test2.entrance == test3.entrance
-        self.assertEqual(False, improbable, "Dungeons are expected to be different.  Stars aligned and all 3 match.")
-        self.assertEqual(False, improbable_exit, "Dungeon exits are expected to be different. Or stars aligned.")
-        self.assertEqual(False, improbable_entrance, "Stars aligned and all 3 entrances match.  Or not random.")
-
     def test_adventurer_leave_entrance(self):
-        dungeon = Dungeon(5, 5)
+        dungeon = self.init_dungeon()
         possible = False
         directions = ["north", "east", "south", "west"]
         for direction in directions:
@@ -160,7 +146,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(True, possible, "Should be possible to move the adventurer!")
 
     def test_adventurer_moved_to_expected_location(self):
-        dungeon = Dungeon(5, 5)
+        dungeon = self.init_dungeon()
         directions = ["north", "east", "south", "west"]
         current_room = dungeon.get_room(dungeon.adventurer_loc)
         for direction in directions:
@@ -174,7 +160,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(new_loc, dungeon.adventurer_loc, "Check adventurer location updated with move properly.")
 
     def test_adventurer_move_return_expected_room(self):
-        dungeon = Dungeon(5, 5)
+        dungeon = self.init_dungeon()
         directions = ["north", "east", "south", "west"]
         current_room = dungeon.get_room(dungeon.adventurer_loc)
         for direction in directions:
@@ -189,7 +175,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(expected, actual, "Check returned proper room when moving adventurer.")
 
     def test_get_potions(self):
-        dungeon = Dungeon(5, 5)
+        dungeon = self.init_dungeon()
         directions = ["north", "east", "south", "west"]
         current_room = dungeon.get_room(dungeon.adventurer_loc)
         for direction in directions:
@@ -204,7 +190,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(expected, actual, "Check adventurer location updated with move properly.")
 
     def test_pit_damage(self):  # Was tested more robustly before I removed some game-breaking setters.
-        dungeon = Dungeon(5, 5)
+        dungeon = self.init_dungeon()
         directions = ["north", "east", "south", "west"]
         current_room = dungeon.get_room(dungeon.adventurer_loc)
         for direction in directions:
@@ -217,7 +203,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(damage, dun_damage, "Room's damage and dungeon's damage should return the same.")
 
     def test_room_has_no_potions_after_collection(self):
-        dungeon = Dungeon(5, 5)
+        dungeon = self.init_dungeon()
         directions = ["north", "east", "south", "west"]
         current_room = dungeon.get_room(dungeon.adventurer_loc)
         for direction in directions:
@@ -225,15 +211,12 @@ class TestDungeon(unittest.TestCase):
                 directions = direction
                 break
         room = dungeon.move_adventurer(directions)
-        hp = room.health_potion
-        vp = room.vision_potion
-        before = (hp, vp)
-        collected = dungeon.collect_potions()
+        dungeon.collect_potions()
         after = (room.health_potion, room.vision_potion)
         self.assertEqual((0, 0), after, "Check adventurer location updated with move properly.")
 
     def test_collect_pillars(self):
-        dungeon = Dungeon(5, 5)
+        dungeon = self.init_dungeon()
         directions = ["north", "east", "south", "west"]
         current_room = dungeon.get_room(dungeon.adventurer_loc)
         for direction in directions:
@@ -249,7 +232,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(expected, actual, "Check pillar string returned properly.")
 
     def test_adventurer_find_exit_and_pillars(self):  # This could probably be significantly simplied buuuut...
-        dungeon = Dungeon(5, 5)  # Also is this a unit test or a system test?
+        dungeon = self.init_dungeon()
         to_visit = visited = []  # Tracks queue to go to and stack of visited locations to not add to queue of go to
         my_pillars = []  # Pillars adventurer has collected
         pillars = ["A", "E", "I", "P"]

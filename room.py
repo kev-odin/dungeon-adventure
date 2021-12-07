@@ -2,6 +2,17 @@
 Time tracker: 6 hours (with tests & dungeon algorithm)
 WARNING: Pillars are currently hard-coded in string validation for contents.  To allow flexible pillars, we need
 to modify this.
+
+Contents key:
+        " ": empty
+        "A", "P", "I", "E": one of the pillars
+        "i": in, entrance
+        "O": out, exit
+        "*": Impassabl
+        "H": HP potion
+        "V": Vision potion
+        "X": Pit
+        "M": Multiple potions or a potion + a pit.
 """
 
 
@@ -282,15 +293,6 @@ class Room:
     def contents(self):
         """
         Returns current contents of a room as a string.
-        " ": empty
-        "A", "P", "I", "E": one of the pillars
-        "i": in, entrance
-        "O": out, exit
-        "*": Impassabl
-        "H": HP potion
-        "V": Vision potion
-        "X": Pit
-        "M": Multiple potions or a potion + a pit.
         :return: str
         """
         return self.__contents
