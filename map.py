@@ -1,5 +1,7 @@
 class Map:
     def __init__(self):
-        pass
+        self.__visited = [[False] for i in range(10)]
 
-    # mentain a 2D array to reveal the fog of war on the dungeon
+
+
+    # maintain a 2D array to reveal the fog of war on the dungeon

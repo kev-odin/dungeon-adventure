@@ -1,5 +1,5 @@
 '''
-Time used: 5 hours
+Time used: 6 hours
 xingguo
 '''
 
@@ -21,14 +21,17 @@ Contains the main logic for playing the game
 
 
 class Main:
-
+    '''
+    main method
+    '''
     # what to do with the init?
     # to create
     def __init__(self):
         pass
 
 
-    def show_main_menu(self):
+
+    def game_flow(self):
         # 1st menu:
             # show the title info(text), group info, basic instructions(h --help),(e -exit)
         # 2nd menu:
@@ -37,19 +40,38 @@ class Main:
             # p for health pots
             # v for vision pots
 
-        print("\nWelcome! Game logo/rules/info")  # read a text file to display the game logo
-        help_or_continue = input("Please enter \'h\' for all commands of the game, or \'c\' for continue.")
+        print("\nWelcome! \nprint game logo/rules/info here \n")  # read a text file to display the game logo
+        # help_or_continue = input("Please enter \'h\' for all commands of the game, or \'q\' to quit the game: ")
         while True:
+            help_or_continue = input("Please enter \'h\' for all commands of the game, or \'q\' to quit the game: ")
             if help_or_continue == 'h':
-                print("complete commands of the game: \n"
-                      "w: move up\n"
-                      "s: move down\n"
-                      "a: move left\n"
-                      "d: move right"
+                print("\nComplete commands of the game: \n"
+                      "Movement commands: \n"
+                      "\tw: move up\n"
+                      "\ts: move down\n"
+                      "\ta: move left\n"
+                      "\td: move right\n"
+                      "Status commands: \n"
+                      "\ti: show adventurer info\n"
+                      "\tr: show current room\n"
+                      "\tm: show adventurer map\n"
+                      "Item commands: \n"
+                      "\tp: use health potion\n"
+                      "\tv: use vision potion\n"
+                      "Other commands: \n"
+                      "\tq: quit the game\n"
                       "----to be continue----")
-            if help_or_continue == 'c':
                 break
-        adventurer_name = input("Please enter a name for your adventurer: ")
+            elif help_or_continue == 'q':
+                print("Thanks,Bye!")
+                break
+            else:
+                continue
+        adventurer_name = input("Now please enter a name for your adventurer: ")
+        # display the name of the player on the whole map/ dungeon
+        print("\nHere should print the dungeon with the play at the entrance\n")
+
+
         command = input("Please enter command: ")
         while True:
             command = input("")
@@ -66,7 +88,7 @@ class Main:
 
     def start_game(self):
         pass
-        # create 1, 2, 3
+        # Creates a Dungeon Object and a Adventurer Object
         # get user command
 
     def move_adventurer(self):
@@ -87,7 +109,7 @@ class Main:
 
 if __name__ == "__main__": # when this file is run,
     main = Main()
-    main.show_main_menu()
+    main.game_flow()
 
 
 
