@@ -146,7 +146,7 @@ class DungeonBuilder:
         :param col: int between 0 and col_count
         :return: boolean, true if untraversed valid room, false if not.
         """
-        return (0 <= row < self.__row_count) and (0 <= col < self.__col_count) and self.__dungeon[row][col].can_enter()
+        return self.__is_valid_room(row, col) and self.__dungeon[row][col].can_enter()
 
     def __is_valid_room(self, row: int, col: int):
         """
