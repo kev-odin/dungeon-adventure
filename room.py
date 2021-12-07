@@ -8,7 +8,7 @@ Contents key:
         "A", "P", "I", "E": one of the pillars
         "i": in, entrance
         "O": out, exit
-        "*": Impassabl
+        "*": Impassable
         "H": HP potion
         "V": Vision potion
         "X": Pit

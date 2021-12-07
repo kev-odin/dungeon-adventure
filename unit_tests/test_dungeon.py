@@ -15,7 +15,8 @@ from dungeon_builder import DungeonBuilder
 
 
 class TestDungeon(unittest.TestCase):
-    def init_dungeon(self, difficulty="easy"):
+    @staticmethod
+    def init_dungeon(difficulty="easy"):
         db = DungeonBuilder(difficulty)
         built = db.build_dungeon(difficulty)  # Also is this a unit test or a system test?
         return built
@@ -36,6 +37,7 @@ class TestDungeon(unittest.TestCase):
     def test_entrance_exists(self):
         test = self.init_dungeon()
         entrance_room = test.get_room(test.entrance)
+        boolean = False
         if entrance_room is not None:
             boolean = True
         self.assertEqual(True, boolean, "Entrance should be True.  Check print map above.")
@@ -64,19 +66,20 @@ class TestDungeon(unittest.TestCase):
     def test_exit_exists(self):
         test = self.init_dungeon()
         exit_room = test.get_room(test.exit)
+        is_exit = False
         if exit_room is not None:
-            boolean = True
-        self.assertEqual(True, boolean, "Exit expected to exist!")
+            is_exit = True
+        self.assertEqual(True, is_exit, "Exit expected to exist!")
 
     def test_get_exit_by_search_coordinates(self):
         test = self.init_dungeon()
-        exit = test.exit
+        ex = test.exit
         coors = None
         for row in range(0, 5):
             for col in range(0, 5):
                 if test.dungeon[row][col].exit:
                     coors = (row, col)
-        self.assertEqual(coors, exit, "Exit found in dungeon should be same as listed in room with 'O'.")
+        self.assertEqual(coors, ex, "Exit found in dungeon should be same as listed in room with 'O'.")
 
     def test_get_exit_by_coords(self):
         test = self.init_dungeon()
@@ -231,7 +234,7 @@ class TestDungeon(unittest.TestCase):
         actual = dungeon.collect_pillars()
         self.assertEqual(expected, actual, "Check pillar string returned properly.")
 
-    def test_adventurer_find_exit_and_pillars(self):  # This could probably be significantly simplied buuuut...
+    def test_adventurer_find_exit_and_pillars(self):  # This could probably be significantly simplified but...
         dungeon = self.init_dungeon()
         to_visit = visited = []  # Tracks queue to go to and stack of visited locations to not add to queue of go to
         my_pillars = []  # Pillars adventurer has collected
@@ -253,7 +256,7 @@ class TestDungeon(unittest.TestCase):
                     if visited.count((next_row, next_col)) == 0:  # Adds it if next room is brand new!
                         to_visit.append((next_row, next_col))
                         visited.append((next_row, next_col))
-            if len(to_visit) > 0:  # this may be redundant, buuuut...for safety when we're at the end!
+            if len(to_visit) > 0:  # this may be redundant, but...for safety when we're at the end!
                 row, col = to_visit.pop(0)
                 curr = dungeon.get_room((row, col))
                 if pillars.count(curr.contents) > 0 and my_pillars.count(curr.contents) == 0:  # Add newly found pillars

@@ -1,6 +1,7 @@
 import unittest
 from dungeon_builder import DungeonBuilder
 from room import Room
+from dungeon import Dungeon
 
 
 class TestDungeonBuilder(unittest.TestCase):
@@ -96,20 +97,55 @@ class TestDungeonBuilder(unittest.TestCase):
         self.assertEqual(True, possible, "Should be able to build paths with boring dungeon.")
 
     def test__build_pillars(self):
-        pass
+        db = DungeonBuilder(varied=False)
+        dungeon = db.build_dungeon()  # Sort of cheating by using this instead of testing method directly
+        found = []
+        expected = dungeon.pillars.copy()
+        expected.sort()
+        for room in dungeon:
+            if expected.count(room.contents) > 0:
+                if room.visited:  # Verify they have a door opened to get there.
+                    found.append(room.contents)
+        found.sort()
+        self.assertEqual(expected, found, "Expected to find AEIP for all sorted pillars.")
 
-    def test__is_traversable(self):
-        pass
+    def test__is_traversable_out_of_bounds(self):
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon()
+        self.assertEqual(False, db._DungeonBuilder__is_traversable(6, 6), "Coords out of bound of default dungeon.")
+
+    def test__is_traversable_already_visited(self):
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon()
+        row, col = dungeon.entrance
+        self.assertEqual(False, db._DungeonBuilder__is_traversable(row, col), "Already visited.")
+
+    def test__is_traversable_already_visited(self):
+        db = DungeonBuilder()
+        with self.assertRaises(IndexError):  # Should raise an error when trying to traverse nonexistence dungeon
+            db._DungeonBuilder__is_traversable(0, 0)
+
+    def test__is_traversable_true(self):  # Index error i
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon()
+        room = dungeon.get_room((0, 0))
+        for direction in ["north", "south", "east", "west"]:
+            room.set_door(direction, False)
+        self.assertEqual(True, db._DungeonBuilder__is_traversable(0, 0), "Should be able to traverse.")
 
     def test__is_valid_room(self):
-        pass
+        db = DungeonBuilder()
+        self.assertEqual(False, db._DungeonBuilder__is_valid_room(6, 6), "Coords out of bound of default dungeon.")
 
     def test__get_room(self):
-        pass
-
-    def test_get_dungeon(self):
-        pass
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon()
+        db_room = db._DungeonBuilder__get_room((0, 1))
+        dun_room = dungeon.get_room((0, 1))
+        self.assertEqual(db_room, dun_room, "Expect same results from both getters though different objects.")
 
     def test_build_dungeon(self):
-        pass
-
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon()
+        is_a_dungeon = isinstance(dungeon, Dungeon)
+        self.assertEqual(True, is_a_dungeon, "Expected type of build_dungeon results to be a dungeon")

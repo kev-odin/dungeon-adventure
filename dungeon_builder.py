@@ -1,5 +1,5 @@
 """
-Time tracker: 4 hours (testing still in progress -- indirectly tested via test_dungeon)
+Time tracker: 5 hours with tests
 Modified simple builder pattern to allow difficulty settings and single location configuration for rooms and dungeons.
 Didn't seem necessary to include the layers of abstraction for a director or multiple builders when I just wanted to put
 all my creation stuff in one spot.
@@ -14,6 +14,12 @@ class DungeonBuilder:
         self.__reset(difficulty, varied)
 
     def __reset(self, difficulty="easy", varied=True):
+        """
+        Clears dungeon builder to prep it for building another dungeon.  Resets prior to build and on init.
+        :param difficulty: string, "easy", "medium", "hard", "inhumane" are defaults.
+        :param varied: bool, True for rooms being randomly generated contents, false for not.
+        :return:
+        """
         diff_index = {"easy": 0, "medium": 1, "hard": 2, "inhumane": 3}
         if diff_index.get(difficulty) >= 0:
             self.__diff_index = diff_index[difficulty]
@@ -34,11 +40,15 @@ class DungeonBuilder:
         self.__difficulty = difficulty  # Difficulty setting.
         self.__empty_rooms = []  # Stores list of empty rooms to be used later for pillar placement
         self.__dungeon = []
-        self.__entrance = None
-        self.__exit = None
+        self.__entrance = None  # Stores entrance as a tuple of int coordinates
+        self.__exit = None  # Stored as a tuple of int coordinates
         self.__pillars = ["A", "P", "I", "E"]
 
     def __set_dungeon(self):
+        """
+        Passes dungeon over to dungeon and all settings then stores it as a complete_dungeon.
+        :return: None
+        """
         self.__complete_dungeon = Dungeon(self.__dungeon, self.__difficulty, self.__entrance, self.__exit)
 
     def __get_rand_coords(self):
@@ -159,21 +169,9 @@ class DungeonBuilder:
         else:
             raise ValueError("Coordinates must be a tuple of ints x and y within the range of the dungeon.")
 
-    def get_dungeon(self):
-        """
-        Returns dungeon and resets to no longer store it.
-        :return: Dungeon
-        """
-        if self.__complete_dungeon:
-            complete_dungeon = self.__complete_dungeon
-            self.__reset()
-            return complete_dungeon
-        else:
-            raise ValueError("Dungeon is currently empty.  Please build it first.")
-
     def build_dungeon(self, difficulty="easy", varied=True):
         """
-        Main logic for building a maze.
+        Main logic for building a dungeon.  Returns the dungeon after it is built.
         :return: Dungeon
         """
         self.__reset(difficulty, varied)
@@ -194,5 +192,5 @@ class DungeonBuilder:
         self.__entrance = (ent_row, ent_col)
         self.__exit = (exit_row, exit_col)
         self.__build_pillars()
-        self.__set_dungeon()  # Officially builds the dungeon.
+        self.__set_dungeon()  # Officially builds the dungeon and saves it!
         return self.__complete_dungeon
