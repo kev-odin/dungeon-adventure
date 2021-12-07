@@ -18,7 +18,7 @@ class TestDungeon(unittest.TestCase):
     @staticmethod
     def init_dungeon(difficulty="easy"):
         db = DungeonBuilder(difficulty)
-        built = db.build_dungeon(difficulty)  # Also is this a unit test or a system test?
+        built = db.build_dungeon(difficulty)
         return built
 
     def test_dungeon_init_big_enough(self):
@@ -235,7 +235,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(expected, actual, "Check pillar string returned properly.")
 
     def test_adventurer_find_exit_and_pillars(self):  # This could probably be significantly simplified but...
-        dungeon = self.init_dungeon()
+        dungeon = self.init_dungeon()  # Also is this a unit test or a system test?
         to_visit = visited = []  # Tracks queue to go to and stack of visited locations to not add to queue of go to
         my_pillars = []  # Pillars adventurer has collected
         pillars = ["A", "E", "I", "P"]
