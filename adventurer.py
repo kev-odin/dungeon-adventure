@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 5.5 hours
+# Kevin's Time Tracker: 6 hours
 import random
 
 class Adventurer:
@@ -7,8 +7,8 @@ class Adventurer:
     """
     # TODO:
     # 1) Determine how to manage potion inventory
-    # 2) How does adventurer check the state of the room?
-    # 3) Auto pick up potion in a room
+    # 2) How does adventurer check the state of the room? <- Given by dungeon methods, recieved as tuples
+    # 3) Auto pick up potion in a room <- Method provided by dungeon?
     # 4) Working observer pattern with adventurer and potion factory?
     # 5) Random hitpoint generator <-
     # 6) Write tests
@@ -17,10 +17,11 @@ class Adventurer:
     def __init__(self, name = None, challenge = 'easy'):
         self.__name = name
         self.__dev_powers = False
-        self.__hitpoints = 75
+        self.__max_hitpoints = 75           # At this stage, baseline health
+        self.__current_hitpoints = None
         self.__health_pots = 0
         self.__vision_pots = 0
-        self.__pillars = {
+        self.__pillars_collected = {
             "A" : False,
             "P" : False,
             "I" : False,
@@ -33,20 +34,21 @@ class Adventurer:
         """Helper method to determine that the adventurer is alive during the dungeon adventure
         :return: True if hitpoints are greater than 0
         """
-        return self.hitpoints > 0
+        return self.current_hitpoints > 0
 
     def has_all_pillars(self):
         """ Helper method to determine when all pillars have been collected by the adventurer
         :return: True if all pillars are collected
         """
-        return all(pillar == True for pillar in self.__pillars.values())
+        return all(pillar is True for pillar in self.__pillars_collected.values())
 
     def _create_adventurer(self, name, challenge):
         """Helper method for character creation. Difficulty and name are checked,
         based on those values, create an adventurer with modified base values.
 
-        :param name: str if found in cheat_code dictionary, modification applied to adventurer
-        :param challenge: str sets to following challenge level 'easy' 3x, 'medium' 2x, 'hard' 1x, 'inhumane' 0x
+        :param: name: str if found in cheat_code dictionary, modification applied to adventurer
+        :param: challenge: str sets to following challenge level:
+             'easy' 3x, 'medium' 2x, 'hard' 1x, 'inhumane' 0x
         """
         difficulty = {
             'easy' : 3,
@@ -63,18 +65,16 @@ class Adventurer:
         if name in cheat_codes:
             self.dev_powers = True
 
-        hp_mod = 1
-
         if challenge in difficulty:
             hp_mod = difficulty[challenge]
-            self.hitpoints += hp_mod * random.randint(0, 10)
-
-        self.health_pots = 0
-        self.vision_pots = 0
+            self.max_hitpoints += hp_mod * random.randint(0, 10)
+            self.current_hitpoints = self.max_hitpoints
 
     def _update_found_potions(self, *args):
-        """ Helper method to add potions found in a room to the adventurer's 
-        inventory. Checks and unpacks a tuple (health_potions : int, vision_potions : int)
+        """ Helper method to add potions found in a room to the adventurer's
+        inventory.
+        :param: tuple (health_potions : int, vision_potions : int)
+        :raise: TypeError when tuple length is not 2
         """
         if len(args) == 2:
             room_health, room_vision = args
@@ -84,13 +84,12 @@ class Adventurer:
             raise TypeError('Incorrect number of potions.')
 
     def _update_pillars_collected(self, found):
-        if found in self.__pillars:
-            self.__pillars[found] = True
-
+        if found in self.__pillars_collected:
+            self.__pillars_collected[found] = True
 
     def __str__(self):
         player_stats = f'Name: {self.name}\n'
-        player_stats += f'HP: {self.hitpoints}\n'
+        player_stats += f'HP: {self.current_hitpoints} / {self.max_hitpoints}\n'
         player_stats += f'Health potions: {self.health_pots}\n'
         player_stats += f'Vision potions: {self.vision_pots}\n'
         player_stats += f'Pillars collected: {self.pillars}'
@@ -134,23 +133,35 @@ class Adventurer:
             self.__dev_powers = value
 
     @property
-    def hitpoints(self):
+    def max_hitpoints(self):
         """Getter for hitpoints property
 
         :return: health remaining of adventurer
         :rtype: int
         """
-        return self.__hitpoints
+        return self.__max_hitpoints
 
-    @hitpoints.setter
-    def hitpoints(self, value):
+    @max_hitpoints.setter
+    def max_hitpoints(self, value):
         """Setter for the hitpoints property
 
         :param value: damage incurred from pits
         :type value: int
         """
         if isinstance(value, int):
-            self.__hitpoints = value
+            self.__max_hitpoints = value
+
+    @property
+    def current_hitpoints(self):
+        return self.__current_hitpoints
+
+    @current_hitpoints.setter
+    def current_hitpoints(self, value):
+        if isinstance(value, int):
+            if value >= 0:
+                self.__current_hitpoints = value
+            else:
+                raise ValueError("Cannot set current hitpoints to a negative value.")
 
     @property
     def health_pots(self):
@@ -200,4 +211,4 @@ class Adventurer:
 
     @property
     def pillars(self):
-        return self.__pillars
+        return self.__pillars_collected
