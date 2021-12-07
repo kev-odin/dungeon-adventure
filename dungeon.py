@@ -1,12 +1,9 @@
 """
 Time Tracker~!
 17 hours
-Ask Tom about how to clean up no longer needed data better.
 """
 
-import random
 from collections.abc import Iterable, Iterator
-from room_factory import RoomFactory
 
 
 class Dungeon(Iterable):
@@ -35,7 +32,7 @@ class Dungeon(Iterable):
                 raise StopIteration()
             return current_room
 
-    def __init__(self, row_count=5, col_count=5):
+    def __init__(self, dungeon=[], difficulty="easy", ent=(0, 0), ex=(3, 3)):
         """
         Welcome to the dungeon!  Allows for hardcoded difficulty to be adjusted in the event we want to add different
         difficulty settings as an extra credit feature (ex. increase pit chance and damage)
@@ -44,18 +41,17 @@ class Dungeon(Iterable):
         :param pillars: list of strings, though current room coding will error if not A P I E due to hardcoding.
         """
         pillars = ["A", "P", "I", "E"]
-        if len(pillars) + 2 < row_count*col_count*.5:  # Verify enough room for pillars + ent/exit.
-            self.__dungeon = []
-            self.__row_count = row_count
-            self.__col_count = col_count
-            self.__empty_rooms = []  # Stores list of empty rooms to be used later for pillar placement
+        diff_index = {"easy": 0, "medium": 1, "hard": 2, "inhumane": 3}
+        if diff_index.get(difficulty) >= 0:
+            self.__diff_index = diff_index[difficulty]
+            self.__row_count = (5, 8, 10, 20)[self.__diff_index]
+            self.__col_count = (5, 8, 10, 20)[self.__diff_index]
+            self.__dungeon = dungeon  # Created from dungeon_builder
             self.__pillars = pillars  # To be popped into rooms, currently hard-coded.
-            self.__entrance = None  # Will be stored as a row, col tuple at maze building.
-            self.__exit = None  # Will be stored as a row, col tuple when building maze.
-            self.__build_maze()  # Sets entrance and exit.
-            self.__add_pillars()  # Adds pillars to maze.
+            self.__entrance = ent  # Will be stored as a row, col tuple at maze building.
+            self.__exit = ex  # Will be stored as a row, col tuple when building maze.
             self.__adventurer_loc = self.__entrance  # Adventurer starts at the entrance.
-            self.__empty_rooms = None  # Clean-up of no longer needed data - ask Tom about how to do this better.
+
         else:
             raise ValueError("row_count * col_count * (impassable_chance + pit_chance + hp_pot_chance + vision_chance"
                              " + many_chance) must be greater than len(pillars) + 2.")
@@ -92,92 +88,6 @@ class Dungeon(Iterable):
         :return: True if dungeons strings are identical.  False if not.
         """
         return self.__str__() == other.__str__()
-
-    def __create_2d_room_maze(self):
-        """
-        Creates a 2D list full of rooms.  Saves it to dungeon.
-        :return: None
-        """
-        rf = RoomFactory()
-        for row in range(0, self.__row_count):
-            self.__dungeon.append([])
-            for col in range(0, self.__col_count):
-                self.__dungeon[row].append([])
-                new_room = rf.create_room(self.__row_count * self.__col_count)
-                self.__dungeon[row][col] = new_room
-
-    def __add_pillars(self):
-        """
-        Adds pillars to empty rooms along the traversable path of the dungeon.
-        :return: None
-        """
-        pillars = self.__pillars.copy()  # Makes a copy of the pillars since we're going to pop 'em and drop 'em
-        empty_rooms = self.__empty_rooms.copy()  # See above.  Pop 'em and drop 'em.
-        while pillars:
-            current = random.choice(empty_rooms)  # Assumes rooms already entered in semi-random order due to generation
-            empty_rooms.remove(current)  # Suspicion is this isn't properly removing the room.
-            room = self.get_room(current)  # Uses coordinates to access room
-            room.contents = pillars.pop()  # Sets the pillar to the current room.
-
-    def __build_maze(self):
-        """
-        Builds the maze.  Sets member entrance and exit to tuple coordinates.  Verifies it is traversable.
-        :return: None
-        """
-        reach_exit = False
-        pillar_options = 0
-        num_pillars = len(self.__pillars) * 2  # Dungeons with only the pillars will not be generated.
-        ent_row = ent_col = exit_row = exit_col = None
-        while (not reach_exit) or (pillar_options < num_pillars):  # If can't traverse or spots for pillars, resets.
-            self.__empty_rooms = []  # Storage reset if previous generation failed.
-            self.__create_2d_room_maze()  # Builds the 2d maze full of random rooms with varied interest.
-            # Randomly set a valid entrance and exit.
-            ent_row, ent_col = random.randint(0, self.__row_count-1), random.randint(0, self.__col_count-1)
-            exit_row, exit_col = random.randint(0, self.__row_count-1), random.randint(0, self.__col_count-1)
-            self.__dungeon[ent_row][ent_col].entrance = True  # Clears all items then sets contents to i
-            self.__dungeon[exit_row][exit_col].exit = True  # Clears all items then sets contents to O
-            reach_exit = self.__traverse(ent_row, ent_col)  # Checks if can go from exit to entrance
-            pillar_options = len(self.__empty_rooms)  # Verify we have enough empty rooms to put pillars in.
-        self.__entrance = (ent_row, ent_col)
-        self.__exit = (exit_row, exit_col)
-
-    def __traverse(self, row, col):
-        """
-        Initial call should be entrance location.  Verifies the dungeon can be traversed from entrance to exit and adds
-        any empty rooms' coordinates to the empty_rooms list as a tuple.
-        :param row: int indicating current row to traverse
-        :param col: int indicating current column to traverse
-        :return: True if traversable, able to go from entrance to exit.  False if not.
-        """
-        found_exit = False
-        room = self.__dungeon[row][col]
-        if room.is_empty and self.__empty_rooms.count((row, col)) == 0:
-            self.__empty_rooms.append((row, col))  # Places to put pillars later
-        elif room.exit:  # Check for exit - assume more rooms empty than exit, so checks fewer.
-            return True  # Base case.  Escape the recursion!
-        else:  # not at exit so try another room:
-            room_options = [0, 1, 2, 3]  # Used to choose a random direction to explore.
-            while len(room_options) > 0 and not found_exit:  # Will test all options in a room. Change for dead ends up.
-                choice = random.choice(room_options)
-                room_options.remove(choice)
-                # index 0 takes you south, 1 -> east, 2 -> North, 3 -> West from choices.
-                inputs = (("south", "north", 1, 0), ("east", "west", 0, 1), ("north", "south", -1, 0),
-                          ("west", "east", 0, -1))[choice]
-                next_row, next_col = inputs[2] + row, inputs[3] + col  # Coordinates for next room.
-                if self.__is_traversable(next_row, next_col):  # Checks if next room is traversable.
-                    room.set_door(inputs[0], True)  # Opens up door to next room.
-                    self.__dungeon[next_row][next_col].set_door(inputs[1], True)  # Updates next room's doors.
-                    found_exit = self.__traverse(next_row, next_col)  # Recurse and explore some more!
-        return found_exit  # Explored all options.  Back we go.
-
-    def __is_traversable(self, row, col):
-        """
-        Verifies location is a valid room for entry.  Helper function for traversal.
-        :param row: int between 0 and row_count
-        :param col: int between 0 and col_count
-        :return: boolean, true if untraversed valid room, false if not.
-        """
-        return (0 <= row < self.__row_count) and (0 <= col < self.__col_count) and self.__dungeon[row][col].can_enter()
 
     def __is_valid_room(self, row: int, col: int):
         """
