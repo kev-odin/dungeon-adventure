@@ -1,13 +1,16 @@
 import unittest
+
+from dungeon_builder import DungeonBuilder
 from dungeon import Dungeon
 
 
 class TestDungeonIterator(unittest.TestCase):
     def test_iterator_whole_dungeon(self):
-        test = Dungeon()
+        db = DungeonBuilder()
+        test = db.build_dungeon()
         test_iter = test.DungeonIterator(test.dungeon, 5)
-        row_max = 5
-        col_max = 5
+        row_max = 5  # Defaults
+        col_max = 5  # Defaults
         index = 0
         while index < (row_max * col_max):
             next(test_iter)
@@ -16,7 +19,8 @@ class TestDungeonIterator(unittest.TestCase):
             next(test_iter)
 
     def test_iterator_get_correct_room_full_access(self):
-        test = Dungeon()
+        db = DungeonBuilder()
+        test = db.build_dungeon()
         row = col = 0
         col_max = 5
         for room in test:

@@ -1,6 +1,5 @@
 import unittest
 from dungeon_builder import DungeonBuilder
-from dataclasses import dataclass
 from room import Room
 
 
