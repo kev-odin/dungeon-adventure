@@ -30,8 +30,30 @@ class AdventurerTest(unittest.TestCase):
             self.assertRaises(TypeError)
 
     def test_init_toString(self):
-        """Test for str dunder method for the Adventure class 
+        """Test for str dunder method for the Adventure class
         """
         hero = Adventurer('Bob')
-        expected = f'{hero.name}\n{hero.hitpoints}\n{hero.health_pots}\n{hero.vision_pots}\n{hero.pillars}'
+        expected = f'Name: {hero.name}\nHP: {hero.hitpoints}\nHealth potions: {hero.health_pots}\nVision potions: {hero.vision_pots}\nPillars collected: {hero.pillars}'
         self.assertEqual(expected, hero.__str__())
+
+    def test_set_negative_health(self):
+        try:
+            hero = Adventurer('Bob')
+            hero.hitpoints = -1
+        except ValueError:
+            self.assertRaises(ValueError)
+
+    def test_set_negative_health_potion(self):
+        try:
+            hero = Adventurer('Bob')
+            hero.health_pots = -1
+        except ValueError:
+            self.assertRaises(ValueError)
+
+    def test_set_negative_vision_potion(self):
+        try:
+            hero = Adventurer('Bob')
+            hero.vision_pots = -1
+        except ValueError:
+            self.assertRaises(ValueError)
+            
