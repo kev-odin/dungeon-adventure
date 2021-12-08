@@ -10,16 +10,17 @@ class Potion(metaclass = abc.ABCMeta):
 
     @abc.abstractmethod
     def __str__(self):
-        return f'{self.name}'
+        pass
 
     @abc.abstractmethod
     def action(self):
         pass
 
     @abc.abstractmethod
-    def random(self):
+    def _potion_effect(self):
         pass
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def name(self):
         pass
