@@ -76,6 +76,33 @@ class Main:
         db = DungeonBuilder("easy")
         built = db.build_dungeon()
         completeDungeon = Dungeon(built)
+
+        # Creates a Dungeon Object and a Adventurer Object
+        adv = Adventurer("easy")
+        nameAdv = adv.name
+        while(True):
+            coor = Dungeon.move_adventurer()
+            curRoom = completeDungeon.get_room()
+            dir = input("Please input your commands: ")
+            if dir == "w":
+                # move north
+                pass
+            elif dir == "s":
+                # move south
+                pass
+            elif dir == "a":
+                # move west
+                pass
+            elif dir == "d":
+                # move east
+                pass
+            if adv.is_alive() and True and True: # if 1. alive 2. get the 4 pillars  3.arrived at the exit
+                print("Congrats! you escaped the dungeon successfully")
+                break
+            else:
+                # keep on doing the main logic
+                pass
+
         # Here we should use the completeDungeon as the back layer and print the map
 
         print("\nHere should print the dungeon with the player at the entrance\n")
@@ -83,16 +110,6 @@ class Main:
         # show the players the valid options?
         command = input("Please enter command: ")
 
-        while True:
-            # command = input("")
-            if command == 'h':
-                self.display_basic_commands('h')
-                continue
-            elif command == 'e':
-                break
-            else:
-                self.startGame()
-            # handle exceptions(illegal inputs)
     def show_ingame_menu(self):
         pass
 
