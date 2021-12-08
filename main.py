@@ -3,9 +3,10 @@ Time used: 6 hours
 xingguo
 '''
 
-# from adventurer import Adventurer
-# from map import Map
-# from dungeon import Dungeon
+from adventurer import Adventurer
+from map import Map
+from dungeon import Dungeon
+from dungeon_builder import DungeonBuilder
 """
 Contains the main logic for playing the game
 • Introduces the game describing what the game is about and how to play
@@ -25,8 +26,10 @@ class Main:
     main method
     '''
     # what to do with the init?
+    # if do GUI
     # to create
     def __init__(self):
+
         pass
 
 
@@ -41,40 +44,47 @@ class Main:
             # v for vision pots
 
         print("\nWelcome! \nprint game logo/rules/info here \n")  # read a text file to display the game logo
-        # help_or_continue = input("Please enter \'h\' for all commands of the game, or \'q\' to quit the game: ")
-        while True:
-            help_or_continue = input("Please enter \'h\' for all commands of the game, or \'q\' to quit the game: ")
-            if help_or_continue == 'h':
-                print("\nComplete commands of the game: \n"
-                      "Movement commands: \n"
-                      "\tw: move up\n"
-                      "\ts: move down\n"
-                      "\ta: move left\n"
-                      "\td: move right\n"
-                      "Status commands: \n"
-                      "\ti: show adventurer info\n"
-                      "\tr: show current room\n"
-                      "\tm: show adventurer map\n"
-                      "Item commands: \n"
-                      "\tp: use health potion\n"
-                      "\tv: use vision potion\n"
-                      "Other commands: \n"
-                      "\tq: quit the game\n"
-                      "----to be continue----")
-                break
-            elif help_or_continue == 'q':
-                print("Thanks,Bye!")
-                break
-            else:
-                continue
-        adventurer_name = input("Now please enter a name for your adventurer: ")
-        # display the name of the player on the whole map/ dungeon
-        print("\nHere should print the dungeon with the play at the entrance\n")
+        # while True:
+        #     help_or_continue = input("Please enter \'h\' for all commands of the game, or \'q\' to quit the game: ")
+        #     if help_or_continue == 'h':
+        #         print("\nComplete commands of the game: \n"
+        #               "Movement commands: \n"
+        #               "\tw: move up\n"
+        #               "\ts: move down\n"
+        #               "\ta: move left\n"
+        #               "\td: move right\n"
+        #               "Status commands: \n"
+        #               "\ti: show adventurer info\n"
+        #               "\tr: show current room\n"
+        #               "\tm: show adventurer map\n"
+        #               "Item commands: \n"
+        #               "\tp: use health potion\n"
+        #               "\tv: use vision potion\n"
+        #               "Other commands: \n"
+        #               "\tq: quit the game\n"
+        #               "----to be continue----\n")
+        #         break
+        #     elif help_or_continue == 'q':
+        #         print("Thanks,Bye!")
+        #         break
+        #     else:
+        #         continue
+        # adventurer_name = input("Now please enter a name for your adventurer: ")
+        # desired_difficulty = input("Now please enter a difficulty level(easy/medium/hard/inhumane): ")
+        print("Following if your game, good luck!")
+        # Creates a Dungeon Object and a Adventurer Object
+        db = DungeonBuilder("easy")
+        built = db.build_dungeon()
+        completeDungeon = Dungeon(built)
+        # Here we should use the completeDungeon as the back layer and print the map
 
-
+        print("\nHere should print the dungeon with the player at the entrance\n")
+        # print the dungeon and the current location /room?
+        # show the players the valid options?
         command = input("Please enter command: ")
+
         while True:
-            command = input("")
+            # command = input("")
             if command == 'h':
                 self.display_basic_commands('h')
                 continue
@@ -100,14 +110,15 @@ class Main:
 
     def display_basic_commands(self):
         # print out ....   test it works correctly
-        pass
+        print("\nHere we will display all the basic commands\n")
+
 
     def display_adventurer_info(self):
         # to call __str__ function of ....?
         pass
 
 
-if __name__ == "__main__": # when this file is run,
+if __name__ == "__main__":
     main = Main()
     main.game_flow()
 
