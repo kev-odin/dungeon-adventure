@@ -17,9 +17,10 @@ class Potion(metaclass = abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def __potion_effect(self):
+    def _potion_effect(self):
         pass
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def name(self):
         pass

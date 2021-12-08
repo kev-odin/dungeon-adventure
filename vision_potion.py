@@ -10,7 +10,7 @@ class VisionPotion(Potion):
         self.__name = 'Vision Potion'
         self.__rooms_revealed = 8       #Default value, for surrounding rooms revealed
         if extra_effects:
-            self.__potion_effect()
+            self._potion_effect()
 
     def __str__(self):
         return f'Item: {self.name}\nEffect: {self.rooms_revealed} adjacent rooms are revealed.'
@@ -18,7 +18,7 @@ class VisionPotion(Potion):
     def action(self):
         return self.rooms_revealed
 
-    def __potion_effect(self):
+    def _potion_effect(self):
         self.rooms_revealed = 0
         potion_strength = randint(1, 8)
         self.rooms_revealed += potion_strength

@@ -12,13 +12,13 @@ class PotionFactory:
     def create_potion(name):
         """
         Creates a potion based on provided name.
-        :param name: str - Provide the name of the potion
+        :param name: str - Provide the name of the potion; "health", "vision"
         :return: Health or Vision potion based on the string passed
         :raises ValueError: When a potion name is not provided as an option
         """
-        if name == "health_potion":
+        if name == "health":
             return HealthPotion()
-        elif name == "vision_potion":
+        elif name == "vision":
             return VisionPotion()
         else:
             raise ValueError(f"{name} is not a valid potion.")

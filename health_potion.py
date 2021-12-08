@@ -6,16 +6,17 @@ from random import randint
 class HealthPotion(Potion):
     """Health potion that an adventurer can use to increase current hitpoints
     """
-    def __init__(self, extra_effects = True):
+    def __init__(self, random = True):
         """Basic health potion
 
         :param extra_effects: provides random integer values, defaults to True (used for testing)
         :type extra_effects: bool, optional
         """
-        self.__name = 'Health Potion'
+        self.__name = "Health Potion"
         self.__heal_amount = 0
-        if extra_effects:
-            self.__potion_effect()
+
+        if random:
+            self._potion_effect()
 
     def __str__(self):
         return f'Item: {self.name}\nEffect: Adventurer has been healed for {self.heal_amount} hitpoints'
@@ -28,7 +29,7 @@ class HealthPotion(Potion):
         """
         return self.heal_amount
 
-    def __potion_effect(self):
+    def _potion_effect(self):
         """Private helper method that is used to determine the strength
         of a health potion. Uses a random integer between 5 and 15.
         """

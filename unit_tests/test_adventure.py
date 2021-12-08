@@ -37,7 +37,7 @@ class AdventurerTest(unittest.TestCase):
         expected += f'HP: {hero.current_hitpoints} / {hero.max_hitpoints}\n'
         expected += f'Health potions: {hero.health_pots}\n'
         expected += f'Vision potions: {hero.vision_pots}\n'
-        expected += f'Pillars collected: {hero.pillars}'
+        expected += f'Pillars collected: {hero.pillars_collected}'
         self.assertEqual(expected, hero.__str__())
 
     def test_set_negative_health(self):
