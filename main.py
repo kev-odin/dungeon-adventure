@@ -69,39 +69,38 @@ class Main:
         #         break
         #     else:
         #         continue
-        # adventurer_name = input("Now please enter a name for your adventurer: ")
-        # desired_difficulty = input("Now please enter a difficulty level(easy/medium/hard/inhumane): ")
+        adventurer_name = input("Now please enter a name for your adventurer: ")
+        desired_difficulty = input("Now please enter a difficulty level(easy/medium/hard/inhumane): ")
         print("Following if your game, good luck!")
-        # Creates a Dungeon Object and a Adventurer Object
-        db = DungeonBuilder("easy")
+        # Creates a Dungeon Object and
+        db = DungeonBuilder(desired_difficulty)
         built = db.build_dungeon()
-        completeDungeon = Dungeon(built)
-
-        # Creates a Dungeon Object and a Adventurer Object
-        adv = Adventurer("easy")
-        nameAdv = adv.name
-        while(True):
-            coor = Dungeon.move_adventurer()
-            curRoom = completeDungeon.get_room()
-            dir = input("Please input your commands: ")
-            if dir == "w":
-                # move north
-                pass
-            elif dir == "s":
-                # move south
-                pass
-            elif dir == "a":
-                # move west
-                pass
-            elif dir == "d":
-                # move east
-                pass
+        completeDungeon = Dungeon(built)  # now we have done creating a dungeon, correct?
+        # Creates a Adventurer Object
+        adv = Adventurer(adventurer_name, desired_difficulty)
+        while True:
             if adv.is_alive() and True and True: # if 1. alive 2. get the 4 pillars  3.arrived at the exit
                 print("Congrats! you escaped the dungeon successfully")
                 break
-            else:
+            elif adv.is_alive() and True and True: # if 1. alive 2. ! get the 4 pillars  3. ! arrived at the exit
                 # keep on doing the main logic
                 pass
+                dir = input("Please input your commands: ")
+                coor = Dungeon.move_adventurer(str(dir))
+                curRoom = completeDungeon.get_room(coor)
+                if dir == "w":
+                    # move north
+                    pass
+                elif dir == "s":
+                    # move south
+                    pass
+                elif dir == "a":
+                    # move west
+                    pass
+                elif dir == "d":
+                    # move east
+                    pass
+
 
         # Here we should use the completeDungeon as the back layer and print the map
 
