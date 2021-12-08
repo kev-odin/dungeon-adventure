@@ -17,7 +17,7 @@ dungeon_adventure.py
 
 Steph -> Current time spent: 30 hours total so far?!
 I need to stop refactoring code for fun and writing a bunch of tests.
-Time to working: 4.5 hours to working with tests in one giant dungeon and room class
+Time to working: 4.5 hours to minimal viable functionality.
 This readme!  Now with more exclamation points!
 dungeon_builder.py
 dungeon.py
