@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 6 hours
+# Kevin's Time Tracker: 6.5 hours
 import random
 
 class Adventurer:
@@ -6,15 +6,23 @@ class Adventurer:
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
     # TODO:
-    # 1) Determine how to manage potion inventory
+    # 1) Determine how to manage potion inventory <- no need for a list, create as needed by user
     # 2) How does adventurer check the state of the room? <- Given by dungeon methods, recieved as tuples
-    # 3) Auto pick up potion in a room <- Method provided by dungeon?
-    # 4) Working observer pattern with adventurer and potion factory?
+    # 3) Auto pick up potion in a room <- Method provided by dungeon
+    # 4) Working observer pattern with adventurer and potion factory <- At this point, no needed
     # 5) Random hitpoint generator <-
     # 6) Write tests
-
+    # 7) Using health potions, pit damage
 
     def __init__(self, name = None, challenge = 'easy'):
+        """Adventurer object that maintains the inventory collection of potions,
+        pillars collected, and current hitpoints.
+
+        :param name: name of the adventurer provided by user, defaults to None
+        :type name: str
+        :param challenge: challenge provided by user, defaults to 'easy'
+        :type challenge: str
+        """
         self.__name = name
         self.__dev_powers = False
         self.__max_hitpoints = 75           # At this stage, baseline health
@@ -72,7 +80,7 @@ class Adventurer:
 
     def _update_found_potions(self, *args):
         """ Helper method to add potions found in a room to the adventurer's
-        inventory.
+        inventory. To be used by the main method.
         :param: tuple (health_potions : int, vision_potions : int)
         :raise: TypeError when tuple length is not 2
         """
@@ -83,16 +91,12 @@ class Adventurer:
         else:
             raise TypeError('Incorrect number of potions.')
 
-    def _update_pillars_collected(self, found):
-        if found in self.__pillars_collected:
-            self.__pillars_collected[found] = True
-
     def __str__(self):
         player_stats = f'Name: {self.name}\n'
         player_stats += f'HP: {self.current_hitpoints} / {self.max_hitpoints}\n'
         player_stats += f'Health potions: {self.health_pots}\n'
         player_stats += f'Vision potions: {self.vision_pots}\n'
-        player_stats += f'Pillars collected: {self.pillars}'
+        player_stats += f'Pillars collected: {self.pillars_collected}'
         return player_stats
 
     @property
@@ -153,6 +157,11 @@ class Adventurer:
 
     @property
     def current_hitpoints(self):
+        """Getter for the current hitpoints property, to be used by main
+
+        :return: value of the current hitpoints for adventurer
+        :rtype: int
+        """
         return self.__current_hitpoints
 
     @current_hitpoints.setter
@@ -210,5 +219,23 @@ class Adventurer:
                 raise ValueError('Cannot set vision potions to a negative value.')
 
     @property
-    def pillars(self):
+    def pillars_collected(self):
+        """Returns the pillars that have been collected during the game session
+
+        :return: str of dictionary values {pillar : bool}
+        """
         return self.__pillars_collected
+
+    @pillars_collected.setter
+    def pillars_collected(self, value):
+        """Setter for the pillars collected property
+
+        :param value: value of the pillar found in room
+        :type value: string
+        :raises KeyError: invalid key that is not found in the
+        """
+        if isinstance(value, str):
+            if value in self.pillars_collected.keys():
+                self.pillars_collected[value] = True
+            else:
+                raise KeyError('Invalid key passed, valid pillar keys are: "A", "P", "I", "E"')
