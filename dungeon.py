@@ -63,16 +63,7 @@ class Dungeon(Iterable):
         M can be pit and potions or just multiple potions.
         :return: string
         """
-        string = string_top = string_middle = string_bottom = ""
-        for row in range(0, self.__row_count):
-            for col in range(0, self.__col_count):
-                room = self.__dungeon[row][col]
-                string_top += room.string_top()
-                string_middle += room.string_middle()
-                string_bottom += room.string_bottom()
-            string += string_top + "\n" + string_middle + "\n" + string_bottom + "\n"  # New lines at the end of row.
-            string_top = string_middle = string_bottom = ""  # Reset strings for building next row.
-        return string
+        return self.get_visible_dungeon_string()  # When feeding none, automatically prints whole maze
 
     def __iter__(self):
         """
@@ -201,3 +192,26 @@ class Dungeon(Iterable):
             pillar = room.contents
             room.contents = " "  # Since rooms with pillars are otherwise empty, no other updating necessary.
         return pillar
+
+    def get_visible_dungeon_string(self, bool_list=None):
+        """
+        Returns string of visible rooms.  Provide None for bool_list to return everything!  TODO error checking.
+        :param bool_list: 2d list of boolean values for what is currently visible in the may. True if yes, False if no.
+        :return: String of visible rooms.  If bool_list is None, returns the whole dungeon.
+        """
+        string = string_top = string_middle = string_bottom = ""
+        for row in range(0, self.__row_count):
+            for col in range(0, self.__col_count):
+                if bool_list is None or bool_list[row][col]:  # If visible or no bool_list (for __str__ method)
+                    room = self.__dungeon[row][col]
+                    string_top += room.string_top()
+                    string_middle += room.string_middle()
+                    string_bottom += room.string_bottom()
+                else:  # If not visible, prints nooooothingness instead.
+                    empty = "       "
+                    string_top += empty
+                    string_middle += empty
+                    string_bottom += empty
+            string += string_top + "\n" + string_middle + "\n" + string_bottom + "\n"  # New lines at the end of row.
+            string_top = string_middle = string_bottom = ""  # Reset strings for building next row.
+        return string

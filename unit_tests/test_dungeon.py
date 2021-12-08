@@ -21,6 +21,20 @@ class TestDungeon(unittest.TestCase):
         built = db.build_dungeon(difficulty)
         return built
 
+    @staticmethod
+    def create_2d_bool_list(dungeon):  # Defaults to entrance and exit and pillars
+        bool_list = []
+        print_me = ["i", "O", "A", "P", "I", "E"]
+        for row in range(0, dungeon._Dungeon__row_count):
+            bool_list.append([])
+            for col in range(0, dungeon._Dungeon__col_count):
+                bool_list[row].append([])
+                if dungeon.dungeon[row][col].contents in print_me:
+                    bool_list[row][col] = True
+                else:
+                    bool_list[row][col] = False
+        return bool_list
+
     def test_dungeon_init_big_enough(self):
         try:
             self.init_dungeon()
@@ -266,3 +280,14 @@ class TestDungeon(unittest.TestCase):
                     found_exit = curr.exit
         self.assertEqual(pillars, my_pillars, "Should find all the pillars!")
         self.assertEqual(True, found_exit, "Should be possible to move adventurer to exit eventually!")
+
+    def test_get_visible_string_dungeon(self):
+        dungeon = self.init_dungeon("easy")
+        bool_list = self.create_2d_bool_list(dungeon)
+        string = dungeon.get_visible_dungeon_string(bool_list)
+        actual = False
+        for expected in ["i", "O", "A", "P", "I", "E"]:
+            if expected in string:
+                actual = True
+        expected = True
+        self.assertEqual(expected, actual, "Expected to find entrance, exit, and A P I E in partial string.")
