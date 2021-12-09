@@ -1,5 +1,5 @@
 '''
-Time used: 6 hours
+Time used: 13 hours
 xingguo
 '''
 
@@ -29,8 +29,9 @@ class Main:
     # if do GUI
     # to create
     def __init__(self):
+        self.visited_array = []
+        self.create_visited_room_array()
 
-        pass
 
 
 
@@ -71,13 +72,16 @@ class Main:
         #         continue
         adventurer_name = input("Now please enter a name for your adventurer: ")
         desired_difficulty = input("Now please enter a difficulty level(easy/medium/hard/inhumane): ")
-        print("Following if your game, good luck!")
+        print("Following is your game, good luck!")
         # Creates a Dungeon Object and
         db = DungeonBuilder(desired_difficulty)
         built = db.build_dungeon()
-        completeDungeon = Dungeon(built)  # now we have done creating a dungeon, correct?
+        # completeDungeon = Dungeon(dungeon = built)  # now we have done creating a dungeon, correct?
         # Creates a Adventurer Object
         adv = Adventurer(adventurer_name, desired_difficulty)
+        self.set_visited_room(built.entrance[0],built.entrance[1])
+        print(built.get_visible_dungeon_string(self.visited_array)) # print visited room
+        print(built.get_visible_dungeon_string()) # print whole dungeon
         while True:
             if adv.is_alive() and True and True: # if 1. alive 2. get the 4 pillars  3.arrived at the exit
                 print("Congrats! you escaped the dungeon successfully")
@@ -87,7 +91,7 @@ class Main:
                 pass
                 dir = input("Please input your commands: ")
                 coor = Dungeon.move_adventurer(str(dir))
-                curRoom = completeDungeon.get_room(coor)
+                # curRoom = completeDungeon.get_room(coor)
                 if dir == "w":
                     # move north
                     pass
@@ -132,6 +136,16 @@ class Main:
     def display_adventurer_info(self):
         # to call __str__ function of ....?
         pass
+
+    def create_visited_room_array(self):
+        for row in range(0, 5): # how to find out the size,change in the future
+            self.visited_array.append([])
+            for col in range(0, 5):
+                self.visited_array[row].append([])
+                self.visited_array[row][col] = False
+
+    def set_visited_room(self, row, col):
+        self.visited_array[row][col] = True
 
 
 if __name__ == "__main__":
