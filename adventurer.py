@@ -1,4 +1,4 @@
-# Kevin"s Time Tracker: 9 hours
+# Kevin"s Time Tracker: 13 hours
 import random
 
 class Adventurer:
@@ -40,7 +40,7 @@ class Adventurer:
         """ Helper method to determine when all pillars have been collected by the adventurer
         :return: True if all pillars are collected
         """
-        return all(pillar is True for pillar in self.__pillars_collected.values())
+        return all(pillar is True for pillar in self.pillars_collected.values())
 
     def add_potions(self, potions):
         """ Helper method to add potions found in a room to the adventurer's
@@ -132,24 +132,69 @@ class Adventurer:
         }
 
         cheat_codes = {
-            "tom" : "no health lost",
-            "kevin" : "unlimited potions"
+            "tom" : (1000, 1000, 0, 0, False),
+            "kevin" : (75, 75, 50, 50, False),
+            "gary" : (100, 100, 0, 0, True)
         }
-
-        if name in cheat_codes:
-            self.dev_powers = True
 
         if challenge in difficulty:
             hp_mod = difficulty[challenge]
             self.max_hitpoints += hp_mod * random.randint(0, 10)
             self.current_hitpoints = self.max_hitpoints
 
+        if name in cheat_codes:
+            self.dev_powers = True
+            self.current_hitpoints = cheat_codes[name][0]
+            self.max_hitpoints = cheat_codes[name][1]
+            self.health_pots = cheat_codes[name][2]
+            self.vision_pots = cheat_codes[name][3]
+            for value in self.pillars_collected:
+                self.pillars_collected[value] = cheat_codes[name][4]
+
+    def _readable_pillars(self):
+        """ Helper method for converting pillars collection to a player readable string.
+        This took longer than I care to admit...
+        :return: string
+        """
+        pillar_str = []
+        status_str = []
+        readable = ""
+
+        for pillar in self.pillars_collected:
+            if pillar == "A":
+                pillar_str.append("Abstraction")
+            elif pillar == "P":
+                pillar_str.append("Polymorphism")
+            elif pillar == "I":
+                pillar_str.append("Inheritance")
+            else:
+                pillar_str.append("Encapsulation")
+
+        for status in self.pillars_collected.values():
+            if status is True:
+                status_str.append("Collected")
+            else:
+                status_str.append("Not collected")
+
+        for pillar, status in zip(pillar_str, status_str):
+            readable += pillar + ": " + status + " | "
+
+        return readable
+
     def __str__(self):
         player_stats = f"Name: {self.name}\n"
         player_stats += f"HP: {self.current_hitpoints} / {self.max_hitpoints}\n"
         player_stats += f"Health potions: {self.health_pots}\n"
         player_stats += f"Vision potions: {self.vision_pots}\n"
-        player_stats += f"Pillars collected: {self.pillars_collected}\n"
+        player_stats += f"Object Oriented Pillars Collected\n{self._readable_pillars()}\n"
+        return player_stats
+
+    def __repr__(self):
+        player_stats = f"{self.name}\n"
+        player_stats += f"{self.current_hitpoints} / {self.max_hitpoints}\n"
+        player_stats += f"{self.health_pots}\n"
+        player_stats += f"{self.vision_pots}\n"
+        player_stats += f"{self.pillars_collected}\n"
         return player_stats
 
     @property
