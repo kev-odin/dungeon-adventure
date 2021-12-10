@@ -17,7 +17,7 @@ class Adventurer:
         """
         self.__name = name
         self.__dev_powers = False
-        self.__max_hitpoints = 75           # At this stage, baseline health
+        self.__max_hitpoints = 75
         self.__current_hitpoints = None
         self.__health_pots = 0
         self.__vision_pots = 0
@@ -86,7 +86,7 @@ class Adventurer:
 
     def heal_adventurer(self, heal_amount):
         """ Helper method to heal adventurer based on the health potion.
-        To be used by the main method.
+        To be used by the main method. Adventurer has to be alive to use potion.
         :param: int - heal values that will increment current health
         """
         if isinstance(heal_amount, int):

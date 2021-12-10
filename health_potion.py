@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 1 hours
+# Kevin's Time Tracker: 2 hours
 
 from potion import Potion
 from random import randint
@@ -19,7 +19,7 @@ class HealthPotion(Potion):
             self._potion_effect()
 
     def __str__(self):
-        return f'Item: {self.name}\nEffect: Adventurer has been healed for {self.heal_amount} hitpoints'
+        return f'Item: {self.name}\nEffect: Restores {self.heal_amount} hitpoints'
 
     def action(self):
         """
@@ -33,8 +33,15 @@ class HealthPotion(Potion):
         """Private helper method that is used to determine the strength
         of a health potion. Uses a random integer between 5 and 15.
         """
-        potion_strength = randint(5, 15)
+        min_heal = 1
+        max_heal = 21
+        potion_strength = randint(min_heal, max_heal)
         self.heal_amount += potion_strength
+
+        if potion_strength <= 7:
+            self.name = "Lesser Health Potion"
+        elif potion_strength >= 15:
+            self.name = "Greater Health Potion"
 
     @property
     def name(self):
@@ -44,6 +51,19 @@ class HealthPotion(Potion):
         :rtype: str
         """
         return self.__name
+
+    @name.setter
+    def name(self, value):
+        """Setter for the heal amount of the Health Potion
+
+        :param value: value to replace the name
+        :type value: str
+        :raises TypeError: When a string is not provided to the setter
+        """
+        if isinstance(value, str):
+            self.__name = value
+        else:
+            raise TypeError("Value passed into method was not a string.")
 
     @property
     def heal_amount(self):
