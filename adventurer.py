@@ -1,20 +1,12 @@
-# Kevin's Time Tracker: 6.5 hours
+# Kevin's Time Tracker: 8.5 hours
 import random
 
 class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
-    # TODO:
-    # 1) Determine how to manage potion inventory <- no need for a list, create as needed by user
-    # 2) How does adventurer check the state of the room? <- Given by dungeon methods, recieved as tuples
-    # 3) Auto pick up potion in a room <- Method provided by dungeon
-    # 4) Working observer pattern with adventurer and potion factory <- At this point, no needed
-    # 5) Random hitpoint generator <-
-    # 6) Write tests
-    # 7) Using health potions, pit damage
 
-    def __init__(self, name = None, challenge = 'easy'):
+    def __init__(self, name = None, challenge = "easy"):
         """Adventurer object that maintains the inventory collection of potions,
         pillars collected, and current hitpoints.
 
@@ -50,6 +42,80 @@ class Adventurer:
         """
         return all(pillar is True for pillar in self.__pillars_collected.values())
 
+    def add_potions(self, potions):
+        """ Helper method to add potions found in a room to the adventurer's
+        inventory. To be used by the main method.
+        :param: tuple (health_potions : int, vision_potions : int)
+        :raise: TypeError when tuple length is not 2
+        """
+        if len(potions) == 2:
+            if all(isinstance(val, int) for val in potions):
+                room_health, room_vision = potions
+                self.health_pots += room_health
+                self.vision_pots += room_vision
+            else:
+                raise TypeError("Potion values are not integers.")
+        else:
+            raise ValueError("Length of tuple is not 2.")
+
+    def add_pillar(self, pillar):
+        """ Helper method to add pillars found in a room to the adventurer's
+        inventory. To be used by the main method.
+        :param: str - pillar values: "A", "P", "I", "E"
+        """
+        if isinstance(pillar, str):
+            for val in self.pillars_collected:
+                if val == pillar:
+                    self.pillars_collected[pillar] = True
+        else:
+            print("You should not see this message.")
+
+    def damage_adventurer(self, pit_damage):
+        """ Helper method to damage adventurer based on the pit damage
+        provided by the room. To be used by the main method.
+        :param: int - damage values that will decrement current health
+        """
+        if isinstance(pit_damage, int):
+            print(f"{self.name} fell into a pit and took {pit_damage} points of damage.")
+
+            new_health = self.current_hitpoints - pit_damage
+            if new_health <= 0:
+                self.current_hitpoints = 0
+            else:
+                self.current_hitpoints = new_health
+
+    def heal_adventurer(self, heal_amount):
+        """ Helper method to heal adventurer based on the health potion.
+        To be used by the main method.
+        :param: int - heal values that will increment current health
+        """
+        if isinstance(heal_amount, int):
+            new_health = self.current_hitpoints + heal_amount
+            if new_health > self.max_hitpoints:
+                self.current_hitpoints = self.max_hitpoints
+            else:
+                self.current_hitpoints = new_health
+
+    def use_health_potion(self):
+        """ Helper method to decrement health potions in the adventurer's
+        inventory. To be used by the main method.
+        """
+        if self.health_pots > 0:
+            self.health_pots -= 1
+            print(f"{self.name} used a health potion.")
+        else:
+            print(f"{self.name} does not have a health potion.")
+
+    def use_vision_potion(self):
+        """ Helper method to decrement vision potions in the adventurer's
+        inventory. To be used by the main method.
+        """
+        if self.vision_pots > 0:
+            self.vision_pots -= 1
+            print(f"{self.name} used a vision potion.")
+        else:
+            print(f"{self.name} does not have a vision potion.")
+
     def _create_adventurer(self, name, challenge):
         """Helper method for character creation. Difficulty and name are checked,
         based on those values, create an adventurer with modified base values.
@@ -78,25 +144,12 @@ class Adventurer:
             self.max_hitpoints += hp_mod * random.randint(0, 10)
             self.current_hitpoints = self.max_hitpoints
 
-    def _update_found_potions(self, *args):
-        """ Helper method to add potions found in a room to the adventurer's
-        inventory. To be used by the main method.
-        :param: tuple (health_potions : int, vision_potions : int)
-        :raise: TypeError when tuple length is not 2
-        """
-        if len(args) == 2:
-            room_health, room_vision = args
-            self.health_pots += room_health
-            self.vision_pots += room_vision
-        else:
-            raise TypeError('Incorrect number of potions.')
-
     def __str__(self):
         player_stats = f'Name: {self.name}\n'
         player_stats += f'HP: {self.current_hitpoints} / {self.max_hitpoints}\n'
         player_stats += f'Health potions: {self.health_pots}\n'
         player_stats += f'Vision potions: {self.vision_pots}\n'
-        player_stats += f'Pillars collected: {self.pillars_collected}'
+        player_stats += f'Pillars collected: {self.pillars_collected}\n'
         return player_stats
 
     @property
@@ -226,16 +279,18 @@ class Adventurer:
         """
         return self.__pillars_collected
 
-    @pillars_collected.setter
-    def pillars_collected(self, value):
-        """Setter for the pillars collected property
 
-        :param value: value of the pillar found in room
-        :type value: string
-        :raises KeyError: invalid key that is not found in the
-        """
-        if isinstance(value, str):
-            if value in self.pillars_collected.keys():
-                self.pillars_collected[value] = True
-            else:
-                raise KeyError('Invalid key passed, valid pillar keys are: "A", "P", "I", "E"')
+    # Not sure why this setter does not work with the dictionary. Will need to re-examine.
+    # @pillars_collected.setter
+    # def pillars_collected(self, value):
+    #     """Setter for the pillars collected property
+
+    #     :param value: value of the pillar found in room
+    #     :type value: string
+    #     :raises KeyError: invalid key that is not found in the
+    #     """
+    #     if isinstance(value, str):
+    #         if value in self.pillars_collected.keys():
+    #             self.pillars_collected[value] = True
+    #         else:
+    #             raise KeyError('Invalid key passed, valid pillar keys are: "A", "P", "I", "E"')
