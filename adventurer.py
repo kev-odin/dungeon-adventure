@@ -5,14 +5,6 @@ class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
-    # TODO:
-    # 1) Determine how to manage potion inventory <- no need for a list, create as needed by user
-    # 2) How does adventurer check the state of the room? <- Given by dungeon methods, recieved as tuples
-    # 3) Auto pick up potion in a room <- Method provided by dungeon
-    # 4) Working observer pattern with adventurer and potion factory <- At this point, no needed
-    # 5) Random hitpoint generator <-
-    # 6) Write tests
-    # 7) Using health potions, pit damage <-
 
     def __init__(self, name = None, challenge = "easy"):
         """Adventurer object that maintains the inventory collection of potions,
