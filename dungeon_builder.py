@@ -10,7 +10,7 @@ import random
 
 
 class DungeonBuilder:
-    def __init__(self, difficulty="easy", varied=True):
+    def __init__(self, difficulty="easy", varied=True):  # This seems like bad practice to have variables unnecessarily.
         self.__reset(difficulty, varied)
 
     def __reset(self, difficulty="easy", varied=True):
@@ -33,7 +33,7 @@ class DungeonBuilder:
         self.__many_chance = (0.05, 0.1, 0.15, 0.3)[self.__diff_index]  # chance of pits, hp potions, vision in one room
         self.__pit_chance = (0.1, 0.12, 0.15, 0.2)[self.__diff_index]  # chance of pits appearing in the dungeon.
         self.__max_hp_pots = (2, 2, 1, 1)[self.__diff_index]  # maximum number of HP potions in a room.
-        self.__max_vision = (1, 1, 1, 0)[self.__diff_index]  # maximum number of vision potions possible
+        self.__max_vision = (2, 1, 1, 1)[self.__diff_index]  # maximum number of vision potions possible
         self.__max_pit_damage = (10, 20, 30, 80)[self.__diff_index]  # maximum damage pits do.
         self.__row_count = (5, 8, 10, 20)[self.__diff_index]  # Total number of rows
         self.__col_count = (5, 8, 10, 20)[self.__diff_index]  # Total number of columns
@@ -81,23 +81,23 @@ class DungeonBuilder:
         hp_trigger = many_trigger + self.__hp_pot_chance  # range of many trigger through hp pot chance
         vision_trigger = hp_trigger + self.__vision_chance  # range of hp trigger through vision trigger
         pit_trigger = vision_trigger + self.__pit_chance
-        if intrigue <= self.__impassable_chance:  # Is it less than or equal to impassable chance?  Make no access room!
+        if intrigue > pit_trigger: # Boring empty room.  The best kind of room.  First for efficiency.
+            new_room = Room()
+        elif intrigue <= self.__impassable_chance:  # Is it less than or equal to impassable chance?  Make no access room!
             new_room = Room(contents="*")
-        elif intrigue <= many_trigger:
+        elif intrigue <= many_trigger:  # A room of many things.
             new_room = Room(health_potion=random.randint(1, self.__max_hp_pots),
                             vision_potion=random.randint(0, self.__max_vision),
                             pit=random.randint(1, self.__max_pit_damage), contents="M")
-        elif intrigue <= hp_trigger:
-            new_room = Room(health_potion=random.randint(0, self.__max_hp_pots), contents="H")
-        elif intrigue <= vision_trigger:
-            new_room = Room(vision_potion=random.randint(0, self.__max_vision), contents="V")
-        elif intrigue <= pit_trigger:
+        elif intrigue <= hp_trigger:  # A room of health pots.
+            new_room = Room(health_potion=random.randint(1, self.__max_hp_pots), contents="H")
+        elif intrigue <= vision_trigger:  # A room of vision potion.
+            new_room = Room(vision_potion=random.randint(1, self.__max_vision), contents="V")
+        else:  # intrigue <= pit_trigger: A room of pit.
             new_room = Room(pit=random.randint(1, self.__max_pit_damage), contents="X")
-        else:  # Boring empty room.  The best kind of room.  Could probably put this first to save a lot of O(1)
-            new_room = Room()
         return new_room
 
-    def __build_dungeon_path(self, row, col):
+    def __build_dungeon_path(self, row: int, col: int):
         """
         Initial call should be entrance location.  Verifies the dungeon can be traversed from entrance to exit and adds
         any empty rooms' coordinates to the empty_rooms list as a tuple.
@@ -139,7 +139,7 @@ class DungeonBuilder:
             room = self.__get_room(current)  # Uses coordinates to access room
             room.contents = pillars.pop()  # Sets the pillar to the current room.
 
-    def __is_traversable(self, row, col):
+    def __is_traversable(self, row: int, col: int):
         """
         Verifies location is a valid room for entry.  Helper function for traversal.
         :param row: int between 0 and row_count
@@ -171,7 +171,9 @@ class DungeonBuilder:
 
     def build_dungeon(self, difficulty="easy", varied=True):
         """
-        Main logic for building a dungeon.  Returns the dungeon after it is built.
+        Main logic for building a dungeon.  Returns the dungeon after it is built.  Defaults to 5x5 easy dungeon.
+        :param difficulty: str, "easu", "medium", "hard" or "inhumane".  Defaults to easy for test dungeons.
+        :param varied: bool, defaults to True.  If True, rooms are generated randomly.  If False, generate empty.
         :return: Dungeon
         """
         self.__reset(difficulty, varied)

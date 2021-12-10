@@ -7,10 +7,10 @@ from dungeon import Dungeon
 class TestDungeonBuilder(unittest.TestCase):
     @staticmethod
     def init_diff_expected(difficulty):
-        expected = {"easy": [0.05, 0.1, 0.05, 0.05, 0.1, 2, 1, 10, 5, 5],
+        expected = {"easy": [0.05, 0.1, 0.05, 0.05, 0.1, 2, 2, 10, 5, 5],
                     "medium": [0.07, 0.1, 0.05, 0.1, 0.12, 2, 1, 20, 8, 8],
                     "hard": [0.08, 0.1, 0.05, 0.15, 0.15, 1, 1, 30, 10, 10],
-                    "inhumane": [0.1, 0.01, 0.01, 0.3, 0.2, 1, 0, 80, 20, 20]}[difficulty]
+                    "inhumane": [0.1, 0.01, 0.01, 0.3, 0.2, 1, 1, 80, 20, 20]}[difficulty]
         return expected
 
     @staticmethod
@@ -29,12 +29,24 @@ class TestDungeonBuilder(unittest.TestCase):
         for index in range(0, len(expected)):
             self.assertEqual(expected[index], actual[index], f"Check init for {difficulty}")
 
+    def test_init_medium_size(self):
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon("medium")
+        self.assertEqual(8, dungeon.total_rows, f"Total rows in medium dungeon should be 8 {dungeon.total_rows}")
+        self.assertEqual(8, dungeon.total_columns, f"Total rows in medium dungeon should be 8 {dungeon.total_columns}")
+
     def test_init_easy(self):
         difficulty = "easy"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
         for index in range(0, len(expected)):
             self.assertEqual(expected[index], actual[index], f"Check init for {difficulty}")
+
+    def test_init_easy_size(self):
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon("easy")
+        self.assertEqual(5, dungeon.total_rows, f"Total rows in easy dungeon should be 5 {dungeon.total_rows}")
+        self.assertEqual(5, dungeon.total_columns, f"Total rows in easy dungeon should be 5 {dungeon.total_columns}")
 
     def test_init_hard(self):
         difficulty = "hard"
@@ -43,12 +55,24 @@ class TestDungeonBuilder(unittest.TestCase):
         for index in range(0, len(expected)):
             self.assertEqual(expected[index], actual[index], f"Check init for {difficulty}")
 
+    def test_init_hard_size(self):
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon("hard")
+        self.assertEqual(10, dungeon.total_rows, f"Total rows in hard dungeon should be 10 {dungeon.total_rows}")
+        self.assertEqual(10, dungeon.total_columns, f"Total rows in hard dungeon should be 10 {dungeon.total_columns}")
+
     def test_init_inhumane(self):
         difficulty = "inhumane"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
         for index in range(0, len(expected)):
             self.assertEqual(expected[index], actual[index], f"Check init for {difficulty}")
+
+    def test_init_inhumane_size(self):
+        db = DungeonBuilder()
+        dungeon = db.build_dungeon("inhumane")
+        self.assertEqual(20, dungeon.total_rows, f"Total rows in inhumane dungeon should be 20 {dungeon.total_rows}")
+        self.assertEqual(20, dungeon.total_columns, f"Total rows in inhumane dungeon should be 20 {dungeon.total_columns}")
 
     def test_build_a_room(self):
         db = DungeonBuilder("easy", varied=False)

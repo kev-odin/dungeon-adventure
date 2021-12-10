@@ -32,17 +32,21 @@ class Dungeon(Iterable):
                 raise StopIteration()
             return current_room
 
-    def __init__(self, dungeon=[], difficulty="easy", ent=(0, 0), ex=(3, 3)):
+    def __init__(self, dungeon=[], difficulty="", ent=(0, 0), ex=(3, 3)):
         """
         Welcome to the dungeon!  Allows for hardcoded difficulty to be adjusted in the event we want to add different
         difficulty settings as an extra credit feature (ex. increase pit chance and damage)
-        :param row_count: int between 0 and stack overflow
-        :param col_count: int between 0 and stack overflow
-        :param pillars: list of strings, though current room coding will error if not A P I E due to hardcoding.
+        :param dungeon: list of lists containing room objects.  Init empty if not built through dungeon builder.
+        :param difficulty: difficulty index for challenge level as string "easy", "medium", "hard", "inhumane"
+        :param ent: tuple of ints indicating coordinates in matrix for entrance (row, column)
+        :param ex: tuple of ints indicating coordinates in matrix for exit (row, column)
         """
-        pillars = ["A", "P", "I", "E"]
-        diff_index = {"easy": 0, "medium": 1, "hard": 2, "inhumane": 3}
-        if diff_index.get(difficulty) >= 0:
+        if not dungeon:
+            self.__diff_index = self.__row_count = self.__col_count = self.__dungeon = self.__pillars = \
+                self.__entrance = self.__exit = self.__adventurer_loc = None
+        else:
+            pillars = ["A", "P", "I", "E"]
+            diff_index = {"easy": 0, "medium": 1, "hard": 2, "inhumane": 3}
             self.__diff_index = diff_index[difficulty]
             self.__row_count = (5, 8, 10, 20)[self.__diff_index]
             self.__col_count = (5, 8, 10, 20)[self.__diff_index]
@@ -52,9 +56,6 @@ class Dungeon(Iterable):
             self.__exit = ex  # Will be stored as a row, col tuple when building maze.
             self.__adventurer_loc = self.__entrance  # Adventurer starts at the entrance.
 
-        else:
-            raise ValueError("row_count * col_count * (impassable_chance + pit_chance + hp_pot_chance + vision_chance"
-                             " + many_chance) must be greater than len(pillars) + 2.")
 
     def __str__(self):
         """
@@ -99,12 +100,30 @@ class Dungeon(Iterable):
         if self.__is_valid_room(row, col):
             return self.__dungeon[row][col]
         else:
-            raise ValueError("Coordinates must be a tuple of ints x and y within the range of the dungeon.")
+            raise ValueError(f"Coordinates must be tuple of ints.  Max row: {self.__row_count}, "
+                             f"max col: {self.__col_count}.")
+
+    @property
+    def total_rows(self):
+        """
+        Returns total number of rows as an int.  Returns none if dungeon not built through dungeon builder.
+        :return: int
+        """
+        return self.__row_count
+
+    @property
+    def total_columns(self):
+        """
+        Returns total number of columns as an int.  Returns none if dungeon not built through dungeon builder.
+        :return: int
+        """
+        return self.__col_count
 
     @property
     def entrance(self):
         """
-        Gets coordinates of entrance as a tuple of ints.  Ex. (0, 0)
+        Gets coordinates of entrance as a tuple of ints.  Ex. (0, 0)  Returns none if dungeon not built through
+        dungeon builder.
         :return: tuple pair of ints
         """
         return self.__entrance
@@ -112,7 +131,7 @@ class Dungeon(Iterable):
     @property
     def exit(self):
         """
-        Gets coordinates of exit as tuple of ints.  Ex. (0, 0)
+        Gets coordinates of exit as tuple of ints.  Ex. (0, 0) Returns none if dungeon not built through dungeon builder
         :return: tuple pair of ints.
         """
         return self.__exit
