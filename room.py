@@ -114,6 +114,23 @@ class Room:
         valid_contents = self.__is_valid_contents(contents)
         return valid_nums and valid_contents
 
+    def __update_room_contents(self):
+        """
+        Checks and updated the contents of the current room after a change has been made to potions.
+        :return: Returns True if changed through this method.  Returns False if not so potions can be updated.
+        """
+        if bool(self.__vision_potion) + bool(self.__health_potion) + bool(self.__pit) >= 2:
+            self.__contents = "M"
+            return True
+        elif self.__pit and (not self.__vision_potion and not self.__health_potion):
+            self.__contents = "X"
+            return True
+        elif not self.__pit and not self.__vision_potion and not self.__health_potion:
+            self.__contents = " "
+            return True
+        else:
+            return False
+
     def string_top(self):
         """
         Creates top portion of the room's string including doors.
@@ -212,14 +229,10 @@ class Room:
         """
         if self.__is_number_gt_eq_0(num_pots):
             self.__health_potion = num_pots
-            if bool(self.__vision_potion) + bool(self.__health_potion) + bool(self.__pit) >= 2:
-                self.__contents = "M"
-            elif self.__pit and (not self.__vision_potion and not self.__health_potion):
-                self.__contents = "X"
-            elif self.__health_potion > 0:
+            updated = self.__update_room_contents()
+            if not updated:
                 self.__contents = "H"
-            else:
-                self.__contents = " "
+
 
     @property
     def vision_potion(self):
@@ -237,14 +250,9 @@ class Room:
         """
         if self.__is_number_gt_eq_0(num_pots):
             self.__vision_potion = num_pots
-            if bool(self.__vision_potion) + bool(self.__health_potion) + bool(self.__pit) >= 2:
-                self.__contents = "M"
-            elif self.__pit and (not self.__vision_potion and not self.__health_potion):
-                self.__contents = "X"
-            elif self.__vision_potion > 0:
+            updated = self.__update_room_contents()
+            if not updated:
                 self.__contents = "V"
-            else:
-                self.__contents = " "
 
     @property
     def pit_damage(self):
