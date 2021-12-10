@@ -77,18 +77,23 @@ class Main:
                   "new_room health potion: " + str(new_room.health_potion) + "\n" +
                   "new_room vision potion: " + str(new_room.vision_potion) + "\n" +
                   "new_room pit damage: " + str(new_room.pit_damage) + "\n" +
-                  "new_room contents in general: " + str(new_room.contents)
+                  "new_room contents in general: " + str(new_room.contents)+ "\n" +
+                  adventurer.name + "'s status right now is: " + str(adventurer.health_pots) # can't grab the health reading
+                                                                                            # can i use the __str__(self) of adventurer?
                 )
+
+            # here we could do some modifications or math deductions of the items. eg potions found, used, health pot changed etc.
+            # report the most current status to the player
 
             self.set_visited_room(built.adventurer_loc[0], built.adventurer_loc[1])
             print(built.get_visible_dungeon_string(self.visited_array))
 
         adv = Adventurer(adventurer_name, desired_difficulty)  # repeat creating the adventurer
         while True:
-            if adv.is_alive() and True and True: # if 1. alive 2. get the 4 pillars  3.arrived at the exit
+            if adv.is_alive() and adv.has_all_pillars() and built.adventurer_loc() == built.exit(): # if 1. alive 2. get the 4 pillars  3.arrived at the exit
                 print("Congrats! you escaped the dungeon successfully")
                 break
-            elif adv.is_alive() and True and True: # if 1. alive 2. ! get the 4 pillars  3. ! arrived at the exit
+            elif adv.is_alive() and not adv.has_all_pillars() and built.adventurer_loc() != built.exit(): # if 1. alive 2. ! get the 4 pillars  3. ! arrived at the exit
                 # keep on doing the main logic
                 pass
                 dir = input("Please input your commands: ")
