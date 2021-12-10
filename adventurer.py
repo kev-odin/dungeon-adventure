@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 8.5 hours
+# Kevin"s Time Tracker: 9 hours
 import random
 
 class Adventurer:
@@ -12,7 +12,7 @@ class Adventurer:
 
         :param name: name of the adventurer provided by user, defaults to None
         :type name: str
-        :param challenge: challenge provided by user, defaults to 'easy'
+        :param challenge: challenge provided by user, defaults to "easy"
         :type challenge: str
         """
         self.__name = name
@@ -91,7 +91,7 @@ class Adventurer:
         """
         if isinstance(heal_amount, int):
             new_health = self.current_hitpoints + heal_amount
-            if new_health > self.max_hitpoints:
+            if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
@@ -122,18 +122,18 @@ class Adventurer:
 
         :param: name: str if found in cheat_code dictionary, modification applied to adventurer
         :param: challenge: str sets to following challenge level:
-             'easy' 3x, 'medium' 2x, 'hard' 1x, 'inhumane' 0x
+             "easy" 3x, "medium" 2x, "hard" 1x, "inhumane" 0x
         """
         difficulty = {
-            'easy' : 3,
-            'medium' : 2,
-            'hard' : 1,
-            'inhumane' : 0
+            "easy" : 3,
+            "medium" : 2,
+            "hard" : 1,
+            "inhumane" : 0
         }
 
         cheat_codes = {
-            'tom' : 'no health lost',
-            'kevin' : 'unlimited potions'
+            "tom" : "no health lost",
+            "kevin" : "unlimited potions"
         }
 
         if name in cheat_codes:
@@ -145,11 +145,11 @@ class Adventurer:
             self.current_hitpoints = self.max_hitpoints
 
     def __str__(self):
-        player_stats = f'Name: {self.name}\n'
-        player_stats += f'HP: {self.current_hitpoints} / {self.max_hitpoints}\n'
-        player_stats += f'Health potions: {self.health_pots}\n'
-        player_stats += f'Vision potions: {self.vision_pots}\n'
-        player_stats += f'Pillars collected: {self.pillars_collected}\n'
+        player_stats = f"Name: {self.name}\n"
+        player_stats += f"HP: {self.current_hitpoints} / {self.max_hitpoints}\n"
+        player_stats += f"Health potions: {self.health_pots}\n"
+        player_stats += f"Vision potions: {self.vision_pots}\n"
+        player_stats += f"Pillars collected: {self.pillars_collected}\n"
         return player_stats
 
     @property
@@ -246,7 +246,7 @@ class Adventurer:
             if value >= 0:
                 self.__health_pots = value
             else:
-                raise ValueError('Cannot set health potions to a negative value.')
+                raise ValueError("Cannot set health potions to a negative value.")
 
     @property
     def vision_pots(self):
@@ -269,7 +269,7 @@ class Adventurer:
             if value >= 0:
                 self.__vision_pots = value
             else:
-                raise ValueError('Cannot set vision potions to a negative value.')
+                raise ValueError("Cannot set vision potions to a negative value.")
 
     @property
     def pillars_collected(self):
@@ -293,4 +293,4 @@ class Adventurer:
     #         if value in self.pillars_collected.keys():
     #             self.pillars_collected[value] = True
     #         else:
-    #             raise KeyError('Invalid key passed, valid pillar keys are: "A", "P", "I", "E"')
+    #             raise KeyError("Invalid key passed, valid pillar keys are: "A", "P", "I", "E"")
