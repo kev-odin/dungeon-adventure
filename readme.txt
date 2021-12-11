@@ -1,6 +1,6 @@
 The Spoony Bard
 Extra-credit attempts:
-Easy, Medium, Hard, and Inhumane difficulty in dungeon (and consequently rooms!) -> TODO finish
+Easy, Medium, Hard, and Inhumane difficulty in dungeon (and consequently rooms!) with a simple builder!
 
 What we worked on & how long:
 Kevin
@@ -15,13 +15,18 @@ Xingguo
 map.py
 dungeon_adventure.py
 
-Steph
+Steph -> Current time spent: 30 hours total so far?!
+I need to stop refactoring code for fun and writing a bunch of tests.
+Time to working: 4.5 hours to minimal viable functionality.
 This readme!  Now with more exclamation points!
-TODO make dungeon builder to keep creation of rooms and dungeons together in one place and have different difficulties.
-dungeon.py -> Likely needs more features for Xingguo.
-test_dungeon.py -> TODO add more tests and error checking
+dungeon_builder.py
+dungeon.py
 room.py -> Done?
-test_room.py -> Done?
+test_room.py -> Done?  -> TODO test private methods?
+test_dungeon.py -> TODO test private methods
+test_dungeon_iterator.py
+test_dungeon_builder.py -> TODO more extensive testing, user error testing
+
 
 Shortcomings:
 Mock tests would be more robust since I had to delete most of my private method tests once methods were no longer
