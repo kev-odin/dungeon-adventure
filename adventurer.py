@@ -323,19 +323,3 @@ class Adventurer:
         :return: str of dictionary values {pillar : bool}
         """
         return self.__pillars_collected
-
-
-    # Not sure why this setter does not work with the dictionary. Will need to re-examine.
-    # @pillars_collected.setter
-    # def pillars_collected(self, value):
-    #     """Setter for the pillars collected property
-
-    #     :param value: value of the pillar found in room
-    #     :type value: string
-    #     :raises KeyError: invalid key that is not found in the
-    #     """
-    #     if isinstance(value, str):
-    #         if value in self.pillars_collected.keys():
-    #             self.pillars_collected[value] = True
-    #         else:
-    #             raise KeyError("Invalid key passed, valid pillar keys are: "A", "P", "I", "E"")
