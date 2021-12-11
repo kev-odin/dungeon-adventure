@@ -1,5 +1,7 @@
 # MacOS
 .DS_Store
+.gitignore
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

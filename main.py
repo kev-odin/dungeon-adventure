@@ -49,7 +49,7 @@ class Main:
         print("\nFollowing is your game, good luck!\n")
 
         # Creates a Dungeon Object with desired difficulty
-        db = DungeonBuilder(desired_difficulty)  # question: why all levels are the same size? 5;8;10;20?
+        db = DungeonBuilder(desired_difficulty)
         dungeon = db.build_dungeon(desired_difficulty)
         # dungeon =  db.build_dungeon(desired_difficulty) # question:
 
@@ -69,58 +69,70 @@ class Main:
         print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
 
         while True:  # another while game loop
-            move = input("Please input your move: ")
-            new_room = dungeon.move_adventurer(move)
-            print("New room: \n"+f"{new_room}")
-            # adv_location = dungeon.adventurer_loc()
-            # print("I want to print out the current room!")
-            # print(dungeon.get_room(adv_location[0], adv_location[1]))
+            # if 1. alive 2. get the 4 pillars  3.arrived at the exit
+            print(f"{dungeon.get_room(dungeon.adventurer_loc)}")
+            print(f"{dungeon.adventurer_loc}")
+            print(f"{dungeon.exit}")
 
-            # print the new room status(H/V/P/M)
-            print(
-                  "new_room health potion #: " + f"{new_room.health_potion}" + "\n" +
-                  "new_room vision potion #: " + f"{new_room.vision_potion}" + "\n" +
-                  "new_room pit damage: " + f"{new_room.pit_damage}" + "\n" +
-                  "new_room contents are: " + f"{new_room.contents}" + "\n"
-                )
-            # after entering the new room calculate the changes (H/V/P/M)
+            if adventurer.is_alive() and adventurer.has_all_pillars() and dungeon.adventurer_loc == dungeon.exit:
+                print("Congrats! you win the game!")
+                break
+            elif not adventurer.is_alive():
+                print("Your adventurer is dead, better luck next time!")
+                break
+            else: #adventurer.is_alive() and not adventurer.has_all_pillars() and dungeon.adventurer_loc() != dungeon.exit:
+                move = input("Please input your move: ")
+                new_room = dungeon.move_adventurer(move)
+                print("New room: \n"+f"{new_room}")
+                # adv_location = dungeon.adventurer_loc()
+                # print("I want to print out the current room!")
+                # print(dungeon.get_room(adv_location[0], adv_location[1]))
 
-            adventurer.add_potions(dungeon.collect_potions())
-            pillar_str = dungeon.collect_pillars()
-            if pillar_str:
-                adventurer.add_pillar(pillar_str)  # question: why can't store to adventurer
-            if new_room.pit_damage > 0:
-                adventurer.damage_adventurer(new_room.pit_damage)
-            # report the most current status to the player, eg: print(f"{adventurer}")
-            # print adventurer status
-            print("Adventurer status listed below: \n" + f"{adventurer}")
+                # print the new room status(H/V/P/M)
+                print(
+                      "new_room health potion #: " + f"{new_room.health_potion}" + "\n" +
+                      "new_room vision potion #: " + f"{new_room.vision_potion}" + "\n" +
+                      "new_room pit damage: " + f"{new_room.pit_damage}" + "\n" +
+                      "new_room contents are: " + f"{new_room.contents}" + "\n"
+                    )
+                # after entering the new room calculate the changes (H/V/P/M)
 
-            print("Print all the visited rooms: ")
-            self.map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
+                adventurer.add_potions(dungeon.collect_potions())
+                pillar_str = dungeon.collect_pillars()
+                if pillar_str:
+                    adventurer.add_pillar(pillar_str)
+                if new_room.pit_damage > 0:
+                    adventurer.damage_adventurer(new_room.pit_damage)
+                # report the most current status to the player, eg: print(f"{adventurer}")
+                # print adventurer status
+                print("Adventurer status listed below: \n" + f"{adventurer}")
+    ####################################################################################################
+                print("Print all the visited rooms: ")
+                self.map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
 
-            print(dungeon.get_visible_dungeon_string(self.map.visited_array()))
-            print("Debugging purpose, whole dungeon displayed below: ")
-            print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
-
+                print(dungeon.get_visible_dungeon_string(self.map.visited_array()))
+                print("Debugging purpose, whole dungeon displayed below: ")
+                print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
+    ####################################################################################################
         adv = Adventurer(adventurer_name, desired_difficulty)  # repeat creating the adventurer
 
-        bool_flag2 = True
-        while bool_flag2:
-            if adv.is_alive() and adv.has_all_pillars() and dungeon.adventurer_loc() == dungeon.exit(): # if 1. alive 2. get the 4 pillars  3.arrived at the exit
-                print("Congrats! you escaped the dungeon successfully")
-                break
-            elif adv.is_alive() and not adv.has_all_pillars() and dungeon.adventurer_loc() != dungeon.exit(): # if 1. alive 2. ! get the 4 pillars  3. ! arrived at the exit
-                pass
-            else:
-                pass
+        # bool_flag2 = True
+        # while bool_flag2:
+        #     if adv.is_alive() and adv.has_all_pillars() and dungeon.adventurer_loc() == dungeon.exit(): # if 1. alive 2. get the 4 pillars  3.arrived at the exit
+        #         print("Congrats! you escaped the dungeon successfully")
+        #         break
+        #     elif adv.is_alive() and not adv.has_all_pillars() and dungeon.adventurer_loc() != dungeon.exit(): # if 1. alive 2. ! get the 4 pillars  3. ! arrived at the exit
+        #         pass
+        #     else:
+        #         pass
 
 
         # Here we should use the completeDungeon as the back layer and print the map
 
-        print("\nHere should print the dungeon with the player at the entrance\n")
+        # print("\nHere should print the dungeon with the player at the entrance\n")
         # print the dungeon and the current location /room?
         # show the players the valid options?
-        command = input("Please enter command: ")
+        # command = input("Please enter command: ")
 
     # def create_visited_room_array(self):
     #     for row in range(0, 20): # how to find out the size,change in the future  5x5;8x8;10x10
