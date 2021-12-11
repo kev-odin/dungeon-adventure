@@ -196,8 +196,9 @@ class Dungeon(Iterable):
         """
         room = self.get_room(self.__adventurer_loc)
         pots = (room.health_potion, room.vision_potion)
-        room.health_potion = 0
-        room.vision_potion = 0
+        if room.health_potion or room.vision_potion:
+            room.health_potion = 0
+            room.vision_potion = 0
         return pots
 
     def collect_pillars(self):
