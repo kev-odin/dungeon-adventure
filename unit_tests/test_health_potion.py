@@ -15,9 +15,7 @@ class HealthPotionTest(unittest.TestCase):
     def test_basic_potion_string(self):
         test = HealthPotion(random=False)
         expected = f"Item: {test.name}\n"
-        plural = ""
-        if test.heal_amount > 1:
-            plural = "s"
+        plural = "s" if test.heal_amount != 1 else ""
         expected += f"Effect: Restores {test.heal_amount} hitpoint{plural}."
         self.assertEqual(expected, test.__str__())
     

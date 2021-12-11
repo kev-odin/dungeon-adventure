@@ -141,6 +141,12 @@ class AdventurerTest(unittest.TestCase):
             hero.add_pillar(val)
         self.assertTrue(hero.has_all_pillars())
 
+    def test_hero_collect_pillar_none(self):
+        hero = Adventurer("Bob")
+        compare = hero.pillars_collected
+        hero.add_pillar(None)
+        self.assertEqual(compare, hero.pillars_collected)
+
     def test_hero_collect_pillar_a_true(self):
         pillar_list = ["A", "P", "I", "E"]
         hero = Adventurer("Bob")

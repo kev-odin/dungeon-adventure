@@ -8,11 +8,11 @@ import unittest
 class PotionFactoryTest(unittest.TestCase):
     def test_create_health_potion(self):
         test_health = PotionFactory.create_potion("health")
-        assert isinstance(test_health, HealthPotion)
+        self.assertIsInstance(test_health, HealthPotion)
     
     def test_create_vision_potion(self):
         test_vision = PotionFactory.create_potion("vision")
-        assert isinstance(test_vision, VisionPotion)
+        self.assertIsInstance(test_vision, VisionPotion)
 
     def test_create_blank_potion(self):
         try:
