@@ -3,8 +3,6 @@
 from health_potion import HealthPotion
 import unittest
 
-# Not sure how to test random amounts
-
 class HealthPotionTest(unittest.TestCase):
     def test_basic_potion(self):
         test = HealthPotion(random=False)
@@ -17,7 +15,8 @@ class HealthPotionTest(unittest.TestCase):
     def test_basic_potion_string(self):
         test = HealthPotion(random=False)
         expected = f"Item: {test.name}\n"
-        expected += f"Effect: Restores {test.heal_amount} hitpoints"
+        plural = "s" if test.heal_amount != 1 else ""
+        expected += f"Effect: Restores {test.heal_amount} hitpoint{plural}."
         self.assertEqual(expected, test.__str__())
     
     def test_basic_potion_heal_amount(self):
@@ -35,6 +34,13 @@ class HealthPotionTest(unittest.TestCase):
         test.heal_amount = 10
         expected = 10
         self.assertEqual(expected, test.heal_amount)
+
+    def test_basic_potion_set_heal_int_string(self):
+        test = HealthPotion(random=False)
+        test.heal_amount = 10
+        expected = f"Item: {test.name}\n"
+        expected += f"Effect: Restores {test.heal_amount} hitpoints."
+        self.assertEqual(expected, test.__str__())
 
     def test_basic_potion_set_heal_string(self):
         try:

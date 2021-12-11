@@ -3,13 +3,14 @@ Extra-credit attempts:
 Easy, Medium, Hard, and Inhumane difficulty in dungeon (and consequently rooms!) with a simple builder!
 
 What we worked on & how long:
-Kevin
-UML beauty
-adventurer.py
-health_potion.py
-vision_potion.py
-potion_factory.py
-(observer, observable?)
+Kevin (Total time: 29 hours)
+UML beauty - 2.5 hours
+adventurer.py - 13 hours
+health_potion.py - 2 hours
+vision_potion.py - 2 hours
+potion_factory.py - 1 hour
+testing - 8 hours
+(observer, observable?) - removed from PR 
 
 Xingguo
 map.py
@@ -36,3 +37,4 @@ more specific breaks with modification.
 Questions for Tom:
 Best practices for cleaning up class member variables necessary for...creation, but not necessary after.
 Best practices for writing clean unit tests with redundant code or more complex code.
+Kevin - Why are properties not clear with setting dictionaries? I kept running into issues with setting values.

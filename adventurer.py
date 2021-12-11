@@ -42,15 +42,15 @@ class Adventurer:
         """
         return all(pillar is True for pillar in self.pillars_collected.values())
 
-    def add_potions(self, potions):
+    def add_potions(self, room_potions):
         """ Helper method to add potions found in a room to the adventurer's
         inventory. To be used by the main method.
         :param: tuple (health_potions : int, vision_potions : int)
         :raise: TypeError when tuple length is not 2
         """
-        if len(potions) == 2:
-            if all(isinstance(val, int) for val in potions):
-                room_health, room_vision = potions
+        if len(room_potions) == 2:
+            if all(isinstance(val, int) for val in room_potions):
+                room_health, room_vision = room_potions
                 self.health_pots += room_health
                 self.vision_pots += room_vision
             else:
@@ -63,12 +63,13 @@ class Adventurer:
         inventory. To be used by the main method.
         :param: str - pillar values: "A", "P", "I", "E"
         """
-        if isinstance(pillar, str):
-            for val in self.pillars_collected:
-                if val == pillar:
-                    self.pillars_collected[pillar] = True
-        else:
-            print("You should not see this message.")
+        if pillar is not None:
+            if isinstance(pillar, str):
+                for val in self.pillars_collected:
+                    if val == pillar:
+                        self.pillars_collected[pillar] = True
+            else:
+                print("You should not see this message.")
 
     def damage_adventurer(self, pit_damage):
         """ Helper method to damage adventurer based on the pit damage
@@ -76,7 +77,8 @@ class Adventurer:
         :param: int - damage values that will decrement current health
         """
         if isinstance(pit_damage, int):
-            print(f"{self.name} fell into a pit and took {pit_damage} points of damage.")
+            plural = "s" if pit_damage != 1 else ""
+            print(f"{self.name} fell into a pit and took {pit_damage} point{plural} of damage.")
 
             new_health = self.current_hitpoints - pit_damage
             if new_health <= 0:
@@ -158,7 +160,7 @@ class Adventurer:
         """
         pillar_str = []
         status_str = []
-        readable = ""
+        readable = "| "
 
         for pillar in self.pillars_collected:
             if pillar == "A":
@@ -323,19 +325,3 @@ class Adventurer:
         :return: str of dictionary values {pillar : bool}
         """
         return self.__pillars_collected
-
-
-    # Not sure why this setter does not work with the dictionary. Will need to re-examine.
-    # @pillars_collected.setter
-    # def pillars_collected(self, value):
-    #     """Setter for the pillars collected property
-
-    #     :param value: value of the pillar found in room
-    #     :type value: string
-    #     :raises KeyError: invalid key that is not found in the
-    #     """
-    #     if isinstance(value, str):
-    #         if value in self.pillars_collected.keys():
-    #             self.pillars_collected[value] = True
-    #         else:
-    #             raise KeyError("Invalid key passed, valid pillar keys are: "A", "P", "I", "E"")

@@ -16,9 +16,15 @@ class PotionFactory:
         :return: Health or Vision potion based on the string passed
         :raises ValueError: When a potion name is not provided as an option
         """
-        if name == "health":
-            return HealthPotion()
-        elif name == "vision":
-            return VisionPotion()
-        else:
-            raise ValueError(f"{name} is not a valid potion.")
+        valid_potions = "health or vision"
+        try:
+            if name == "health":
+                return HealthPotion()
+            elif name == "vision":
+                return VisionPotion()
+            else:
+                raise ValueError
+        except ValueError:
+            print(f"{name} is not a valid potion option: {valid_potions}")
+        except TypeError:
+            print(f"You must pass in a valid option: {valid_potions}")
