@@ -19,9 +19,7 @@ class HealthPotion(Potion):
             self._potion_effect()
 
     def __str__(self):
-        plural = ""
-        if self.heal_amount > 1:
-            plural = "s"
+        plural = "s" if self.heal_amount != 1 else ""
         return f"Item: {self.name}\nEffect: Restores {self.heal_amount} hitpoint{plural}."
 
     def __repr__(self):

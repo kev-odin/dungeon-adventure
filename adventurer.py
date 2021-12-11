@@ -63,12 +63,13 @@ class Adventurer:
         inventory. To be used by the main method.
         :param: str - pillar values: "A", "P", "I", "E"
         """
-        if isinstance(pillar, str):
-            for val in self.pillars_collected:
-                if val == pillar:
-                    self.pillars_collected[pillar] = True
-        else:
-            print("You should not see this message.")
+        if pillar is not None:
+            if isinstance(pillar, str):
+                for val in self.pillars_collected:
+                    if val == pillar:
+                        self.pillars_collected[pillar] = True
+            else:
+                print("You should not see this message.")
 
     def damage_adventurer(self, pit_damage):
         """ Helper method to damage adventurer based on the pit damage
@@ -76,7 +77,8 @@ class Adventurer:
         :param: int - damage values that will decrement current health
         """
         if isinstance(pit_damage, int):
-            print(f"{self.name} fell into a pit and took {pit_damage} points of damage.")
+            plural = "s" if pit_damage != 1 else ""
+            print(f"{self.name} fell into a pit and took {pit_damage} point{plural} of damage.")
 
             new_health = self.current_hitpoints - pit_damage
             if new_health <= 0:
@@ -158,7 +160,7 @@ class Adventurer:
         """
         pillar_str = []
         status_str = []
-        readable = ""
+        readable = "| "
 
         for pillar in self.pillars_collected:
             if pillar == "A":

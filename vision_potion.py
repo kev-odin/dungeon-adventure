@@ -16,6 +16,9 @@ class VisionPotion(Potion):
     def action(self):
         return self.rooms_revealed
 
+    def _potion_effect(self):
+        pass
+
     @property
     def name(self):
         """Simple getter for the name property.
