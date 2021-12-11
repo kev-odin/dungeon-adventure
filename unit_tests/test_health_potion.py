@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 1 hours
+# Kevin's Time Tracker: 2 hours
 
 from health_potion import HealthPotion
 import unittest
@@ -17,7 +17,7 @@ class HealthPotionTest(unittest.TestCase):
     def test_basic_potion_string(self):
         test = HealthPotion(random=False)
         expected = f"Item: {test.name}\n"
-        expected += f"Effect: Adventurer has been healed for {test.heal_amount} hitpoints"
+        expected += f"Effect: Restores {test.heal_amount} hitpoints"
         self.assertEqual(expected, test.__str__())
     
     def test_basic_potion_heal_amount(self):

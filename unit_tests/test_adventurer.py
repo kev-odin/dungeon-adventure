@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 3.5 hour
+# Kevin's Time Tracker: 4.5 hour
 
 import unittest
 from adventurer import Adventurer
@@ -22,14 +22,23 @@ class AdventurerTest(unittest.TestCase):
         except TypeError:
             self.assertRaises(TypeError, "Integers are not valid names.")
 
-    def test_init_toString(self):
+    def test_init_str(self):
         hero = Adventurer("Bob")
         expected = f'Name: {hero.name}\n'
         expected += f'HP: {hero.current_hitpoints} / {hero.max_hitpoints}\n'
         expected += f'Health potions: {hero.health_pots}\n'
         expected += f'Vision potions: {hero.vision_pots}\n'
-        expected += f'Pillars collected: {hero.pillars_collected}\n'
+        expected += f'Object Oriented Pillars Collected\n{hero._readable_pillars()}\n'
         self.assertEqual(expected, hero.__str__())
+
+    def test_init_repr(self):
+        hero = Adventurer("Bob")
+        expected = f"{hero.name}\n"
+        expected += f"{hero.current_hitpoints} / {hero.max_hitpoints}\n"
+        expected += f"{hero.health_pots}\n"
+        expected += f"{hero.vision_pots}\n"
+        expected += f"{hero.pillars_collected}\n"
+        self.assertEqual(expected, hero.__repr__())
 
     def test_set_negative_health(self):
         try:
@@ -111,7 +120,7 @@ class AdventurerTest(unittest.TestCase):
 
     def test_hero_collect_potions_short_length(self):
         try:
-            mock_potions = (1)
+            mock_potions = (1,)
             hero = Adventurer("Bob")
             hero.add_potions(mock_potions)
         except ValueError:

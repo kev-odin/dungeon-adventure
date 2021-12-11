@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 8.5 hours
+# Kevin"s Time Tracker: 13 hours
 import random
 
 class Adventurer:
@@ -12,12 +12,12 @@ class Adventurer:
 
         :param name: name of the adventurer provided by user, defaults to None
         :type name: str
-        :param challenge: challenge provided by user, defaults to 'easy'
+        :param challenge: challenge provided by user, defaults to "easy"
         :type challenge: str
         """
         self.__name = name
         self.__dev_powers = False
-        self.__max_hitpoints = 75           # At this stage, baseline health
+        self.__max_hitpoints = 75
         self.__current_hitpoints = None
         self.__health_pots = 0
         self.__vision_pots = 0
@@ -40,7 +40,7 @@ class Adventurer:
         """ Helper method to determine when all pillars have been collected by the adventurer
         :return: True if all pillars are collected
         """
-        return all(pillar is True for pillar in self.__pillars_collected.values())
+        return all(pillar is True for pillar in self.pillars_collected.values())
 
     def add_potions(self, potions):
         """ Helper method to add potions found in a room to the adventurer's
@@ -86,12 +86,12 @@ class Adventurer:
 
     def heal_adventurer(self, heal_amount):
         """ Helper method to heal adventurer based on the health potion.
-        To be used by the main method.
+        To be used by the main method. Adventurer has to be alive to use potion.
         :param: int - heal values that will increment current health
         """
         if isinstance(heal_amount, int):
             new_health = self.current_hitpoints + heal_amount
-            if new_health > self.max_hitpoints:
+            if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
@@ -122,34 +122,79 @@ class Adventurer:
 
         :param: name: str if found in cheat_code dictionary, modification applied to adventurer
         :param: challenge: str sets to following challenge level:
-             'easy' 3x, 'medium' 2x, 'hard' 1x, 'inhumane' 0x
+             "easy" 3x, "medium" 2x, "hard" 1x, "inhumane" 0x
         """
         difficulty = {
-            'easy' : 3,
-            'medium' : 2,
-            'hard' : 1,
-            'inhumane' : 0
+            "easy" : 3,
+            "medium" : 2,
+            "hard" : 1,
+            "inhumane" : 0
         }
 
         cheat_codes = {
-            'tom' : 'no health lost',
-            'kevin' : 'unlimited potions'
+            "tom" : (1000, 1000, 0, 0, False),
+            "kevin" : (75, 75, 50, 50, False),
+            "gary" : (100, 100, 0, 0, True)
         }
-
-        if name in cheat_codes:
-            self.dev_powers = True
 
         if challenge in difficulty:
             hp_mod = difficulty[challenge]
             self.max_hitpoints += hp_mod * random.randint(0, 10)
             self.current_hitpoints = self.max_hitpoints
 
+        if name in cheat_codes:
+            self.dev_powers = True
+            self.current_hitpoints = cheat_codes[name][0]
+            self.max_hitpoints = cheat_codes[name][1]
+            self.health_pots = cheat_codes[name][2]
+            self.vision_pots = cheat_codes[name][3]
+            for value in self.pillars_collected:
+                self.pillars_collected[value] = cheat_codes[name][4]
+
+    def _readable_pillars(self):
+        """ Helper method for converting pillars collection to a player readable string.
+        This took longer than I care to admit...
+        :return: string
+        """
+        pillar_str = []
+        status_str = []
+        readable = ""
+
+        for pillar in self.pillars_collected:
+            if pillar == "A":
+                pillar_str.append("Abstraction")
+            elif pillar == "P":
+                pillar_str.append("Polymorphism")
+            elif pillar == "I":
+                pillar_str.append("Inheritance")
+            else:
+                pillar_str.append("Encapsulation")
+
+        for status in self.pillars_collected.values():
+            if status is True:
+                status_str.append("Collected")
+            else:
+                status_str.append("Not collected")
+
+        for pillar, status in zip(pillar_str, status_str):
+            readable += pillar + ": " + status + " | "
+
+        return readable
+
     def __str__(self):
-        player_stats = f'Name: {self.name}\n'
-        player_stats += f'HP: {self.current_hitpoints} / {self.max_hitpoints}\n'
-        player_stats += f'Health potions: {self.health_pots}\n'
-        player_stats += f'Vision potions: {self.vision_pots}\n'
-        player_stats += f'Pillars collected: {self.pillars_collected}\n'
+        player_stats = f"Name: {self.name}\n"
+        player_stats += f"HP: {self.current_hitpoints} / {self.max_hitpoints}\n"
+        player_stats += f"Health potions: {self.health_pots}\n"
+        player_stats += f"Vision potions: {self.vision_pots}\n"
+        player_stats += f"Object Oriented Pillars Collected\n{self._readable_pillars()}\n"
+        return player_stats
+
+    def __repr__(self):
+        player_stats = f"{self.name}\n"
+        player_stats += f"{self.current_hitpoints} / {self.max_hitpoints}\n"
+        player_stats += f"{self.health_pots}\n"
+        player_stats += f"{self.vision_pots}\n"
+        player_stats += f"{self.pillars_collected}\n"
         return player_stats
 
     @property
@@ -246,7 +291,7 @@ class Adventurer:
             if value >= 0:
                 self.__health_pots = value
             else:
-                raise ValueError('Cannot set health potions to a negative value.')
+                raise ValueError("Cannot set health potions to a negative value.")
 
     @property
     def vision_pots(self):
@@ -269,7 +314,7 @@ class Adventurer:
             if value >= 0:
                 self.__vision_pots = value
             else:
-                raise ValueError('Cannot set vision potions to a negative value.')
+                raise ValueError("Cannot set vision potions to a negative value.")
 
     @property
     def pillars_collected(self):
@@ -293,4 +338,4 @@ class Adventurer:
     #         if value in self.pillars_collected.keys():
     #             self.pillars_collected[value] = True
     #         else:
-    #             raise KeyError('Invalid key passed, valid pillar keys are: "A", "P", "I", "E"')
+    #             raise KeyError("Invalid key passed, valid pillar keys are: "A", "P", "I", "E"")
