@@ -42,15 +42,15 @@ class Adventurer:
         """
         return all(pillar is True for pillar in self.pillars_collected.values())
 
-    def add_potions(self, potions):
+    def add_potions(self, room_potions):
         """ Helper method to add potions found in a room to the adventurer's
         inventory. To be used by the main method.
         :param: tuple (health_potions : int, vision_potions : int)
         :raise: TypeError when tuple length is not 2
         """
-        if len(potions) == 2:
-            if all(isinstance(val, int) for val in potions):
-                room_health, room_vision = potions
+        if len(room_potions) == 2:
+            if all(isinstance(val, int) for val in room_potions):
+                room_health, room_vision = room_potions
                 self.health_pots += room_health
                 self.vision_pots += room_vision
             else:
