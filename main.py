@@ -1,5 +1,5 @@
 '''
-Time used: 20 hours
+Time used: 23 hours
 xingguo
 '''
 
@@ -28,10 +28,10 @@ class Main:
     def __init__(self):
         self.map = Map()
 
-    def game_flow(self):  # menu loop
+    def game_flow(self):
         print("\nWelcome! \nGame logo or rules prints here \n")  # read a text file to display the game logo
         bool_flag = True
-        while bool_flag:
+        while bool_flag:  # menu loop
             help_or_continue = input("Please enter:\n "
                                      "\'h\' : for all commands of the game\n "
                                      "\'c\' : for continue \n ")
@@ -43,7 +43,7 @@ class Main:
             else:
                 continue # invalid input
 
-        # another while game loop
+
         adventurer_name = input("Now please enter a name for your adventurer: ")
         desired_difficulty = input("Now please enter a difficulty level(easy/medium/hard/inhumane): ")
         print("\nFollowing is your game, good luck!\n")
@@ -53,21 +53,22 @@ class Main:
         dungeon = db.build_dungeon(desired_difficulty)
         # dungeon =  db.build_dungeon(desired_difficulty) # question:
 
-        # Creates a Adventurer Object
+        # Creates an Adventurer Object
         adventurer = Adventurer(adventurer_name, desired_difficulty)
-        self.map.set_visited_room(dungeon.entrance[0], dungeon.entrance[1])
-
-        print("Entrance room displayed below: ") # we only want to print the current room
-        print(dungeon.get_visible_dungeon_string(self.map.visited_array())) # print visited room
-        print(f"{dungeon.get_room(dungeon.entrance)}")
-
-        print("Debugging purpose, whole dungeon displayed below: ")
-        print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
-
         print("Adventurer status listed below: \n" + f"{adventurer}")
 
+        self.map.set_visited_room(dungeon.entrance[0], dungeon.entrance[1])
 
-        while True:
+        print("Entrance room displayed below: ")
+        print(f"{dungeon.get_room(dungeon.entrance)}") # print current room
+
+        print("Map to show visited room: ")
+        print(dungeon.get_visible_dungeon_string(self.map.visited_array())) # map to print visited room
+
+        print("Whole dungeon displayed below: ")
+        print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
+
+        while True:  # another while game loop
             move = input("Please input your move: ")
             new_room = dungeon.move_adventurer(move)
             print("New room: \n"+f"{new_room}")
@@ -85,8 +86,9 @@ class Main:
             # after entering the new room calculate the changes (H/V/P/M)
 
             adventurer.add_potions(dungeon.collect_potions())
-            if dungeon.collect_pillars():
-                adventurer.add_pillar(dungeon.collect_pillars())  # question: is content here referring multiple things, like H/V or multiply pillars?
+            pillar_str = dungeon.collect_pillars()
+            if pillar_str:
+                adventurer.add_pillar(pillar_str)  # question: why can't store to adventurer
             if new_room.pit_damage > 0:
                 adventurer.damage_adventurer(new_room.pit_damage)
             # report the most current status to the player, eg: print(f"{adventurer}")
@@ -101,6 +103,7 @@ class Main:
             print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
 
         adv = Adventurer(adventurer_name, desired_difficulty)  # repeat creating the adventurer
+
         bool_flag2 = True
         while bool_flag2:
             if adv.is_alive() and adv.has_all_pillars() and dungeon.adventurer_loc() == dungeon.exit(): # if 1. alive 2. get the 4 pillars  3.arrived at the exit
