@@ -26,8 +26,7 @@ class Main:
     main method that contains the main logic for playing the game
     '''
     def __init__(self):
-        self.visited_array = []
-        self.create_visited_room_array()
+        self.map = Map()
 
     def game_flow(self):  # menu loop
         print("\nWelcome! \nGame logo or rules prints here \n")  # read a text file to display the game logo
@@ -56,40 +55,50 @@ class Main:
 
         # Creates a Adventurer Object
         adventurer = Adventurer(adventurer_name, desired_difficulty)
-        self.set_visited_room(dungeon.entrance[0], dungeon.entrance[1])
+        self.map.set_visited_room(dungeon.entrance[0], dungeon.entrance[1])
 
         print("Entrance room displayed below: ") # we only want to print the current room
-        # print(dungeon.get_visible_dungeon_string(self.visited_array)) # print visited room
+        print(dungeon.get_visible_dungeon_string(self.map.visited_array())) # print visited room
         print(f"{dungeon.get_room(dungeon.entrance)}")
 
-        # print("Debugging purpose, whole dungeon displayed below: ")
-        # print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
+        print("Debugging purpose, whole dungeon displayed below: ")
+        print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
 
-        print("Adventurer status right now:")
-        print(adventurer)
+        print("Adventurer status listed below: \n" + f"{adventurer}")
+
 
         while True:
-            move = input("Based on your current room, please input your move: ")
+            move = input("Please input your move: ")
             new_room = dungeon.move_adventurer(move)
-            print("Current room: \n"+f"{new_room}")
+            print("New room: \n"+f"{new_room}")
             # adv_location = dungeon.adventurer_loc()
             # print("I want to print out the current room!")
             # print(dungeon.get_room(adv_location[0], adv_location[1]))
 
+            # print the new room status(H/V/P/M)
             print(
                   "new_room health potion #: " + f"{new_room.health_potion}" + "\n" +
                   "new_room vision potion #: " + f"{new_room.vision_potion}" + "\n" +
                   "new_room pit damage: " + f"{new_room.pit_damage}" + "\n" +
-                  "new_room contents are: " + f"{new_room.contents}" + "\n" +
-                  "Adventurer status right now:" + f"{adventurer}"
+                  "new_room contents are: " + f"{new_room.contents}" + "\n"
                 )
+            # after entering the new room calculate the changes (H/V/P/M)
 
-            # here we could do some modifications or math deductions of the items. eg potions found, used, health pot changed etc.
+            adventurer.add_potions(dungeon.collect_potions())
+            if dungeon.collect_pillars():
+                adventurer.add_pillar(dungeon.collect_pillars())  # question: is content here referring multiple things, like H/V or multiply pillars?
+            if new_room.pit_damage > 0:
+                adventurer.damage_adventurer(new_room.pit_damage)
             # report the most current status to the player, eg: print(f"{adventurer}")
+            # print adventurer status
+            print("Adventurer status listed below: \n" + f"{adventurer}")
 
             print("Print all the visited rooms: ")
-            self.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
-            print(dungeon.get_visible_dungeon_string(self.visited_array))
+            self.map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
+
+            print(dungeon.get_visible_dungeon_string(self.map.visited_array()))
+            print("Debugging purpose, whole dungeon displayed below: ")
+            print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
 
         adv = Adventurer(adventurer_name, desired_difficulty)  # repeat creating the adventurer
         bool_flag2 = True
@@ -110,15 +119,15 @@ class Main:
         # show the players the valid options?
         command = input("Please enter command: ")
 
-    def create_visited_room_array(self):
-        for row in range(0, 20): # how to find out the size,change in the future  5x5;8x8;10x10
-            self.visited_array.append([])
-            for col in range(0, 20):
-                self.visited_array[row].append([])
-                self.visited_array[row][col] = False
-
-    def set_visited_room(self, row, col):
-        self.visited_array[row][col] = True
+    # def create_visited_room_array(self):
+    #     for row in range(0, 20): # how to find out the size,change in the future  5x5;8x8;10x10
+    #         self.visited_array.append([])
+    #         for col in range(0, 20):
+    #             self.visited_array[row].append([])
+    #             self.visited_array[row][col] = False
+    #
+    # def set_visited_room(self, row, col):
+    #     self.visited_array[row][col] = True
 
     def print_complete_menu(self):
         print("\nComplete commands of the game: \n"
