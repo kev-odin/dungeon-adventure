@@ -1,5 +1,5 @@
 '''
-Time used: 18 hours
+Time used: 20 hours
 xingguo
 '''
 
@@ -30,7 +30,7 @@ class Main:
         self.create_visited_room_array()
 
     def game_flow(self):  # menu loop
-        print("\nWelcome! \nprint game logo/rules/info here \n")  # read a text file to display the game logo
+        print("\nWelcome! \nGame logo or rules prints here \n")  # read a text file to display the game logo
         bool_flag = True
         while bool_flag:
             help_or_continue = input("Please enter:\n "
@@ -45,44 +45,55 @@ class Main:
                 continue # invalid input
 
         # another while game loop
-
         adventurer_name = input("Now please enter a name for your adventurer: ")
         desired_difficulty = input("Now please enter a difficulty level(easy/medium/hard/inhumane): ")
-        print("\nFollowing is your game, good luck!")
+        print("\nFollowing is your game, good luck!\n")
 
         # Creates a Dungeon Object with desired difficulty
-        db = DungeonBuilder()  # question: why all levels are the same size? 5;8;10;20?
-        # dungeon = db.build_dungeon()
-        dungeon =  db.build_dungeon(desired_difficulty)
+        db = DungeonBuilder(desired_difficulty)  # question: why all levels are the same size? 5;8;10;20?
+        dungeon = db.build_dungeon(desired_difficulty)
+        # dungeon =  db.build_dungeon(desired_difficulty) # question:
 
         # Creates a Adventurer Object
         adventurer = Adventurer(adventurer_name, desired_difficulty)
         self.set_visited_room(dungeon.entrance[0], dungeon.entrance[1])
-        print("Current room is displayed below: ")
-        print(dungeon.get_visible_dungeon_string(self.visited_array)) # print visited room
+
+        print("Entrance room displayed below: ") # we only want to print the current room
+        # print(dungeon.get_visible_dungeon_string(self.visited_array)) # print visited room
+        print(f"{dungeon.get_room(dungeon.entrance)}")
+
+        # print("Debugging purpose, whole dungeon displayed below: ")
+        # print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
 
         print("Adventurer status right now:")
         print(adventurer)
-        # print(dungeon.get_visible_dungeon_string()) # print whole dungeon
+
         while True:
             move = input("Based on your current room, please input your move: ")
             new_room = dungeon.move_adventurer(move)
+            print("Current room: \n"+f"{new_room}")
+            # adv_location = dungeon.adventurer_loc()
+            # print("I want to print out the current room!")
+            # print(dungeon.get_room(adv_location[0], adv_location[1]))
+
             print(
-                  "new_room health potion: " + str(new_room.health_potion) + "\n" +
-                  "new_room vision potion: " + str(new_room.vision_potion) + "\n" +
-                  "new_room pit damage: " + str(new_room.pit_damage) + "\n" +
-                  "new_room contents in general: " + str(new_room.contents)+ "\n" +
-                  adventurer.name + "'s status right now is: " + f"{adventurer}"
+                  "new_room health potion #: " + f"{new_room.health_potion}" + "\n" +
+                  "new_room vision potion #: " + f"{new_room.vision_potion}" + "\n" +
+                  "new_room pit damage: " + f"{new_room.pit_damage}" + "\n" +
+                  "new_room contents are: " + f"{new_room.contents}" + "\n" +
+                  "Adventurer status right now:" + f"{adventurer}"
                 )
 
             # here we could do some modifications or math deductions of the items. eg potions found, used, health pot changed etc.
             # report the most current status to the player, eg: print(f"{adventurer}")
 
+            print("Print all the visited rooms: ")
             self.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
             print(dungeon.get_visible_dungeon_string(self.visited_array))
 
         adv = Adventurer(adventurer_name, desired_difficulty)  # repeat creating the adventurer
-        while True:
+        bool_flag2 = True
+        while bool_flag2:
             if adv.is_alive() and adv.has_all_pillars() and dungeon.adventurer_loc() == dungeon.exit(): # if 1. alive 2. get the 4 pillars  3.arrived at the exit
                 print("Congrats! you escaped the dungeon successfully")
                 break
@@ -100,9 +111,9 @@ class Main:
         command = input("Please enter command: ")
 
     def create_visited_room_array(self):
-        for row in range(0, 8): # how to find out the size,change in the future  5x5;8x8;10x10
+        for row in range(0, 20): # how to find out the size,change in the future  5x5;8x8;10x10
             self.visited_array.append([])
-            for col in range(0, 8):
+            for col in range(0, 20):
                 self.visited_array[row].append([])
                 self.visited_array[row][col] = False
 
