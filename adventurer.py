@@ -1,4 +1,4 @@
-# Kevin"s Time Tracker: 13 hours
+# Kevin"s Time Tracker: 14 hours
 import random
 
 class Adventurer:
@@ -53,6 +53,13 @@ class Adventurer:
                 room_health, room_vision = room_potions
                 self.health_pots += room_health
                 self.vision_pots += room_vision
+
+                if room_health != 0:
+                    print(f"{self.name} found {room_health} health potion{self._pluralize(room_health)}.")
+
+                if room_vision != 0:
+                    print(f"{self.name} found {room_vision} vision potion{self._pluralize(room_vision)}.")
+
             else:
                 raise TypeError("Potion values are not integers.")
         else:
@@ -77,8 +84,8 @@ class Adventurer:
         :param: int - damage values that will decrement current health
         """
         if isinstance(pit_damage, int):
-            plural = "s" if pit_damage != 1 else ""
-            print(f"{self.name} fell into a pit and took {pit_damage} point{plural} of damage.")
+            print(f"{self.name} fell into a pit and took {pit_damage} "
+                  f"point{self._pluralize(pit_damage)} of damage.")
 
             new_health = self.current_hitpoints - pit_damage
             if new_health <= 0:
@@ -198,6 +205,20 @@ class Adventurer:
         player_stats += f"{self.vision_pots}\n"
         player_stats += f"{self.pillars_collected}\n"
         return player_stats
+
+    @staticmethod
+    def _pluralize(value):
+        """Method to determine if a value would be a plural value.
+        :param value: quantity to assess
+        :type value: int
+        :return: an s or empty character
+        :rtype: string
+        """
+        if isinstance(value, int):
+            plural = "s" if value != 1 else ""
+            return plural
+        else:
+            raise TypeError("Incorrect value. Must pass in a integer.")
 
     @property
     def name(self):
