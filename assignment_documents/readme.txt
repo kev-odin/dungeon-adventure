@@ -3,8 +3,8 @@ Extra-credit attempts:
 Easy, Medium, Hard, and Inhumane difficulty in dungeon (and consequently rooms!) with a simple builder!
 
 What we worked on & how long:
-Kevin (Total time: 29 hours)
-UML beauty - 2.5 hours
+Kevin (Total time: 30 hours)
+UML beauty - 4 hours
 adventurer.py - 13 hours
 health_potion.py - 2 hours
 vision_potion.py - 2 hours
@@ -12,9 +12,9 @@ potion_factory.py - 1 hour
 testing - 8 hours
 (observer, observable?) - removed from PR 
 
-Xingguo
-map.py
-dungeon_adventure.py
+Xingguo - 25 hours
+map.py - 1 hour
+main.py - 24 hours
 
 Steph -> Current time spent: 30 hours total so far?!
 I need to stop refactoring code for fun and writing a bunch of tests.
