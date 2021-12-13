@@ -4,22 +4,34 @@ xingguo
 '''
 
 from adventurer import Adventurer
-from dungeon import Dungeon
+# from dungeon import Dungeon
 from dungeon_builder import DungeonBuilder
-from health_potion import HealthPotion
-from vision_potion import VisionPotion
+# from health_potion import HealthPotion
+# from vision_potion import VisionPotion
 from map import Map
-from potion import Potion
+# from potion import Potion
 from potion_factory import PotionFactory
 
 class Main:
-    '''
+    """
     main method that contains the main logic for the game
-    '''
-    def __init__(self):
-        pass
+    when choosing adventurer names:
+        "gary" : hidden name for all pillars collected
+        "kevin" : hidden name for pre collected health and vision potion
+        "tom" : hidden name for unlimited hit points.
+    when playing the game:
+        "w": hidden option for testing that prints out the entire Dungeon.
+    """
+
+    # def __init__(self):
+    #     pass
 
     def game_flow(self):
+        """
+        Introduces the game describing what the game is about and how to play
+        Creates a Dungeon Object and a Adventurer Object
+•       Obtains the name of the adventurer and difficulty level from the user
+        """
         welcome_page = """
 ____                                          
 |    \  _ _  ___  ___  ___  ___  ___           
@@ -98,6 +110,8 @@ Good luck!!!
                     adventurer.has_all_pillars() and \
                     dungeon.adventurer_loc == dungeon.exit:
                 print("\n:) Congrats! you win the game!")
+                print("Whole dungeon displayed below: ")
+                print(dungeon.get_visible_dungeon_string())  # print whole dungeon
                 break
             elif not adventurer.is_alive():
                 print("\n:( Uh-oh, better luck next time!")
@@ -115,9 +129,6 @@ Good luck!!!
                         print("No health potion in "+adventurer.name+"'s inventory yet.")
                         continue
                 elif move_or_command == "v":
-                    # dungeon.total_rows  # 5
-                    # dungeon.total_columns  # 5
-                    # dungeon.adventurer_loc #(4,1)
                     if adventurer.vision_pots > 0:
                         for i in range(dungeon.adventurer_loc[0]-1, dungeon.adventurer_loc[0]+2):
                             for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2):
@@ -136,7 +147,7 @@ Good luck!!!
                     print(dungeon.get_visible_dungeon_string(map_one.visited_array()))
                 elif move_or_command == "w":   # m: show whole dungeon
                     print("Whole dungeon displayed below: ")
-                    print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
+                    print(dungeon.get_visible_dungeon_string()) # print whole dungeon
                 elif move_or_command == "q":  # quit
                     print("Thanks,Bye!")
                     break
@@ -149,6 +160,8 @@ Good luck!!!
                         print("No doors in that direction, choose again")
                         continue
 
+                    if new_room.contents == " ":
+                        print("Nothing found in this room.")
                     if new_room.health_potion:
                         print(adventurer.name + " found " + f"{new_room.health_potion}" + " health potion!")
                     if new_room.vision_potion:
@@ -196,7 +209,6 @@ Good luck!!!
               "\nStatus commands: \n"
               "\ti: show adventurer info\n"
               "\tm: show adventurer map\n"
-              "\tw: show whole dungeon map\n"
               "Item commands: \n"
               "\tp: use health potion\n"
               "\tv: use vision potion\n"
