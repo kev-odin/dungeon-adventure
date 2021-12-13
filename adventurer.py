@@ -1,6 +1,6 @@
-# Kevin"s Time Tracker: 15 hours
+# Kevin"s Time Tracker: 16 hours
+from health_potion import HealthPotion
 import random
-
 class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
@@ -93,18 +93,24 @@ class Adventurer:
             else:
                 self.current_hitpoints = new_health
 
-    def heal_adventurer(self, heal_amount):
+    def heal_adventurer(self, heal_pot : HealthPotion):
         """ Helper method to heal adventurer based on the health potion.
         To be used by the main method. Adventurer has to be alive to use potion.
-        :param: int - heal values that will increment current health
+        :param: HealthPotion - heal values that will increment current health
+        :raise: TypeError - raised when a health potion is not a parameter
         """
-        if isinstance(heal_amount, int):
-            new_health = self.current_hitpoints + heal_amount
+        if isinstance(heal_pot, HealthPotion):
+            new_health = self.current_hitpoints + heal_pot.heal_amount
+            
             if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
-
+            print(f"{self.name} drank {heal_pot.name} and restored {heal_pot.heal_amount} hit point{self._pluralize(heal_pot.heal_amount)}.")
+        
+        else:
+            raise TypeError("Health potion needs to passed into this method.")
+        
     def has_health_potion(self):
         """ Helper method to decrement health potions in the adventurer's
         inventory. To be used by the main method.
@@ -112,7 +118,6 @@ class Adventurer:
         """
         if self.health_pots > 0:
             self.health_pots -= 1
-            print(f"{self.name} used a health potion.")
             return True
 
         print(f"{self.name} does not have a health potion.")
@@ -171,17 +176,6 @@ class Adventurer:
         This took longer than I care to admit...
         :return: string
         """
-        pillar_a = "Python: What if every object was a dictionary?"
-        pillar_p = "If you hold a UNIX shell to your ear, can you hear the C?"
-        pillar_i = "Where are my semi-colons?"
-        pillar_e = "If code works, do not touch it."
-
-        readable_dict = {
-            "A" : ("Abstraction", pillar_a),
-            "P" : ("Polymorphism", pillar_p),
-            "I" : ("Inheritance", pillar_i),
-            "E" : ("Encapsulation" , pillar_e)
-        }
 
         pillar_str = []
         status_str = []

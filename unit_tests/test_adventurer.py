@@ -2,6 +2,7 @@
 
 import unittest
 from adventurer import Adventurer
+from health_potion import HealthPotion
 
 class AdventurerTest(unittest.TestCase):
 
@@ -232,15 +233,17 @@ class AdventurerTest(unittest.TestCase):
         self.assertFalse(hero.has_vision_potion())
 
     def test_hero_heal_potion(self):
-        mock_heal_amount = 25
+        mock_potion = HealthPotion(random=False)
+        mock_potion.heal_amount = 25
         hero = Adventurer("Bob")
         hero.current_hitpoints = 1
-        hero.heal_adventurer(mock_heal_amount)
+        hero.heal_adventurer(mock_potion)
         self.assertEqual(26, hero.current_hitpoints, "Adventurer should have 26 hitpoints after healing.")
 
     def test_hero_heal_potion_over(self):
-        mock_heal_amount = 250
+        mock_potion = HealthPotion(random=False)
+        mock_potion.heal_amount = 250
         hero = Adventurer("Bob")
         hero.current_hitpoints = 1
-        hero.heal_adventurer(mock_heal_amount)
+        hero.heal_adventurer(mock_potion)
         self.assertEqual(hero.max_hitpoints, hero.current_hitpoints, "Adventurer should have the same as max hit points.")
