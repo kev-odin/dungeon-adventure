@@ -1,5 +1,5 @@
 '''
-Time used: 26 hours
+Time used: 28 hours
 xingguo
 '''
 
@@ -46,7 +46,7 @@ Good luck!!!
                 """
         print(welcome_page)
         bool_flag = True
-        while bool_flag:  # menu loop
+        while bool_flag:
             help_or_continue = input(
                                      "\'H\' : for all commands of the game\n"
                                      "\'C\' : for continue \nPlease enter your choice: "
@@ -109,13 +109,21 @@ Good luck!!!
                         health_potion_created = PotionFactory.create_potion("health")
                         adventurer.use_health_potion()
                         heal_num = health_potion_created.heal_amount
+                        print("You used a health potion, which healed your adventurer "+ str(heal_num)+" hit points.")
                         adventurer.heal_adventurer(heal_num)
                     else:
                         print("No health potion in your inventory yet.")
                         continue
                 elif move_or_command.lower() == "v":
-                    print("You used a vision potion, enter \'m\' for the revealed rooms on the map")
-                    pass
+                    # dungeon.total_rows  # 5
+                    # dungeon.total_columns  # 5
+                    # dungeon.adventurer_loc #(4,1)
+                    for i in range(dungeon.adventurer_loc[0]-1, dungeon.adventurer_loc[0]+2):
+                        for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2):
+                            if self.room_in_bound(i,j,dungeon):
+                                map_one.set_visited_room(i,j)
+                    print("You used a vision potion, which revealed all the valid rooms around your adventurer.")
+                    print(dungeon.get_visible_dungeon_string(map_one.visited_array()))
                 elif move_or_command.lower() == "i":   # i: show adventurer info
                     print("Adventurer status listed below: \n" + f"{adventurer}")
                 elif move_or_command.lower() == "m":   # m: show adventurer map
@@ -204,6 +212,14 @@ Good luck!!!
                 # report the most current status to the player, eg: print(f"{adventurer}")
                 # print adventurer status
                 # print("Adventurer status listed below: \n" + f"{adventurer}")
+
+    def room_in_bound(self, row, col, dungeon):
+        if row < 0 or row > dungeon.total_rows:
+            return False
+        elif col < 0 or col > dungeon.total_columns:
+            return False
+        else:
+            return True
 
     def new_room_updates(self, *args):
         pass
