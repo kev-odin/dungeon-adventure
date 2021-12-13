@@ -1,6 +1,6 @@
-# Kevin"s Time Tracker: 13 hours
+# Kevin"s Time Tracker: 16 hours
+from health_potion import HealthPotion
 import random
-
 class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
@@ -42,17 +42,24 @@ class Adventurer:
         """
         return all(pillar is True for pillar in self.pillars_collected.values())
 
-    def add_potions(self, potions):
+    def add_potions(self, room_potions):
         """ Helper method to add potions found in a room to the adventurer's
         inventory. To be used by the main method.
         :param: tuple (health_potions : int, vision_potions : int)
         :raise: TypeError when tuple length is not 2
         """
-        if len(potions) == 2:
-            if all(isinstance(val, int) for val in potions):
-                room_health, room_vision = potions
+        if len(room_potions) == 2:
+            if all(isinstance(val, int) for val in room_potions):
+                room_health, room_vision = room_potions
                 self.health_pots += room_health
                 self.vision_pots += room_vision
+
+                if room_health != 0:
+                    print(f"{self.name} found {room_health} health potion{self._pluralize(room_health)}.")
+
+                if room_vision != 0:
+                    print(f"{self.name} found {room_vision} vision potion{self._pluralize(room_vision)}.")
+
             else:
                 raise TypeError("Potion values are not integers.")
         else:
@@ -63,12 +70,13 @@ class Adventurer:
         inventory. To be used by the main method.
         :param: str - pillar values: "A", "P", "I", "E"
         """
-        if isinstance(pillar, str):
-            for val in self.pillars_collected:
-                if val == pillar:
-                    self.pillars_collected[pillar] = True
-        else:
-            print("You should not see this message.")
+        if pillar is not None:
+            if isinstance(pillar, str):
+                for val in self.pillars_collected:
+                    if val == pillar:
+                        self.pillars_collected[pillar] = True
+            else:
+                print("You should not see this message.")
 
     def damage_adventurer(self, pit_damage):
         """ Helper method to damage adventurer based on the pit damage
@@ -76,7 +84,8 @@ class Adventurer:
         :param: int - damage values that will decrement current health
         """
         if isinstance(pit_damage, int):
-            print(f"{self.name} fell into a pit and took {pit_damage} points of damage.")
+            print(f"{self.name} fell into a pit and took {pit_damage} "
+                  f"point{self._pluralize(pit_damage)} of damage.")
 
             new_health = self.current_hitpoints - pit_damage
             if new_health <= 0:
@@ -84,37 +93,48 @@ class Adventurer:
             else:
                 self.current_hitpoints = new_health
 
-    def heal_adventurer(self, heal_amount):
+    def heal_adventurer(self, heal_pot : HealthPotion):
         """ Helper method to heal adventurer based on the health potion.
         To be used by the main method. Adventurer has to be alive to use potion.
-        :param: int - heal values that will increment current health
+        :param: HealthPotion - heal values that will increment current health
+        :raise: TypeError - raised when a health potion is not a parameter
         """
-        if isinstance(heal_amount, int):
-            new_health = self.current_hitpoints + heal_amount
+        if isinstance(heal_pot, HealthPotion):
+            new_health = self.current_hitpoints + heal_pot.heal_amount
+            
             if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
-
-    def use_health_potion(self):
+            print(f"{self.name} drank {heal_pot.name} and restored {heal_pot.heal_amount} hit point{self._pluralize(heal_pot.heal_amount)}.")
+        
+        else:
+            raise TypeError("Health potion needs to passed into this method.")
+        
+    def has_health_potion(self):
         """ Helper method to decrement health potions in the adventurer's
         inventory. To be used by the main method.
+        :return: boolean - True if adventurer is able to use a potion.
         """
         if self.health_pots > 0:
             self.health_pots -= 1
-            print(f"{self.name} used a health potion.")
-        else:
-            print(f"{self.name} does not have a health potion.")
+            return True
 
-    def use_vision_potion(self):
+        print(f"{self.name} does not have a health potion.")
+        return False
+
+    def has_vision_potion(self):
         """ Helper method to decrement vision potions in the adventurer's
         inventory. To be used by the main method.
+        :return: boolean - True if adventurer is able to use a potion.
         """
         if self.vision_pots > 0:
             self.vision_pots -= 1
             print(f"{self.name} used a vision potion.")
-        else:
-            print(f"{self.name} does not have a vision potion.")
+            return True
+
+        print(f"{self.name} does not have a vision potion.")
+        return False
 
     def _create_adventurer(self, name, challenge):
         """Helper method for character creation. Difficulty and name are checked,
@@ -156,9 +176,10 @@ class Adventurer:
         This took longer than I care to admit...
         :return: string
         """
+
         pillar_str = []
         status_str = []
-        readable = ""
+        readable = "| "
 
         for pillar in self.pillars_collected:
             if pillar == "A":
@@ -196,6 +217,20 @@ class Adventurer:
         player_stats += f"{self.vision_pots}\n"
         player_stats += f"{self.pillars_collected}\n"
         return player_stats
+
+    @staticmethod
+    def _pluralize(value):
+        """Method to determine if a value would be a plural value.
+        :param value: quantity to assess
+        :type value: int
+        :return: an s or empty character
+        :rtype: string
+        """
+        if isinstance(value, int):
+            plural = "s" if value != 1 else ""
+            return plural
+        else:
+            raise TypeError("Incorrect value. Must pass in a integer.")
 
     @property
     def name(self):
@@ -323,19 +358,3 @@ class Adventurer:
         :return: str of dictionary values {pillar : bool}
         """
         return self.__pillars_collected
-
-
-    # Not sure why this setter does not work with the dictionary. Will need to re-examine.
-    # @pillars_collected.setter
-    # def pillars_collected(self, value):
-    #     """Setter for the pillars collected property
-
-    #     :param value: value of the pillar found in room
-    #     :type value: string
-    #     :raises KeyError: invalid key that is not found in the
-    #     """
-    #     if isinstance(value, str):
-    #         if value in self.pillars_collected.keys():
-    #             self.pillars_collected[value] = True
-    #         else:
-    #             raise KeyError("Invalid key passed, valid pillar keys are: "A", "P", "I", "E"")

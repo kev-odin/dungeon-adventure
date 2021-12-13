@@ -113,14 +113,10 @@ Good luck!!!
             else:
                 move_or_command = (input("Your move or command: ")).lower()
                 if move_or_command == "p":
-                    if adventurer.health_pots > 0:
+                    if adventurer.has_health_potion():
                         health_potion_created = PotionFactory.create_potion("health")
-                        adventurer.use_health_potion()
-                        heal_num = health_potion_created.heal_amount
-                        print(adventurer.name+" used a health potion, which healed "+ str(heal_num)+" hit points.")
-                        adventurer.heal_adventurer(heal_num)
+                        adventurer.heal_adventurer(health_potion_created)
                     else:
-                        print("No health potion in "+adventurer.name+"'s inventory yet.")
                         continue
                 elif move_or_command == "v":
                     if adventurer.vision_pots > 0:
@@ -146,9 +142,9 @@ Good luck!!!
                     print("Thanks,Bye!")
                     break
                 elif move_or_command in ("north", "south", "west", "east"):
-                    # if dungeon.move_adventurer(move_or_command):
                     if dungeon.get_room(dungeon.adventurer_loc).get_door(move_or_command):
                         new_room = dungeon.move_adventurer(move_or_command)
+                        map_one.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1]) #!!
                         print("New_room displayed below: \n" + f"{new_room}")
                     else:
                         print("No doors in that direction, choose again")
@@ -156,10 +152,6 @@ Good luck!!!
 
                     if new_room.contents == " ":
                         print("Nothing found in this room.")
-                    if new_room.health_potion:
-                        print(adventurer.name + " found " + f"{new_room.health_potion}" + " health potion!")
-                    if new_room.vision_potion:
-                        print(adventurer.name + " found " + f"{new_room.vision_potion}" + " vision potion!")
                     if new_room.contents in ("A", "P", "I", "E"):
                         print("Pillar \"" + f"{new_room.contents}" + "\" is found!!")
                     adventurer.add_potions(dungeon.collect_potions())
