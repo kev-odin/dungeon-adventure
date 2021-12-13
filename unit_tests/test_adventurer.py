@@ -1,4 +1,4 @@
-# Kevin's Time Tracker: 4.5 hour
+# Kevin's Time Tracker: 5 hour
 
 import unittest
 from adventurer import Adventurer
@@ -158,7 +158,7 @@ class AdventurerTest(unittest.TestCase):
         hero = Adventurer("Bob")
         hero.add_pillar(pillar_list[1])
         self.assertFalse(hero.pillars_collected["A"])
-    
+
     def test_hero_pit_damage_alive(self):
         mock_pit = 25
         hero = Adventurer("Bob")
@@ -187,29 +187,49 @@ class AdventurerTest(unittest.TestCase):
         hero.damage_adventurer(mock_pit)
         self.assertEqual(0, hero.current_hitpoints, "0 health points should be left")
 
-    def test_hero_potion_use_health_potion(self):
+    def test_hero_potion_has_health_potion(self):
         hero = Adventurer("Bob")
         hero.health_pots = 1
-        hero.use_health_potion()
+        hero.has_health_potion()
         self.assertEqual(0, hero.health_pots, "Adventurer should decrement from health potion inventory, should be 0.")
 
-    def test_hero_potion_use_health_potion_zero(self):
+    def test_hero_potion_has_health_potion_zero(self):
         hero = Adventurer("Bob")
         hero.health_pots = 0
-        hero.use_health_potion()
+        hero.has_health_potion()
         self.assertEqual(0, hero.health_pots, "Adventurer should have 0 health potions.")
 
-    def test_hero_potion_use_vision_potion(self):
+    def test_hero_potion_has_vision_potion(self):
         hero = Adventurer("Bob")
         hero.vision_pots = 1
-        hero.use_vision_potion()
+        hero.has_vision_potion()
         self.assertEqual(0, hero.vision_pots, "Adventurer should decrement from vision potion inventory, should be 0.")
 
-    def test_hero_potion_use_vision_potion_zero(self):
+    def test_hero_potion_has_vision_potion_zero(self):
         hero = Adventurer("Bob")
         hero.vision_pots = 0
-        hero.use_health_potion()
+        hero.has_health_potion()
         self.assertEqual(0, hero.vision_pots, "Adventurer should have 0 vision potions.")
+
+    def test_hero_potion_has_health_potion_true(self):
+        hero = Adventurer("Bob")
+        hero.health_pots = 1
+        self.assertTrue(hero.has_health_potion())
+
+    def test_hero_potion_has_health_potion_false(self):
+        hero = Adventurer("Bob")
+        hero.health_pots = 0
+        self.assertFalse(hero.has_health_potion())
+
+    def test_hero_potion_has_vision_potion_true(self):
+        hero = Adventurer("Bob")
+        hero.vision_pots = 1
+        self.assertTrue(hero.has_vision_potion())
+
+    def test_hero_potion_has_vision_potion_false(self):
+        hero = Adventurer("Bob")
+        hero.vision_pots = 0
+        self.assertFalse(hero.has_vision_potion())
 
     def test_hero_heal_potion(self):
         mock_heal_amount = 25

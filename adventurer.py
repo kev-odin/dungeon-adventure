@@ -1,4 +1,4 @@
-# Kevin"s Time Tracker: 14 hours
+# Kevin"s Time Tracker: 15 hours
 import random
 
 class Adventurer:
@@ -105,25 +105,31 @@ class Adventurer:
             else:
                 self.current_hitpoints = new_health
 
-    def use_health_potion(self):
+    def has_health_potion(self):
         """ Helper method to decrement health potions in the adventurer's
         inventory. To be used by the main method.
+        :return: boolean - True if adventurer is able to use a potion.
         """
         if self.health_pots > 0:
             self.health_pots -= 1
             print(f"{self.name} used a health potion.")
-        else:
-            print(f"{self.name} does not have a health potion.")
+            return True
 
-    def use_vision_potion(self):
+        print(f"{self.name} does not have a health potion.")
+        return False
+
+    def has_vision_potion(self):
         """ Helper method to decrement vision potions in the adventurer's
         inventory. To be used by the main method.
+        :return: boolean - True if adventurer is able to use a potion.
         """
         if self.vision_pots > 0:
             self.vision_pots -= 1
             print(f"{self.name} used a vision potion.")
-        else:
-            print(f"{self.name} does not have a vision potion.")
+            return True
+
+        print(f"{self.name} does not have a vision potion.")
+        return False
 
     def _create_adventurer(self, name, challenge):
         """Helper method for character creation. Difficulty and name are checked,
@@ -165,6 +171,18 @@ class Adventurer:
         This took longer than I care to admit...
         :return: string
         """
+        pillar_a = "Python: What if every object was a dictionary?"
+        pillar_p = "If you hold a UNIX shell to your ear, can you hear the C?"
+        pillar_i = "Where are my semi-colons?"
+        pillar_e = "If code works, do not touch it."
+
+        readable_dict = {
+            "A" : ("Abstraction", pillar_a),
+            "P" : ("Polymorphism", pillar_p),
+            "I" : ("Inheritance", pillar_i),
+            "E" : ("Encapsulation" , pillar_e)
+        }
+
         pillar_str = []
         status_str = []
         readable = "| "
