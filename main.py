@@ -93,6 +93,7 @@ Good luck!!!
             # print(f"{dungeon.exit}")
 
             # if 1. alive 2. get the 4 pillars  3.arrived at the exit
+
             if adventurer.is_alive() and \
                     adventurer.has_all_pillars() and \
                     dungeon.adventurer_loc == dungeon.exit:
@@ -104,11 +105,16 @@ Good luck!!!
             else:
                 move_or_command = input("Please input your move or command: ")
                 if move_or_command.lower() == "p":
-                    health_potion_created = PotionFactory.create_potion("health")
-                    adventurer.use_health_potion()
-                    heal_num = health_potion_created.heal_amount
-                    adventurer.heal_adventurer(heal_num)
+                    if adventurer.health_pots > 0:
+                        health_potion_created = PotionFactory.create_potion("health")
+                        adventurer.use_health_potion()
+                        heal_num = health_potion_created.heal_amount
+                        adventurer.heal_adventurer(heal_num)
+                    else:
+                        print("No health potion in your inventory yet.")
+                        continue
                 elif move_or_command.lower() == "v":
+                    print("You used a vision potion, enter \'m\' for the revealed rooms on the map")
                     pass
                 elif move_or_command.lower() == "i":   # i: show adventurer info
                     print("Adventurer status listed below: \n" + f"{adventurer}")
@@ -122,19 +128,50 @@ Good luck!!!
                 elif move_or_command.lower() == "q":  # quit
                     print("Thanks,Bye!")
                     break
-                elif move_or_command.lower() == "north":
-                    new_room = dungeon.move_adventurer("north")
-                elif move_or_command.lower() == "south":
-                    new_room = dungeon.move_adventurer("south")
-                elif move_or_command.lower() == "west":
-                    new_room = dungeon.move_adventurer("west")
-                elif move_or_command.lower() == "east":
-                    new_room = dungeon.move_adventurer("east")
+                elif move_or_command.lower() in ("north", "south", "west", "east"):
+                    new_room = dungeon.move_adventurer(move_or_command.lower().lower())
+
+                    print("New_room displayed below: \n" + f"{new_room}")
+
+                    if new_room.health_potion:
+                        print(adventurer.name + " found " + f"{new_room.health_potion}" + " health potion!")
+                    if new_room.vision_potion:
+                        print(adventurer.name + " found " + f"{new_room.vision_potion}" + " vision potion!")
+                    if new_room.contents in ("A", "P", "I", "E"):
+                        print("Pillar \"" + f"{new_room.contents}" + "\" is found!!")
+                        # if new_room.contents == "A":
+                        #     print(adventurer.name + " found pillar of Abstraction!")
+                        # elif new_room.contents == "P":
+                        #     print(adventurer.name + " found pillar of Polymorphism!")
+                        # elif new_room.contents == "I":
+                        #     print(adventurer.name + " found pillar of Inheritance!")
+                        # elif new_room.contents == "E":
+                        #     print(adventurer.name + " found pillar of Encapsulation!")
+                    adventurer.add_potions(dungeon.collect_potions())
+                    pillar_str = dungeon.collect_pillars()
+                    if pillar_str:
+                        adventurer.add_pillar(pillar_str)
+                    if new_room.pit_damage > 0:
+                        adventurer.damage_adventurer(new_room.pit_damage)
+
+
+
+
+
+                # elif move_or_command.lower() == "south":
+                #     new_room = dungeon.move_adventurer("south")
+                #     print("New_room displayed below: \n" + f"{new_room}")
+                # elif move_or_command.lower() == "west":
+                #     new_room = dungeon.move_adventurer("west")
+                #     print("New_room displayed below: \n" + f"{new_room}")
+                # elif move_or_command.lower() == "east":
+                #     new_room = dungeon.move_adventurer("east")
+                #     print("New_room displayed below: \n" + f"{new_room}")
                 else:
                     print("Invalid input, choose again.")
                     continue
 
-                print("New_room displayed below: \n"+f"{new_room}")
+
 
                 # print the new room status(H/V/P/M)
                 # print(
@@ -144,30 +181,52 @@ Good luck!!!
                 #       "New_room contents: " + f"{new_room.contents}" + "\n"
                 #     )
 
-                if new_room.health_potion:
-                    print(adventurer.name+" found " + f"{new_room.health_potion}" + " health potion!")
-                if new_room.vision_potion:
-                    print(adventurer.name+" found " + f"{new_room.vision_potion}" + " vision potion!")
-                if new_room.contents:
-                    if new_room.contents == "A":
-                        print(adventurer.name+" found pillar of Abstraction!")
-                    elif new_room.contents == "P":
-                        print(adventurer.name+" found pillar of Polymorphism!")
-                    elif new_room.contents == "I":
-                        print(adventurer.name+" found pillar of Inheritance!")
-                    elif new_room.contents == "E":
-                        print(adventurer.name+" found pillar of Encapsulation!")
-                adventurer.add_potions(dungeon.collect_potions())
-                pillar_str = dungeon.collect_pillars()
-                if pillar_str:
-                    adventurer.add_pillar(pillar_str)
-                if new_room.pit_damage > 0:
-                    adventurer.damage_adventurer(new_room.pit_damage)
+                # if new_room.health_potion:
+                #     print(adventurer.name+" found " + f"{new_room.health_potion}" + " health potion!")
+                # if new_room.vision_potion:
+                #     print(adventurer.name+" found " + f"{new_room.vision_potion}" + " vision potion!")
+                # if new_room.contents:
+                #     if new_room.contents == "A":
+                #         print(adventurer.name+" found pillar of Abstraction!")
+                #     elif new_room.contents == "P":
+                #         print(adventurer.name+" found pillar of Polymorphism!")
+                #     elif new_room.contents == "I":
+                #         print(adventurer.name+" found pillar of Inheritance!")
+                #     elif new_room.contents == "E":
+                #         print(adventurer.name+" found pillar of Encapsulation!")
+                # adventurer.add_potions(dungeon.collect_potions())
+                # pillar_str = dungeon.collect_pillars()
+                # if pillar_str:
+                #     adventurer.add_pillar(pillar_str)
+                # if new_room.pit_damage > 0:
+                #     adventurer.damage_adventurer(new_room.pit_damage)
 
                 # report the most current status to the player, eg: print(f"{adventurer}")
                 # print adventurer status
                 # print("Adventurer status listed below: \n" + f"{adventurer}")
 
+    def new_room_updates(self, *args):
+        pass
+        # new_room = dungeon.move_adventurer(*args)
+        # if new_room.health_potion:
+        #     print(adventurer.name + " found " + f"{new_room.health_potion}" + " health potion!")
+        # if new_room.vision_potion:
+        #     print(adventurer.name + " found " + f"{new_room.vision_potion}" + " vision potion!")
+        # if new_room.contents:
+        #     if new_room.contents == "A":
+        #         print(adventurer.name + " found pillar of Abstraction!")
+        #     elif new_room.contents == "P":
+        #         print(adventurer.name + " found pillar of Polymorphism!")
+        #     elif new_room.contents == "I":
+        #         print(adventurer.name + " found pillar of Inheritance!")
+        #     elif new_room.contents == "E":
+        #         print(adventurer.name + " found pillar of Encapsulation!")
+        # adventurer.add_potions(dungeon.collect_potions())
+        # pillar_str = dungeon.collect_pillars()
+        # if pillar_str:
+        #     adventurer.add_pillar(pillar_str)
+        # if new_room.pit_damage > 0:
+        #     adventurer.damage_adventurer(new_room.pit_damage)
 
 
     def print_complete_menu(self):
