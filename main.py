@@ -1,7 +1,7 @@
-'''
-Time used: 28 hours
+"""
+Time used: 30 hours
 xingguo
-'''
+"""
 
 from adventurer import Adventurer
 # from dungeon import Dungeon
@@ -99,18 +99,12 @@ Good luck!!!
         print("Entrance room displayed below: ")
         print(f"{dungeon.get_room(dungeon.entrance)}") # print current room
 
-        # print("Map to show visited room: ")
-        # print(dungeon.get_visible_dungeon_string(map_one.visited_array())) # map to print visited room
-
-        # print("Whole dungeon displayed below: ")
-        # print(dungeon.get_visible_dungeon_string()) # print whole dungeon, debugging purpose now
-
         while True:  # another while game loop
             if adventurer.is_alive() and \
                     adventurer.has_all_pillars() and \
                     dungeon.adventurer_loc == dungeon.exit:
-                print("\n:) Congrats! you win the game!")
-                print("Whole dungeon displayed below: ")
+                print("\n:) Woo-hoo! you win the game!")
+                print("\nWhole dungeon displayed below: ")
                 print(dungeon.get_visible_dungeon_string())  # print whole dungeon
                 break
             elif not adventurer.is_alive():
@@ -168,14 +162,6 @@ Good luck!!!
                         print(adventurer.name + " found " + f"{new_room.vision_potion}" + " vision potion!")
                     if new_room.contents in ("A", "P", "I", "E"):
                         print("Pillar \"" + f"{new_room.contents}" + "\" is found!!")
-                        # if new_room.contents == "A":
-                        #     print(adventurer.name + " found pillar of Abstraction!")
-                        # elif new_room.contents == "P":
-                        #     print(adventurer.name + " found pillar of Polymorphism!")
-                        # elif new_room.contents == "I":
-                        #     print(adventurer.name + " found pillar of Inheritance!")
-                        # elif new_room.contents == "E":
-                        #     print(adventurer.name + " found pillar of Encapsulation!")
                     adventurer.add_potions(dungeon.collect_potions())
                     pillar_str = dungeon.collect_pillars()
                     if pillar_str:
@@ -194,7 +180,6 @@ Good luck!!!
                           )
                     continue
 
-
     def room_in_bound(self, row, col, dungeon):
         if row < 0 or row > dungeon.total_rows:
             return False
@@ -205,7 +190,6 @@ Good luck!!!
 
     def print_complete_menu(self):
         print(
-
               "\nStatus commands: \n"
               "\ti: show adventurer info\n"
               "\tm: show adventurer map\n"
@@ -220,6 +204,7 @@ Good luck!!!
               "\twest: move left\n"
               "\teast: move right\n"
         )
+
 
 if __name__ == "__main__":
     main = Main()

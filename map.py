@@ -5,7 +5,6 @@ class Map:
         self._row = row
         self._col = col
 
-
     def create_visited_room_array(self):
         for row in range(0, 20):
             self.__visited_array.append([])
