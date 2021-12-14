@@ -1,5 +1,5 @@
 """
-Time used: 30 hours
+Time used: 31 hours
 xingguo
 """
 
@@ -50,7 +50,7 @@ Your goal:
  
 Items randomly placed in each room:
      1⃣ Healing potion(random heal amount),
-     2⃣ Vision potion(reveal adjacent room), 
+     2⃣ Vision potion(reveal adjacent rooms), 
      3⃣ Pit(random damage to adventurer), 
      4⃣ OOP pillars("A","P","I","E").    
 Good luck!!! 
@@ -92,9 +92,9 @@ Good luck!!!
         adventurer = Adventurer(adventurer_name, desired_difficulty)
         # print("Adventurer status listed below: \n" + f"{adventurer}")
 
-        # why we need to create the map here?
-        map_one = Map(dungeon.total_rows, dungeon.total_columns)
-        map_one.set_visited_room(dungeon.entrance[0], dungeon.entrance[1])
+        # create the map to store the starting location
+        adv_curr_map = Map(dungeon.total_rows, dungeon.total_columns)
+        adv_curr_map.set_visited_room(dungeon.entrance[0], dungeon.entrance[1])
 
         print("Entrance room displayed below: ")
         print(f"{dungeon.get_room(dungeon.entrance)}") # print current room
@@ -120,12 +120,12 @@ Good luck!!!
                         continue
                 elif move_or_command == "v":
                     if adventurer.vision_pots > 0:
-                        for i in range(dungeon.adventurer_loc[0]-1, dungeon.adventurer_loc[0]+2):
-                            for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2):
+                        for i in range(dungeon.adventurer_loc[0]-1, dungeon.adventurer_loc[0]+2): # row above and row below adv
+                            for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2): # col on adv's left and right
                                 if self.room_in_bound(i,j,dungeon):
-                                    map_one.set_visited_room(i,j)
+                                    adv_curr_map.set_visited_room(i,j) # we set the adjacent room's visibility as True
                         print(adventurer.name+" used a vision potion, which revealed all valid adjacent rooms.")
-                        print(dungeon.get_visible_dungeon_string(map_one.visited_array()))
+                        print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
                     else:
                         print("No vision potion in " + adventurer.name + "'s inventory yet.")
                         continue
@@ -133,8 +133,8 @@ Good luck!!!
                     print(adventurer.name+"'s status listed below: \n" + f"{adventurer}")
                 elif move_or_command == "m":   # m: show adventurer map
                     print("Currently visited rooms displayed below: ")
-                    map_one.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
-                    print(dungeon.get_visible_dungeon_string(map_one.visited_array()))
+                    adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
+                    print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
                 elif move_or_command == "w":   # m: show whole dungeon
                     print("Whole dungeon displayed below: ")
                     print(dungeon.get_visible_dungeon_string()) # print whole dungeon
@@ -144,7 +144,7 @@ Good luck!!!
                 elif move_or_command in ("north", "south", "west", "east"):
                     if dungeon.get_room(dungeon.adventurer_loc).get_door(move_or_command):
                         new_room = dungeon.move_adventurer(move_or_command)
-                        map_one.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1]) #!!
+                        adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1]) #update the visited rooms
                         print("New_room displayed below: \n" + f"{new_room}")
                     else:
                         print("No doors in that direction, choose again")
