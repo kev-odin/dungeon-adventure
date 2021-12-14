@@ -1,8 +1,8 @@
 class Map:
-    def __init__(self, row, col):
+    def __init__(self, rows, cols):
         self.__visited_array = []
-        self.__row = row
-        self.__col = col
+        self.__rows = rows
+        self.__cols = cols
         self.create_visited_room_array()
 
     def create_visited_room_array(self):
@@ -17,3 +17,15 @@ class Map:
 
     def visited_array(self):
         return self.__visited_array
+
+    def get_rows(self):
+        return self.__rows
+
+    def set_rows(self, new_rows):
+        self.__rows = new_rows
+
+    def get_cols(self):
+        return self.__cols
+
+    def set_cols(self, new_cols):
+        self.__cols = new_cols

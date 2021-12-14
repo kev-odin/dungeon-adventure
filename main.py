@@ -124,6 +124,7 @@ Good luck!!!
                             for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2): # col on adv's left and right
                                 if self.room_in_bound(i,j,dungeon):
                                     adv_curr_map.set_visited_room(i,j) # we set the adjacent room's visibility as True
+                        adventurer.vision_pots -= 1 # decrease the vision potion if used one
                         print(adventurer.name+" used a vision potion, which revealed all valid adjacent rooms.")
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
                     else:
