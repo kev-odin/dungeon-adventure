@@ -101,13 +101,13 @@ class Adventurer:
         """
         if isinstance(heal_pot, HealthPotion):
             new_health = self.current_hitpoints + heal_pot.heal_amount
-
+            
             if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
             print(f"{self.name} drank {heal_pot.name} and restored {heal_pot.heal_amount} hit point{self._pluralize(heal_pot.heal_amount)}.")
-
+        
         else:
             raise TypeError("Health potion needs to passed into this method.")
         
@@ -130,7 +130,7 @@ class Adventurer:
         """
         if self.vision_pots > 0:
             self.vision_pots -= 1
-            print(f"{self.name} used a vision potion.")
+            print(f"{self.name} used a vision potion, which revealed all valid adjacent rooms.")
             return True
 
         print(f"{self.name} does not have a vision potion.")
