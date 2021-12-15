@@ -1,15 +1,6 @@
-"""
-Time used: 34 hours
-xingguo
-"""
-
 from adventurer import Adventurer
-# from dungeon import Dungeon
 from dungeon_builder import DungeonBuilder
-# from health_potion import HealthPotion
-# from vision_potion import VisionPotion
 from map import Map
-# from potion import Potion
 from potion_factory import PotionFactory
 
 class Main:
@@ -53,8 +44,7 @@ Items randomly placed in each room:
 Good luck!!! 
                 """
         print(welcome_page)
-        bool_flag = True
-        while bool_flag:
+        while True:
             help_or_continue = input(
                                      "\'h\' : for all commands of the game\n"
                                      "\'c\' : for continue \n"
@@ -92,7 +82,6 @@ Good luck!!!
 
         # Creates an Adventurer Object
         adventurer = Adventurer(adventurer_name, desired_difficulty)
-        # print("Adventurer status listed below: \n" + f"{adventurer}")
 
         # create the map to store the starting location
         adv_curr_map = Map(dungeon.total_rows, dungeon.total_columns)
@@ -114,19 +103,19 @@ Good luck!!!
                 break
             else:
                 move_or_command = (input("Your move or command: ")).lower()
-                if move_or_command == "p":
+                if move_or_command == "p": # if player choose to use health potion
                     if adventurer.has_health_potion():
                         health_potion_created = PotionFactory.create_potion("health")
                         adventurer.heal_adventurer(health_potion_created)
                     else:
                         continue
-                elif move_or_command == "v":
+                elif move_or_command == "v":  # if player choose to use vision potion
                     if adventurer.vision_pots > 0:
                         for i in range(dungeon.adventurer_loc[0]-1, dungeon.adventurer_loc[0]+2): # row above and row below adv
                             for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2): # col on adv's left and right
                                 if self.room_in_bound(i,j,dungeon):
                                     adv_curr_map.set_visited_room(i,j) # we set the adjacent room's visibility as True
-                        adventurer.vision_pots -= 1 # decrease the vision potion if used one
+                        adventurer.vision_pots -= 1 # decrease the vision potion every time player used one
                         print(adventurer.name+" used a vision potion, which revealed all valid adjacent rooms.")
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
                     else:
@@ -145,6 +134,7 @@ Good luck!!!
                     print("Thanks,Bye!")
                     break
                 elif move_or_command in ("north", "south", "west", "east"):
+                    # check if there is a door in the desired moving direction
                     if dungeon.get_room(dungeon.adventurer_loc).get_door(move_or_command):
                         new_room = dungeon.move_adventurer(move_or_command)
                         adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1]) #update the visited rooms
@@ -152,7 +142,7 @@ Good luck!!!
                     else:
                         print("No doors in that direction, choose again")
                         continue
-
+                    # check the contents in the room, automatically pick the item if any
                     if new_room.contents == " ":
                         print("Nothing found in this room.")
                     if new_room.contents in ("A", "P", "I", "E"):
@@ -161,18 +151,18 @@ Good luck!!!
                     pillar_str = dungeon.collect_pillars()
                     if pillar_str:
                         adventurer.add_pillar(pillar_str)
+                    # automatically take damage if there is a pit
                     if new_room.pit_damage > 0:
                         adventurer.damage_adventurer(new_room.pit_damage)
                 else:
-                    print("Invalid input, choose again.")
-                    print("\'i\' for adventurer status\n"
+                    print("Invalid input, choose again.\n"
+                          "\'i\' for adventurer status\n"
                           "\'m\' for current traveled room/ map\n"
                           "\'w\' for whole dungeon map\n"
                           "\'p\' for using health potion\n"
                           "\'v\' for using vision potion\n"
                           "\'q\' for quit the game\n"
-                          "or \'north\', \'east\', etc."
-                          )
+                          "or \'north\', \'east\', etc.")
                     continue
 
     def room_in_bound(self, row, col, dungeon):

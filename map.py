@@ -1,3 +1,7 @@
+"""
+Time used: 34 hours: main + map + test
+xingguo
+"""
 class Map:
     def __init__(self, rows, cols):
         self.__visited_array = []
