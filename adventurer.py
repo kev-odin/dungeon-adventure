@@ -1,6 +1,6 @@
-# Kevin"s Time Tracker: 14 hours
+# Kevin"s Time Tracker: 16 hours
+from health_potion import HealthPotion
 import random
-
 class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
@@ -93,37 +93,48 @@ class Adventurer:
             else:
                 self.current_hitpoints = new_health
 
-    def heal_adventurer(self, heal_amount):
+    def heal_adventurer(self, heal_pot : HealthPotion):
         """ Helper method to heal adventurer based on the health potion.
         To be used by the main method. Adventurer has to be alive to use potion.
-        :param: int - heal values that will increment current health
+        :param: HealthPotion - heal values that will increment current health
+        :raise: TypeError - raised when a health potion is not a parameter
         """
-        if isinstance(heal_amount, int):
-            new_health = self.current_hitpoints + heal_amount
+        if isinstance(heal_pot, HealthPotion):
+            new_health = self.current_hitpoints + heal_pot.heal_amount
+
             if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
+            print(f"{self.name} drank {heal_pot.name} and restored {heal_pot.heal_amount} hit point{self._pluralize(heal_pot.heal_amount)}.")
 
-    def use_health_potion(self):
+        else:
+            raise TypeError("Health potion needs to passed into this method.")
+        
+    def has_health_potion(self):
         """ Helper method to decrement health potions in the adventurer's
         inventory. To be used by the main method.
+        :return: boolean - True if adventurer is able to use a potion.
         """
         if self.health_pots > 0:
             self.health_pots -= 1
-            print(f"{self.name} used a health potion.")
-        else:
-            print(f"{self.name} does not have a health potion.")
+            return True
 
-    def use_vision_potion(self):
+        print(f"{self.name} does not have a health potion.")
+        return False
+
+    def has_vision_potion(self):
         """ Helper method to decrement vision potions in the adventurer's
         inventory. To be used by the main method.
+        :return: boolean - True if adventurer is able to use a potion.
         """
         if self.vision_pots > 0:
             self.vision_pots -= 1
             print(f"{self.name} used a vision potion.")
-        else:
-            print(f"{self.name} does not have a vision potion.")
+            return True
+
+        print(f"{self.name} does not have a vision potion.")
+        return False
 
     def _create_adventurer(self, name, challenge):
         """Helper method for character creation. Difficulty and name are checked,
@@ -165,6 +176,7 @@ class Adventurer:
         This took longer than I care to admit...
         :return: string
         """
+
         pillar_str = []
         status_str = []
         readable = "| "
