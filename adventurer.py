@@ -130,7 +130,7 @@ class Adventurer:
         """
         if self.vision_pots > 0:
             self.vision_pots -= 1
-            print(f"{self.name} used a vision potion.")
+            print(f"{self.name} used a vision potion, which revealed all valid adjacent rooms.")
             return True
 
         print(f"{self.name} does not have a vision potion.")
