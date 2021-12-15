@@ -55,23 +55,22 @@ class TestMap(unittest.TestCase):
         self.assertEqual(5, map.get_cols())
 
     def test_create_visited_room_array(self):
-        map1 = Map(20, 20)
-
+        map_to_be_compared = Map(20, 20)
         mock_array = []
         for row in range(0, 20):
             mock_array.append([])
             for col in range(0, 20):
                 mock_array[row].append([])
                 mock_array[row][col] = False
-        self.assertEqual(mock_array, map1.visited_array())
+        self.assertEqual(mock_array, map_to_be_compared.visited_array())
 
     def test_set_visited_room(self):
-        map = Map(5, 6)
-        map.set_visited_room(0, 0)
-        self.assertTrue(map.visited_array()[0][0], "room at the top left corner should be true")
+        mock_map = Map(5, 6)
+        mock_map.set_visited_room(0, 0)
+        self.assertTrue(mock_map.visited_array()[0][0], "room at the top left corner should be true")
 
     def test_visited_array(self):
-        map1 = Map(20, 20)
+        map_to_be_compared = Map(20, 20)
         mock_array = []
         for row in range(0, 20):
             mock_array.append([])
@@ -79,5 +78,5 @@ class TestMap(unittest.TestCase):
                 mock_array[row].append([])
                 mock_array[row][col] = False
         mock_array[5][5]= True
-        map1.set_visited_room(5, 5)
-        self.assertEqual(mock_array, map1.visited_array(), "They should be equal.")
+        map_to_be_compared.set_visited_room(5, 5)
+        self.assertEqual(mock_array, map_to_be_compared.visited_array(), "They should be equal.")
