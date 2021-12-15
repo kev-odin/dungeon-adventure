@@ -54,23 +54,30 @@ class TestMap(unittest.TestCase):
         map.set_cols(5)
         self.assertEqual(5, map.get_cols())
 
-    # def test_create_visited_room_array(self):
-    #     mock_array = []
-    #     for row in range(0, 20):
-    #         mock_array.append([])
-    #         for col in range(0, 20):
-    #             mock_array[row].append([])
-    #             mock_array[row][col] = False
-    #     self.assertEqual(mock_array, self.create_visited_room_array())
+    def test_create_visited_room_array(self):
+        map1 = Map(20, 20)
 
+        mock_array = []
+        for row in range(0, 20):
+            mock_array.append([])
+            for col in range(0, 20):
+                mock_array[row].append([])
+                mock_array[row][col] = False
+        self.assertEqual(mock_array, map1.visited_array())
 
-    # def test_set_visited_room(self):
-    #     map = Map(5,6)
-    #     for i in range(5):
-    #         for j in range(6):
-    #             map[i][j]=False
-    #     map.set_visited_room(0,0)
-    #     self.assertTrue(map[0][0], "room at the top left corner should be true")
+    def test_set_visited_room(self):
+        map = Map(5, 6)
+        map.set_visited_room(0, 0)
+        self.assertTrue(map.visited_array()[0][0], "room at the top left corner should be true")
 
     def test_visited_array(self):
-        pass
+        map1 = Map(20, 20)
+        mock_array = []
+        for row in range(0, 20):
+            mock_array.append([])
+            for col in range(0, 20):
+                mock_array[row].append([])
+                mock_array[row][col] = False
+        mock_array[5][5]= True
+        map1.set_visited_room(5, 5)
+        self.assertEqual(mock_array, map1.visited_array(), "They should be equal.")

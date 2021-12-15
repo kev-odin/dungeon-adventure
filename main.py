@@ -1,5 +1,5 @@
 """
-Time used: 31 hours
+Time used: 34 hours
 xingguo
 """
 
@@ -22,9 +22,6 @@ class Main:
     when playing the game:
         "w": hidden option for testing that prints out the entire Dungeon.
     """
-
-    # def __init__(self):
-    #     pass
 
     def game_flow(self):
         """
@@ -82,7 +79,12 @@ Good luck!!!
             else:
                 continue
 
-        print("\nYour adventurer "+adventurer_name+" is ready. Good luck!")
+        print("\nLong before the birth of the world today, the giant sky was supported by four OOP pillars\n"
+              "Society as a whole was prosperous and mirthful, until one day... The pillars DISAPPEARED!!\n"
+              "The sky then started to descend, and is continuously descending over time...\n"
+              "In the midst of all the confusion and clamor, our hero emerges:\n\n"
+              +adventurer_name.upper()+"!!!")
+        print("\nYour adventurer "+adventurer_name.upper()+" is ready. Good luck!")
 
         # Creates a Dungeon Object with desired difficulty
         db = DungeonBuilder(desired_difficulty)

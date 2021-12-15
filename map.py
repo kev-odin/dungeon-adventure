@@ -6,9 +6,9 @@ class Map:
         self.create_visited_room_array()
 
     def create_visited_room_array(self):
-        for row in range(0, 20):
+        for row in range(0, self.__rows):
             self.__visited_array.append([])
-            for col in range(0, 20):
+            for col in range(0, self.__cols):
                 self.__visited_array[row].append([])
                 self.__visited_array[row][col] = False
 
