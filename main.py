@@ -84,16 +84,14 @@ class Main:
                     else:
                         continue
                 elif move_or_command == "v":  # if player choose to use vision potion
-                    if adventurer.vision_pots > 0:
+                    if adventurer.has_vision_potion():
                         for i in range(dungeon.adventurer_loc[0]-1, dungeon.adventurer_loc[0]+2):
                             for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2):
                                 if self.room_in_bound(i, j, dungeon):
                                     adv_curr_map.set_visited_room(i, j)  # we set the adjacent room's visibility as True
-                        adventurer.vision_pots -= 1  # decrease the vision potion every time player used one
-                        print(adventurer.name+" used a vision potion, which revealed all valid adjacent rooms.")
+
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
                     else:
-                        print("No vision potion in " + adventurer.name + "'s inventory yet.")
                         continue
                 elif move_or_command == "i":   # i: show adventurer info
                     print(adventurer.name+"'s status listed below: \n" + f"{adventurer}")
