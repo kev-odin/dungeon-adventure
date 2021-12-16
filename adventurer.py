@@ -17,7 +17,7 @@ class Adventurer:
         """
         self.__name = name
         self.__dev_powers = False
-        self.__max_hitpoints = 75
+        self.__max_hitpoints = None
         self.__current_hitpoints = None
         self.__health_pots = 0
         self.__vision_pots = 0
@@ -142,13 +142,13 @@ class Adventurer:
 
         :param: name: str if found in cheat_code dictionary, modification applied to adventurer
         :param: challenge: str sets to following challenge level:
-             "easy" 3x, "medium" 2x, "hard" 1x, "inhumane" 0x
+            (hp modification, max hitpoints, default health potion, default vision potion)
         """
         difficulty = {
-            "easy" : 3,
-            "medium" : 2,
-            "hard" : 1,
-            "inhumane" : 0
+            "easy" : (3, 100, 2, 2),
+            "medium" : (2, 95, 1, 1),
+            "hard" : (1, 90, 1, 1),
+            "inhumane" : (1, 85, 0, 1)
         }
 
         cheat_codes = {
@@ -158,9 +158,12 @@ class Adventurer:
         }
 
         if challenge in difficulty:
-            hp_mod = difficulty[challenge]
+            hp_mod = difficulty[challenge][0]
+            self.max_hitpoints = difficulty[challenge][1]
             self.max_hitpoints += hp_mod * random.randint(0, 10)
             self.current_hitpoints = self.max_hitpoints
+            self.health_pots = difficulty[challenge][2]
+            self.vision_pots = difficulty[challenge][3]
 
         if name in cheat_codes:
             self.dev_powers = True
