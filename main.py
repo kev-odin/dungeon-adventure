@@ -205,7 +205,7 @@ Good luck!!!
 
     def print_difficulty_description(self):
         print(
-            f"\nAvailable difficulty settings:"
+            f"\nAvailable difficulty settings:\n"
             f"\n\teasy - more than 100 hitpoints, two health and vision potions\n"
             f"\tmedium - more than 95 hitpoints, one health and vision potion\n"
             f"\thard - more than 90 hitpoints, one health and vision potion\n"
