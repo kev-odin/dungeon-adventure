@@ -249,3 +249,63 @@ class AdventurerTest(unittest.TestCase):
         hero.current_hitpoints = 1
         hero.heal_adventurer(mock_potion)
         self.assertEqual(hero.max_hitpoints, hero.current_hitpoints, "Adventurer should have the same as max hit points.")
+
+    def test_hero_pillar_a_active(self):
+        # Double all health potions collected
+        hero = Adventurer("Bob")
+        hero.health_pots = 0
+        hero.vision_pots = 0
+        hero.add_pillar("A")
+        potion_collect = (1, 2)
+        hero.add_potions(potion_collect)
+        self.assertEqual(hero.health_pots, 2)
+        self.assertEqual(hero.vision_pots, 2)
+
+    def test_hero_pillar_p_active(self):
+        # Double all vision potions collected
+        hero = Adventurer("Bob")
+        hero.health_pots = 0
+        hero.vision_pots = 0
+        hero.add_pillar("P")
+        potion_collect = (1, 2)
+        hero.add_potions(potion_collect)
+        self.assertEqual(hero.health_pots, 1)
+        self.assertEqual(hero.vision_pots, 4)
+
+    def test_hero_pillar_i_active(self):
+        # Reduce pit damage
+        hero = Adventurer("Bob")
+        hero.max_hitpoints = 100
+        hero.current_hitpoints = 100
+        hero.add_pillar("I")
+        mock_pit_damage = 100
+        expected = 50
+        hero.damage_adventurer(mock_pit_damage)
+        self.assertEqual(expected, hero.current_hitpoints)
+
+    def test_hero_pillar_e_active(self):
+        # Increases healing hitpoints
+        hero = Adventurer("Bob")
+        mock_potion = HealthPotion(random=False)
+        mock_potion.heal_amount = 15
+        hero.max_hitpoints = 60
+        hero.current_hitpoints = 30
+        hero.add_pillar("E")
+        hero.heal_adventurer(mock_potion)
+        self.assertEqual(60, hero.current_hitpoints)
+
+    def test_hero_pillar_all_active(self):
+        # Increases healing hitpoints
+        hero = Adventurer("Bob")
+        mock_potion = HealthPotion(random=False)
+        pillar_list = ["A", "P", "I", "E"]
+        for val in pillar_list:
+            hero.add_pillar(val)
+
+        mock_potion.heal_amount = 15
+        hero.max_hitpoints = 60
+        hero.current_hitpoints = 30
+        hero.add_pillar("E")
+        hero.heal_adventurer(mock_potion)
+        self.assertEqual(60, hero.current_hitpoints)
+        self.assertEqual(75, hero.max_hitpoints)
