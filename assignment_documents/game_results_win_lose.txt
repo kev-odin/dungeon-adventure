@@ -1,0 +1,47 @@
+WINNER :D
+
+Current room displayed below:
+*  *  *
+|  O  *
+*  *  *
+
+kevin recognized this location as the exit of the dungeon.
+kevin felt the four pillars resonate together dispelling the invisible barrier.
+
+:) Woo-hoo! you win the game!
+
+Whole dungeon displayed below:
+*  *  **  *  **  *  **  *  **  *  *
+*     **  M  **     **     **     *
+*  *  **  *  **  *  **  *  **  *  *
+*  *  **  *  **  *  **  *  **  *  *
+*     **     **     **  *  **     *
+*  *  **  -  **  *  **  *  **  *  *
+*  *  **  -  **  *  **  *  **  *  *
+*     **     ||     **     **     *
+*  -  **  -  **  *  **  -  **  *  *
+*  -  **  -  **  *  **  -  **  *  *
+*  X  ||     ||  i  ||     ||     *
+*  -  **  -  **  -  **  -  **  *  *
+*  -  **  -  **  -  **  -  **  *  *
+*     **     **     **  X  ||@ O  *
+*  *  **  *  **  *  **  *  **  *  *
+
+
+Process finished with exit code 0
+
+
+LOSE:
+kevin fell into a pit and took 36 points of damage.
+Your move or command: s
+Current room displayed below:
+*  -  *
+|  M  *
+*  *  *
+
+kevin found 1 health potion.
+kevin fell into a pit and took 53 points of damage.
+
+:( Uh-oh, better luck next time!
+
+Process finished with exit code 0

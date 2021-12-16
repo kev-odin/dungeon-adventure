@@ -98,7 +98,7 @@ class Main:
                     adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
                     print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
 
-                elif move_or_command == "w":   # w: show whole dungeon
+                elif move_or_command == "wd":   # w: show whole dungeon
                     print("Whole dungeon displayed below: \n")
                     print(dungeon.get_visible_dungeon_string())  # print whole dungeon
 
@@ -106,13 +106,14 @@ class Main:
                     print("Thanks, Bye!")
                     break
 
-                elif move_or_command in ("north", "south", "west", "east"):
+                elif move_or_command in ("w", "a", "s", "d"):
                     # check if there is a door in the desired moving direction
-                    if dungeon.get_room(dungeon.adventurer_loc).get_door(move_or_command):
-                        new_room = dungeon.move_adventurer(move_or_command)
-                        adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])  # update the visited rooms
+                    move = {"w": "north", "a": "west", "s": "south", "d": "east"}
+                    try:
+                        new_room = dungeon.move_adventurer(move[move_or_command])
+                        adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])  # update map
                         print("Current room displayed below: \n" + f"{new_room}")
-                    else:
+                    except ValueError:
                         print("No doors in that direction, please choose again.")
                         continue
 
@@ -196,10 +197,10 @@ Good luck!!!
               "\th: help menu\n"
               "\tq: quit the game\n"
               "Movement commands: \n"
-              "\tnorth: move up\n"
-              "\tsouth: move down\n"
-              "\twest: move left\n"
-              "\teast: move right\n"
+              "\tw: move up\n"
+              "\ts: move down\n"
+              "\ta: move left\n"
+              "\td: move right\n"
         )
 
     def print_difficulty_description(self):
