@@ -174,7 +174,10 @@ class Adventurer:
 
         :param: name: str if found in cheat_code dictionary, modification applied to adventurer
         :param: challenge: str sets to following challenge level:
+        difficulty
             (hp modification, max hitpoints, default health potion, default vision potion)
+        cheat_codes
+            (max_hp, potions, pillar_collect_status)
         """
         difficulty = {
             "easy" : (3, 100, 2, 2),
