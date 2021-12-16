@@ -94,7 +94,11 @@ class Main:
                     print(adventurer.name+"'s status listed below: \n" + f"{adventurer}")
 
                 elif move_or_command == "m":   # m: show adventurer map
-                    print("Currently visited rooms displayed below: \n")
+                    print("Map Key:\n@ - YOU ARE HERE! :D\n"
+                          "A P I E - A pillar!  Collect to unlock powers and win the game!\nX - a pit\n"
+                          "H - Health Potion\nV - Vision Potion\nM - Multiple (pit, potions)\ni - Entrance\nO - Exit\n"
+                          "|| or - Open doors\n* - Boulders blocking your path.")
+                    print("Currently known rooms displayed below: \n")
                     adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
                     print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
 
