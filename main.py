@@ -106,7 +106,7 @@ class Main:
                     adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
                     print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
 
-                elif move_or_command == "w":   # m: show whole dungeon
+                elif move_or_command == "w":   # w: show whole dungeon
                     print("Whole dungeon displayed below: \n")
                     print(dungeon.get_visible_dungeon_string())  # print whole dungeon
 
@@ -119,14 +119,26 @@ class Main:
                     if dungeon.get_room(dungeon.adventurer_loc).get_door(move_or_command):
                         new_room = dungeon.move_adventurer(move_or_command)
                         adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])  # update the visited rooms
-                        print("New_room displayed below: \n" + f"{new_room}")
+                        print("Current room displayed below: \n" + f"{new_room}")
                     else:
-                        print("No doors in that direction, choose again")
+                        print("No doors in that direction, please choose again.")
                         continue
 
                     # check the contents in the room, automatically pick the item if any
                     if new_room.contents == " ":
                         print(f"{adventurer.name} discovered nothing in this room.")
+                    if new_room.contents == "i":
+                        print(f"{adventurer.name} recognized this location as the entrance of the dungeon.")
+                    if new_room.contents == "O":
+                        print(f"{adventurer.name} recognized this location as the exit of the dungeon.")
+                        if adventurer.has_all_pillars():
+                            print(f"{adventurer.name} felt the four pillars resonate together dispelling the invisible barrier.")
+                        else:
+                            print(
+                                f"{adventurer.name} tried to push against the exit door. However, an invisible barrier prevented escape.\n"
+                                f"A voice whispers in the {adventurer.name}'s ear: 'Collect the pillars, save the world.'"
+                                )
+
                     if new_room.contents in ("A", "P", "I", "E"):
                         print("Pillar \"" + f"{new_room.contents}" + "\" is found!!")
 
