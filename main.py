@@ -1,6 +1,5 @@
 from adventurer import Adventurer
 from dungeon_builder import DungeonBuilder
-from map import Map
 from potion_factory import PotionFactory
 
 
