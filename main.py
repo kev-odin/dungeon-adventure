@@ -133,13 +133,20 @@ class Main:
                                 )
 
                     if new_room.contents in ("A", "P", "I", "E"):
-                        print("Pillar \"" + f"{new_room.contents}" + "\" is found!!")
+                        pillar_dict = {"A": "Abstraction is found!!  It grants double health potion collection.",
+                                       "P": "Polymorphism is found!!  It grants double vision potion collection.",
+                                       "I": "Inheritance is found!! It slows your fall, reducing pit damage by half.",
+                                       "E": "Encapsulation is found!! It increases health potion potency."}
+                        print("Pillar of " + f"{pillar_dict[new_room.contents]}")
+                        pillar_str = dungeon.collect_pillars()
+                        if pillar_str:
+                            adventurer.add_pillar(pillar_str)
+                        if adventurer.has_all_pillars():
+                            print(
+                                f"{adventurer.name} has collected all the pillars.  The dungeon is starting to collapse."
+                                f"\nFlee to the exit as quickly as possible before it's too late!")
 
                     adventurer.add_potions(dungeon.collect_potions())
-                    pillar_str = dungeon.collect_pillars()
-                    
-                    if pillar_str:
-                        adventurer.add_pillar(pillar_str)
 
                     # automatically take damage if there is a pit
                     if new_room.pit_damage:
