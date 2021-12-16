@@ -94,7 +94,11 @@ class Main:
                     print(adventurer.name+"'s status listed below: \n" + f"{adventurer}")
 
                 elif move_or_command == "m":   # m: show adventurer map
-                    print("Currently visited rooms displayed below: \n")
+                    print("Map Key:\n@ - YOU ARE HERE! :D\n"
+                          "A P I E - A pillar!  Collect to unlock powers and win the game!\nX - a pit\n"
+                          "H - Health Potion\nV - Vision Potion\nM - Multiple (pit, potions)\ni - Entrance\nO - Exit\n"
+                          "|| or - Open doors\n* - Boulders blocking your path.")
+                    print("Currently known rooms displayed below: \n")
                     adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
                     print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
 
@@ -129,17 +133,24 @@ class Main:
                         else:
                             print(
                                 f"{adventurer.name} tried to push against the exit door. However, an invisible barrier prevented escape.\n"
-                                f"A voice whispers in the {adventurer.name}'s ear: 'Collect the pillars, save the world.'"
+                                f"A voice whispers in the {adventurer.name}'s ear: 'Collect the pillars, save the world.'\n"
                                 )
 
                     if new_room.contents in ("A", "P", "I", "E"):
-                        print("Pillar \"" + f"{new_room.contents}" + "\" is found!!")
+                        pillar_dict = {"A": "Abstraction is found!!  It grants double health potion collection.",
+                                       "P": "Polymorphism is found!!  It grants double vision potion collection.",
+                                       "I": "Inheritance is found!! It slows your fall, reducing pit damage by half.",
+                                       "E": "Encapsulation is found!! It increases health potion potency."}
+                        print("Pillar of " + f"{pillar_dict[new_room.contents]}")
+                        pillar_str = dungeon.collect_pillars()
+                        if pillar_str:
+                            adventurer.add_pillar(pillar_str)
+                        if adventurer.has_all_pillars():
+                            print(
+                                f"{adventurer.name} has collected all the pillars.  The dungeon is starting to collapse."
+                                f"\nFlee to the exit as quickly as possible before it's too late!")
 
                     adventurer.add_potions(dungeon.collect_potions())
-                    pillar_str = dungeon.collect_pillars()
-                    
-                    if pillar_str:
-                        adventurer.add_pillar(pillar_str)
 
                     # automatically take damage if there is a pit
                     if new_room.pit_damage:
@@ -149,7 +160,8 @@ class Main:
                     self.print_complete_menu()
                     continue
 
-    def print_welcome(self):
+    @staticmethod
+    def print_welcome():
         welcome_page = """
 ____                                          
 |    \  _ _  ___  ___  ___  ___  ___           
@@ -175,7 +187,8 @@ Good luck!!!
                     """
         print(welcome_page)
 
-    def print_narrative(self):
+    @staticmethod
+    def print_narrative():
         print("\n┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━༻❁༺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
               "\nLong before the birth of the world today, \n"
               "the giant sky was supported by four OOP pillars.\n"
@@ -185,7 +198,8 @@ Good luck!!!
               "In the midst of all the confusion, our hero emerges:\n"
               "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━༻❁༺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
 
-    def print_complete_menu(self):
+    @staticmethod
+    def print_complete_menu():
         print(
               "\nStatus commands: \n"
               "\ti: show adventurer info\n"
@@ -203,7 +217,8 @@ Good luck!!!
               "\td: move right\n"
         )
 
-    def print_difficulty_description(self):
+    @staticmethod
+    def print_difficulty_description():
         print(
             f"\nAvailable difficulty settings:\n"
             f"\n\teasy - more than 100 hitpoints, two health and vision potions\n"
@@ -211,6 +226,7 @@ Good luck!!!
             f"\thard - more than 90 hitpoints, one health and vision potion\n"
             f"\tinhumane - more than 85 hitpoints, ONLY one vision potion\n"
         )
+
 
 if __name__ == "__main__":
     main = Main()
