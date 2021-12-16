@@ -41,11 +41,12 @@ class Main:
         adventurer_name = input("Choose an adventurer name: ")
 
         while True:
-            desired_difficulty = input("Choose a difficulty level( easy | medium | hard | inhumane ): ").lower()
+            self.print_difficulty_description()
+            desired_difficulty = input("Choose a difficulty level: ").lower()
             if desired_difficulty in ("easy", "medium", "hard", "inhumane"):
                 break
             else:
-                print(f"{desired_difficulty} is not a valid selection difficulty setting.\n")
+                print(f"{desired_difficulty} is not a valid selection difficulty setting.")
 
         self.print_narrative()  # print the narrative
         print("\nYour adventurer " + adventurer_name.upper() + " is ready. Good luck!")
@@ -63,6 +64,7 @@ class Main:
 
         print("Entrance room displayed below: ")
         print(f"{dungeon.get_room(dungeon.entrance)}")  # print current room
+        print(f"{adventurer}") # print initial adventurer for player, otherwise will need to use "i"
 
         while True:  # another while game loop
             if adventurer.is_alive() and \
@@ -202,6 +204,15 @@ Good luck!!!
               "\tsouth: move down\n"
               "\twest: move left\n"
               "\teast: move right\n"
+        )
+
+    def print_difficulty_description(self):
+        print(
+            f"\nAvailable difficulty settings:"
+            f"\n\teasy - more than 100 hitpoints, two health and vision potions\n"
+            f"\tmedium - more than 95 hitpoints, one health and vision potion\n"
+            f"\thard - more than 90 hitpoints, one health and vision potion\n"
+            f"\tinhumane - more than 85 hitpoints, ONLY one vision potion\n"
         )
 
 if __name__ == "__main__":
