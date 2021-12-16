@@ -6,6 +6,7 @@ all my creation stuff in one spot.
 """
 from dungeon import Dungeon
 from room import Room
+from map import Map
 import random
 
 
@@ -25,7 +26,7 @@ class DungeonBuilder:
             self.__diff_index = diff_index[difficulty]
         else:
             raise ValueError("difficulty must be easy, medium, hard, or inhumane")
-        self.__complete_dungeon = None
+        self.__complete_dungeon = self.__complete_map = None
         self.__varied = varied  # Toggle for whether or not to build rooms that have potions, impassible, pit. Testing.
         self.__impassable_chance = (0.05, 0.07, 0.08, 0.1)[self.__diff_index]  # chance of impassable room
         self.__hp_pot_chance = (0.1, 0.1, 0.1, 0.01)[self.__diff_index]  # chance of HP potion appearing in dungeon.
@@ -50,6 +51,14 @@ class DungeonBuilder:
         :return: None
         """
         self.__complete_dungeon = Dungeon(self.__dungeon, self.__difficulty, self.__entrance, self.__exit)
+
+    def __set_map(self):
+        """
+        Sets a map as part of the build dungeon routine.  Sets visited rooms to the entranc elocation.
+        :return: None
+        """
+        self.__complete_map = Map(self.__row_count, self.__col_count)
+        self.__complete_map.set_visited_room(self.__entrance[0], self.__entrance[1])
 
     def __get_rand_coords(self):
         return random.randint(0, self.__row_count - 1), random.randint(0, self.__col_count - 1)
@@ -81,7 +90,7 @@ class DungeonBuilder:
         hp_trigger = many_trigger + self.__hp_pot_chance  # range of many trigger through hp pot chance
         vision_trigger = hp_trigger + self.__vision_chance  # range of hp trigger through vision trigger
         pit_trigger = vision_trigger + self.__pit_chance
-        if intrigue > pit_trigger: # Boring empty room.  The best kind of room.  First for efficiency.
+        if intrigue > pit_trigger:  # Boring empty room.  The best kind of room.  First for efficiency.
             new_room = Room()
         elif intrigue <= self.__impassable_chance:  # Is it less than or equal to impassable chance?  Make no access room!
             new_room = Room(contents="*")
@@ -195,4 +204,17 @@ class DungeonBuilder:
         self.__exit = (exit_row, exit_col)
         self.__build_pillars()
         self.__set_dungeon()  # Officially builds the dungeon and saves it!  Perhaps shouldn't save it.
+        self.__set_map()  # Officially builds the related map!
         return self.__complete_dungeon
+
+    @property
+    def map(self):
+        """
+        Getter property for map.
+        :return: map created during dungeon builder.
+        :raises RuntimeError if attempting to access map without building it first.
+        """
+        if self.__complete_map:
+            return self.__complete_map
+        else:
+            raise RuntimeError("Must build a dungeon before accessing the map for a dungeon.")

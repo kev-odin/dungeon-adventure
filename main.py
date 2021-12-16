@@ -52,19 +52,17 @@ class Main:
         print("\nYour adventurer " + adventurer_name.upper() + " is ready. Good luck!")
 
         # Creates a Dungeon Object with desired difficulty
-        db = DungeonBuilder(desired_difficulty)
+        db = DungeonBuilder()
         dungeon = db.build_dungeon(desired_difficulty)
+        # Get the map from dungeon builder.
+        adv_curr_map = db.map
 
         # Creates an Adventurer Object
         adventurer = Adventurer(adventurer_name, desired_difficulty)
 
-        # create the map to store the starting location
-        adv_curr_map = Map(dungeon.total_rows, dungeon.total_columns)
-        adv_curr_map.set_visited_room(dungeon.entrance[0], dungeon.entrance[1])
-
         print("Entrance room displayed below: ")
         print(f"{dungeon.get_room(dungeon.entrance)}")  # print current room
-        print(f"{adventurer}") # print initial adventurer for player, otherwise will need to use "i"
+        print(f"{adventurer}")  # print initial adventurer for player, otherwise will need to use "i"
 
         while True:  # another while game loop
             if adventurer.is_alive() and \
@@ -87,12 +85,7 @@ class Main:
 
                 elif move_or_command == "v":  # if player choose to use vision potion
                     if adventurer.has_vision_potion():
-
-                        for i in range(dungeon.adventurer_loc[0]-1, dungeon.adventurer_loc[0]+2):
-                            for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2):
-                                if self.room_in_bound(i, j, dungeon):
-                                    adv_curr_map.set_visited_room(i, j)  # we set the adjacent room's visibility as True
-
+                        adv_curr_map.use_vision_potion(row=dungeon.adventurer_loc[0], col=dungeon.adventurer_loc[1])
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
 
                 elif move_or_command == "h":
@@ -155,12 +148,6 @@ class Main:
                     print(f"Invalid input. {adventurer.name} is confused. Please choose again.")
                     self.print_complete_menu()
                     continue
-
-    def room_in_bound(self, row, col, dungeon):
-        if 0 <= row < dungeon.total_rows and 0 <= col < dungeon.total_columns:
-            return True
-        else:
-            return False
 
     def print_welcome(self):
         welcome_page = """
