@@ -6,7 +6,7 @@ import unittest
 class HealthPotionTest(unittest.TestCase):
     def test_basic_potion(self):
         test = HealthPotion(random=False)
-        self.assertEqual(test.name, "Health Potion")
+        self.assertEqual(test.name, "Common Health Potion")
 
     def test_basic_potion_health(self):
         test = HealthPotion(random=False)
