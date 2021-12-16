@@ -1,4 +1,4 @@
-# Kevin"s Time Tracker: 16 hours
+# Kevin"s Time Tracker: 20 hours
 from health_potion import HealthPotion
 import random
 class Adventurer:
