@@ -129,7 +129,7 @@ class Main:
                         else:
                             print(
                                 f"{adventurer.name} tried to push against the exit door. However, an invisible barrier prevented escape.\n"
-                                f"A voice whispers in the {adventurer.name}'s ear: 'Collect the pillars, save the world.'"
+                                f"A voice whispers in the {adventurer.name}'s ear: 'Collect the pillars, save the world.'\n"
                                 )
 
                     if new_room.contents in ("A", "P", "I", "E"):
@@ -149,7 +149,8 @@ class Main:
                     self.print_complete_menu()
                     continue
 
-    def print_welcome(self):
+    @staticmethod
+    def print_welcome():
         welcome_page = """
 ____                                          
 |    \  _ _  ___  ___  ___  ___  ___           
@@ -175,7 +176,8 @@ Good luck!!!
                     """
         print(welcome_page)
 
-    def print_narrative(self):
+    @staticmethod
+    def print_narrative():
         print("\n┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━༻❁༺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
               "\nLong before the birth of the world today, \n"
               "the giant sky was supported by four OOP pillars.\n"
@@ -185,7 +187,8 @@ Good luck!!!
               "In the midst of all the confusion, our hero emerges:\n"
               "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━༻❁༺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
 
-    def print_complete_menu(self):
+    @staticmethod
+    def print_complete_menu():
         print(
               "\nStatus commands: \n"
               "\ti: show adventurer info\n"
@@ -203,7 +206,8 @@ Good luck!!!
               "\td: move right\n"
         )
 
-    def print_difficulty_description(self):
+    @staticmethod
+    def print_difficulty_description():
         print(
             f"\nAvailable difficulty settings:"
             f"\n\teasy - more than 100 hitpoints, two health and vision potions\n"
@@ -211,6 +215,7 @@ Good luck!!!
             f"\thard - more than 90 hitpoints, one health and vision potion\n"
             f"\tinhumane - more than 85 hitpoints, ONLY one vision potion\n"
         )
+
 
 if __name__ == "__main__":
     main = Main()
