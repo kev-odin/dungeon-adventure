@@ -1,4 +1,4 @@
-# Kevin"s Time Tracker: 16 hours
+# Kevin"s Time Tracker: 20 hours
 from health_potion import HealthPotion
 import random
 class Adventurer:
@@ -17,7 +17,7 @@ class Adventurer:
         """
         self.__name = name
         self.__dev_powers = False
-        self.__max_hitpoints = 75
+        self.__max_hitpoints = None
         self.__current_hitpoints = None
         self.__health_pots = 0
         self.__vision_pots = 0
@@ -45,12 +45,26 @@ class Adventurer:
     def add_potions(self, room_potions):
         """ Helper method to add potions found in a room to the adventurer's
         inventory. To be used by the main method.
+
+        Abstraction/Polymorphism pillar power increases potions found in each room.
+
         :param: tuple (health_potions : int, vision_potions : int)
         :raise: TypeError when tuple length is not 2
         """
+        better_collect = 2
+
         if len(room_potions) == 2:
             if all(isinstance(val, int) for val in room_potions):
                 room_health, room_vision = room_potions
+
+                if self.pillars_collected["A"] and room_health > 0:
+                    print(f"{self.name} used the powers of Abstration to double health potion collection.")
+                    room_health = room_health * better_collect
+
+                if self.pillars_collected["P"] and room_vision > 0:
+                    print(f"{self.name} used the powers of Polymorphism to double vision potion collection.")
+                    room_vision = room_vision * better_collect
+
                 self.health_pots += room_health
                 self.vision_pots += room_vision
 
@@ -72,6 +86,10 @@ class Adventurer:
         """
         if pillar is not None:
             if isinstance(pillar, str):
+
+                if self.pillars_collected[pillar]:
+                    return
+
                 for val in self.pillars_collected:
                     if val == pillar:
                         self.pillars_collected[pillar] = True
@@ -81,9 +99,17 @@ class Adventurer:
     def damage_adventurer(self, pit_damage):
         """ Helper method to damage adventurer based on the pit damage
         provided by the room. To be used by the main method.
+
+        Inheritance pillar power reduces pit damage by half.
+
         :param: int - damage values that will decrement current health
         """
         if isinstance(pit_damage, int):
+
+            if self.pillars_collected["I"]:
+                print(f"{self.name} used the powers of Inheritance to fall slower reducing pit damage by half.")
+                pit_damage = pit_damage // 2
+
             print(f"{self.name} fell into a pit and took {pit_damage} "
                   f"point{self._pluralize(pit_damage)} of damage.")
 
@@ -96,21 +122,35 @@ class Adventurer:
     def heal_adventurer(self, heal_pot : HealthPotion):
         """ Helper method to heal adventurer based on the health potion.
         To be used by the main method. Adventurer has to be alive to use potion.
+
+        Encapsulation pillar power doubles the potency of healing potions.
+        All pillars collected increases maximum hit points
+
         :param: HealthPotion - heal values that will increment current health
         :raise: TypeError - raised when a health potion is not a parameter
         """
         if isinstance(heal_pot, HealthPotion):
-            new_health = self.current_hitpoints + heal_pot.heal_amount
-            
+            heal = heal_pot.heal_amount
+
+            if self.has_all_pillars():
+                print(f"{self.name} used all pillars to increase max hit points.")
+                self.max_hitpoints += heal
+
+            if self.pillars_collected["E"]:
+                print(f"{self.name} used the powers of Encapsulation to increase health potion potency.")
+                heal *= 2
+
+            new_health = self.current_hitpoints + heal
+
             if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
-            print(f"{self.name} drank {heal_pot.name} and restored {heal_pot.heal_amount} hit point{self._pluralize(heal_pot.heal_amount)}.")
-        
+            print(f"{self.name} drank {heal_pot.name} and restored {heal} hit point{self._pluralize(heal)}.")
+
         else:
             raise TypeError("Health potion needs to passed into this method.")
-        
+
     def has_health_potion(self):
         """ Helper method to decrement health potions in the adventurer's
         inventory. To be used by the main method.
@@ -142,34 +182,44 @@ class Adventurer:
 
         :param: name: str if found in cheat_code dictionary, modification applied to adventurer
         :param: challenge: str sets to following challenge level:
-             "easy" 3x, "medium" 2x, "hard" 1x, "inhumane" 0x
+
+        difficulty
+            (hp modification, max hitpoints, default health potion, default vision potion)
+        cheat_codes
+            (max_hp, potions, pillar_collect_status)
         """
         difficulty = {
-            "easy" : 3,
-            "medium" : 2,
-            "hard" : 1,
-            "inhumane" : 0
+            "easy" : (3, 100, 2, 2),
+            "medium" : (2, 95, 1, 1),
+            "hard" : (1, 90, 1, 1),
+            "inhumane" : (1, 85, 0, 1)
         }
 
         cheat_codes = {
-            "tom" : (1000, 1000, 0, 0, False),
-            "kevin" : (75, 75, 50, 50, False),
-            "gary" : (100, 100, 0, 0, True)
+            "tom" : (1000, 0, False),
+            "kevin" : (85, 50, False),
+            "gary" : (100, 0, True)
         }
 
         if challenge in difficulty:
-            hp_mod = difficulty[challenge]
+            hp_mod = difficulty[challenge][0]
+            self.max_hitpoints = difficulty[challenge][1]
             self.max_hitpoints += hp_mod * random.randint(0, 10)
-            self.current_hitpoints = self.max_hitpoints
+
+            self.health_pots = difficulty[challenge][2]
+            self.vision_pots = difficulty[challenge][3]
 
         if name in cheat_codes:
             self.dev_powers = True
-            self.current_hitpoints = cheat_codes[name][0]
-            self.max_hitpoints = cheat_codes[name][1]
-            self.health_pots = cheat_codes[name][2]
-            self.vision_pots = cheat_codes[name][3]
+            self.max_hitpoints = cheat_codes[name][0]
+
+            self.health_pots = cheat_codes[name][1]
+            self.vision_pots = cheat_codes[name][1]
+
             for value in self.pillars_collected:
-                self.pillars_collected[value] = cheat_codes[name][4]
+                self.pillars_collected[value] = cheat_codes[name][2]
+
+        self.current_hitpoints = self.max_hitpoints
 
     def _readable_pillars(self):
         """ Helper method for converting pillars collection to a player readable string.
