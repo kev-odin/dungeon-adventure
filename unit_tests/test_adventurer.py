@@ -107,6 +107,8 @@ class AdventurerTest(unittest.TestCase):
     def test_hero_collect_potions_correct_length(self):
         mock_potions = (1, 2)
         hero = Adventurer("Bob")
+        hero.health_pots = 0
+        hero.vision_pots = 0
         hero.add_potions(mock_potions)
         self.assertEqual(hero.health_pots, 1, "Based on the tuple, there should be 1 health potion")
         self.assertEqual(hero.vision_pots, 2, "Based on the tuple there shoulc be 2 vision potions")
