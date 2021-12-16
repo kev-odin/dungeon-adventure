@@ -2,12 +2,6 @@
 Time tracker:
 Shared with dungeon time + 2 hours because I HAD A MOMENT OF TIME CONSUMING BRILLIANCE that lead to late night spaghetti
 test_adventurer_find_exit_and_pillars - Breadth first search w/ pillar pick up and exit finding.
-
-Mock tests would be more robust since I had to delete most of my private method tests once methods were no longer
-private or no longer predictable.  Testing successful traversal is an okay compromise?  But less helpful if something
-more specific breaks with modification.
-
-TODO stop programming late at night.  Clean up your spaghetti code, girl.
 """
 
 import unittest
@@ -34,6 +28,16 @@ class TestDungeon(unittest.TestCase):
                 else:
                     bool_list[row][col] = False
         return bool_list
+
+    @staticmethod
+    def leave_entrance(dungeon):
+        directions = ["north", "east", "south", "west"]
+        current_room = dungeon.get_room(dungeon.adventurer_loc)
+        for direction in directions:
+            if current_room.get_door(direction):
+                directions = direction
+                break
+        return directions
 
     def test_dungeon_init_big_enough(self):
         try:
@@ -178,12 +182,7 @@ class TestDungeon(unittest.TestCase):
 
     def test_adventurer_move_return_expected_room(self):
         dungeon = self.init_dungeon()
-        directions = ["north", "east", "south", "west"]
-        current_room = dungeon.get_room(dungeon.adventurer_loc)
-        for direction in directions:
-            if current_room.get_door(direction):
-                directions = direction
-                break
+        directions = self.leave_entrance(dungeon)
         coord_dict = {"south": (1, 0), "east": (0, 1), "north": (-1, 0), "west": (0, -1)}
         current_loc = dungeon.adventurer_loc
         actual = dungeon.move_adventurer(directions)
@@ -193,12 +192,7 @@ class TestDungeon(unittest.TestCase):
 
     def test_get_potions(self):
         dungeon = self.init_dungeon()
-        directions = ["north", "east", "south", "west"]
-        current_room = dungeon.get_room(dungeon.adventurer_loc)
-        for direction in directions:
-            if current_room.get_door(direction):
-                directions = direction
-                break
+        directions = self.leave_entrance(dungeon)
         room = dungeon.move_adventurer(directions)
         hp = room.health_potion
         vp = room.vision_potion
@@ -208,12 +202,7 @@ class TestDungeon(unittest.TestCase):
 
     def test_pit_damage(self):  # Was tested more robustly before I removed some game-breaking setters.
         dungeon = self.init_dungeon()
-        directions = ["north", "east", "south", "west"]
-        current_room = dungeon.get_room(dungeon.adventurer_loc)
-        for direction in directions:
-            if current_room.get_door(direction):
-                directions = direction
-                break
+        directions = self.leave_entrance(dungeon)
         room = dungeon.move_adventurer(directions)
         damage = room.pit_damage
         dun_damage = dungeon.pit_damage
@@ -234,12 +223,7 @@ class TestDungeon(unittest.TestCase):
 
     def test_collect_pillars(self):
         dungeon = self.init_dungeon()
-        directions = ["north", "east", "south", "west"]
-        current_room = dungeon.get_room(dungeon.adventurer_loc)
-        for direction in directions:
-            if current_room.get_door(direction):
-                directions = direction
-                break
+        directions = self.leave_entrance(dungeon)
         room = dungeon.move_adventurer(directions)
         if room.contents == "A" or room.contents == "I" or room.contents == "P" or room.contents == "E":
             expected = room.contents
