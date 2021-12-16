@@ -19,14 +19,14 @@ class Main:
         """
         Introduces the game describing what the game is about and how to play
         Creates a Dungeon Object and a Adventurer Object
-•       Obtains the name of the adventurer and difficulty level from the user
+        Obtains the name of the adventurer and difficulty level from the user
         """
         self.print_welcome()  # print the logo and welcome message
         while True:
             help_or_continue = input(
                                      "\'h\' : for all commands of the game\n"
-                                     "\'c\' : for continue \n"
-                                     "Your choice: "
+                                     "\'c\' : for continue\n"
+                                     "\nYour choice: "
                                     )
             if help_or_continue.lower() == 'h':
                 self.print_complete_menu()
@@ -41,14 +41,14 @@ class Main:
         adventurer_name = input("Choose an adventurer name: ")
 
         while True:
-            desired_difficulty = input("Choose a difficulty level(easy/medium/hard/inhumane): ").lower()
+            desired_difficulty = input("Choose a difficulty level( easy | medium | hard | inhumane ): ").lower()
             if desired_difficulty in ("easy", "medium", "hard", "inhumane"):
                 break
             else:
-                continue
+                print(f"{desired_difficulty} is not a valid selection difficulty setting.\n")
 
         self.print_narrative()  # print the narrative
-        print("\nYour adventurer "+adventurer_name.upper()+" is ready. Good luck!")
+        print("\nYour adventurer " + adventurer_name.upper() + " is ready. Good luck!")
 
         # Creates a Dungeon Object with desired difficulty
         db = DungeonBuilder(desired_difficulty)
@@ -79,32 +79,39 @@ class Main:
                 move_or_command = (input("Your move or command: ")).lower()
                 if move_or_command == "p":  # if player choose to use health potion
                     if adventurer.has_health_potion():
+                        
                         health_potion_created = PotionFactory.create_potion("health")
                         adventurer.heal_adventurer(health_potion_created)
-                    else:
-                        continue
+
                 elif move_or_command == "v":  # if player choose to use vision potion
                     if adventurer.has_vision_potion():
+
                         for i in range(dungeon.adventurer_loc[0]-1, dungeon.adventurer_loc[0]+2):
                             for j in range(dungeon.adventurer_loc[1]-1, dungeon.adventurer_loc[1]+2):
                                 if self.room_in_bound(i, j, dungeon):
                                     adv_curr_map.set_visited_room(i, j)  # we set the adjacent room's visibility as True
 
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
-                    else:
-                        continue
+
+                elif move_or_command == "h":
+                    self.print_complete_menu() # h: show entire command menu
+
                 elif move_or_command == "i":   # i: show adventurer info
                     print(adventurer.name+"'s status listed below: \n" + f"{adventurer}")
+
                 elif move_or_command == "m":   # m: show adventurer map
-                    print("Currently visited rooms displayed below: ")
+                    print("Currently visited rooms displayed below: \n")
                     adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
                     print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
+
                 elif move_or_command == "w":   # m: show whole dungeon
-                    print("Whole dungeon displayed below: ")
+                    print("Whole dungeon displayed below: \n")
                     print(dungeon.get_visible_dungeon_string())  # print whole dungeon
+
                 elif move_or_command == "q":  # quit
-                    print("Thanks,Bye!")
+                    print("Thanks, Bye!")
                     break
+
                 elif move_or_command in ("north", "south", "west", "east"):
                     # check if there is a door in the desired moving direction
                     if dungeon.get_room(dungeon.adventurer_loc).get_door(move_or_command):
@@ -114,20 +121,25 @@ class Main:
                     else:
                         print("No doors in that direction, choose again")
                         continue
+
                     # check the contents in the room, automatically pick the item if any
                     if new_room.contents == " ":
-                        print("Nothing found in this room.")
+                        print(f"{adventurer.name} discovered nothing in this room.")
                     if new_room.contents in ("A", "P", "I", "E"):
                         print("Pillar \"" + f"{new_room.contents}" + "\" is found!!")
+
                     adventurer.add_potions(dungeon.collect_potions())
                     pillar_str = dungeon.collect_pillars()
+                    
                     if pillar_str:
                         adventurer.add_pillar(pillar_str)
+
                     # automatically take damage if there is a pit
-                    if new_room.pit_damage > 0:
+                    if new_room.pit_damage:
                         adventurer.damage_adventurer(new_room.pit_damage)
                 else:
-                    self.print_in_game_commands_list()
+                    print(f"Invalid input. {adventurer.name} is confused. Please choose again.")
+                    self.print_complete_menu()
                     continue
 
     def room_in_bound(self, row, col, dungeon):
@@ -152,14 +164,14 @@ ____
 
 Welcome to Dungeon Adventure! 
 Your goal: 
-     1⃣ collect all the four pillars of OOP, 
-     2⃣ get to the exit safely. 
+     1) Collect all the four pillars of OOP, 
+     2) Get to the exit safely. 
 
 Items randomly placed in each room:
-     1⃣ Healing potion(random heal amount),
-     2⃣ Vision potion(reveal adjacent rooms), 
-     3⃣ Pit(random damage to adventurer), 
-     4⃣ OOP pillars("A","P","I","E").    
+     1) Healing potion(random heal amount),
+     2) Vision potion(reveal adjacent rooms), 
+     3) Pit(random damage to adventurer), 
+     4) OOP pillars("A","P","I","E").\n    
 Good luck!!! 
                     """
         print(welcome_page)
@@ -183,6 +195,7 @@ Good luck!!!
               "\tp: use health potion\n"
               "\tv: use vision potion\n"
               "Other commands: \n"
+              "\th: help menu\n"
               "\tq: quit the game\n"
               "Movement commands: \n"
               "\tnorth: move up\n"
@@ -190,17 +203,6 @@ Good luck!!!
               "\twest: move left\n"
               "\teast: move right\n"
         )
-
-    def print_in_game_commands_list(self):
-        print("Invalid input, choose again.\n"
-              "\'i\' for adventurer status\n"
-              "\'m\' for current traveled room/ map\n"
-              "\'w\' for whole dungeon map\n"
-              "\'p\' for using health potion\n"
-              "\'v\' for using vision potion\n"
-              "\'q\' for quit the game\n"
-              "or \'north\', \'east\', etc.")
-
 
 if __name__ == "__main__":
     main = Main()
