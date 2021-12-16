@@ -191,14 +191,14 @@ Good luck!!!
         print(welcome_page)
 
     def print_narrative(self):
-        print("\n┏━━━━━━━━━━━━━━━━━━━━━━━━༻❁༺━━━━━━━━━━━━━━━━━━━━━━━━┓"
+        print("\n┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━༻❁༺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
               "\nLong before the birth of the world today, \n"
               "the giant sky was supported by four OOP pillars.\n"
               "Society as a whole was prosperous and mirthful, \n"
               "until one day... The pillars DISAPPEARED!!\n"
               "The sky then started to descend, and continued descending over time...\n"
               "In the midst of all the confusion, our hero emerges:\n"
-              "┗━━━━━━━━━━━━━━━━━━━━━━━━༻❁༺━━━━━━━━━━━━━━━━━━━━━━━━┛")
+              "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━༻❁༺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛")
 
     def print_complete_menu(self):
         print(
