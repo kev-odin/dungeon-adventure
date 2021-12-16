@@ -197,7 +197,7 @@ class Adventurer:
 
         cheat_codes = {
             "tom" : (1000, 0, False),
-            "kevin" : (75, 50, False),
+            "kevin" : (85, 50, False),
             "gary" : (100, 0, True)
         }
 
