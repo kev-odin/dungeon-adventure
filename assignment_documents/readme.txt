@@ -7,17 +7,24 @@ Each pillar collected will add powers to the adventurer:
     3) Inheritance - Pit damage is cut in reduced
     4) Encapsulation - Health potions have increased potency
     5) All pillars collected - Max hitpoints can be increased with potions
+Adventurers have different default values based on the difficulty:
+    1) easy - more than 100 hitpoints, two health and vision potions
+    2) medium - more than 95 hitpoints, one health and vision potion
+    3) hard - more than 90 hitpoints, one health and vision potion
+    3) inhumane - more than 85 hitpoints, ONLY one vision potion
+Unique flavor text for full dungeon immersion.
+Plural values as needed based on the value at collection.
 
 What we worked on & how long:
 Kevin (Total time: 43 hours)
-UML beauty - 5 hours
 adventurer.py - 20 hours
+testing - 10 hours
+UML beauty - 5 hours
 health_potion.py - 2 hours
 vision_potion.py - 2 hours
-potion_factory.py - 1 hour
-testing - 10 hours
 Group meetings - 2 hours
-refactoring - 1 hour
+refactoring main.py - 2 hours
+potion_factory.py - 1 hour
 
 Xingguo - 25 hours
 map.py - 1 hour
