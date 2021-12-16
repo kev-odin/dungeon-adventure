@@ -1,17 +1,23 @@
 The Spoony Bard
 Extra-credit attempts:
 Easy, Medium, Hard, and Inhumane difficulty in dungeon (and consequently rooms!) with a simple builder!
+Each pillar collected will add powers to the adventurer:
+    1) Abstraction - Health potions collected are doubled
+    2) Polymorphism - Vision potions collected are doubled
+    3) Inheritance - Pit damage is cut in reduced
+    4) Encapsulation - Health potions have increased potency
+    5) All pillars collected - Max hitpoints can be increased with potions
 
 What we worked on & how long:
-Kevin (Total time: 30 hours)
+Kevin (Total time: 43 hours)
 UML beauty - 5 hours
-adventurer.py - 13 hours
+adventurer.py - 20 hours
 health_potion.py - 2 hours
 vision_potion.py - 2 hours
 potion_factory.py - 1 hour
-testing - 8 hours
+testing - 10 hours
 Group meetings - 2 hours
-(observer, observable?) - removed from PR 
+refactoring - 1 hour
 
 Xingguo - 25 hours
 map.py - 1 hour
