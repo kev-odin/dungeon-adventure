@@ -131,12 +131,10 @@ class Main:
                     continue
 
     def room_in_bound(self, row, col, dungeon):
-        if row < 0 or row > dungeon.total_rows:
-            return False
-        elif col < 0 or col > dungeon.total_columns:
-            return False
-        else:
+        if 0 <= row < dungeon.total_rows and 0 <= col < dungeon.total_columns:
             return True
+        else:
+            return False
 
     def print_welcome(self):
         welcome_page = """

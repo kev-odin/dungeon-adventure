@@ -24,11 +24,11 @@ Time to working: 4.5 hours to minimal viable functionality.
 This readme!  Now with more exclamation points!
 dungeon_builder.py
 dungeon.py
-room.py -> Done?
-test_room.py -> Done?  -> TODO test private methods?
-test_dungeon.py -> TODO test private methods
+room.py -> Done
+test_room.py -> Done
+test_dungeon.py
 test_dungeon_iterator.py
-test_dungeon_builder.py -> TODO more extensive testing, user error testing
+test_dungeon_builder.py
 Group meetings - 2 hours
 
 Shortcomings:
