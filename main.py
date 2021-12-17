@@ -64,14 +64,16 @@ class Main:
         print(f"{adventurer}")  # print initial adventurer for player, otherwise will need to use "i"
 
         player_stats = {
-                "used health pots"      : 0,#
-                "used vision pots"      : 0,#
-                "heroic falls"          : 0,#
-                "potential pit damage"  : 0,#
-                "moves to exit"         : 0,#
-                "map opened"            : 0,#
-                "pillars collected"     : 0,#
-                "cheat counter"         : 0 #
+                "health potions used"           : 0,#
+                "health recovered"              : 0,#
+                "potential health recovered"    : 0,#
+                "vision potions used"           : 0,#
+                "heroic falls"                  : 0,#
+                "pit damage received"           : 0,#
+                "moves to exit"                 : 0,#
+                "map opened"                    : 0,#
+                "pillars collected"             : 0,#
+                "cheat counter"                 : 0 #
             }
 
         while True:  # another while game loop
@@ -100,11 +102,14 @@ class Main:
                         if adventurer.pillars_collected["E"]:
                             print(f"{adventurer.name} used the powers of Encapsulation to increase health potion potency.")
 
-                        player_stats["used health pots"] += 1
                         health_potion = PotionFactory.create_potion("health")
                         adventurer.heal_adventurer(health_potion)
-                        heal = adventurer.heal_adventurer(health_potion)
-                        print(f"{adventurer.name} drank a {health_potion.name} and healed {heal} hitpoints.\n")
+                        heal, health_recovered = adventurer.heal_adventurer(health_potion)
+                        player_stats["health potions used"] += 1
+                        player_stats["potential health recovered"] += heal
+                        player_stats["health recovered"] += health_recovered
+
+                        print(f"{adventurer.name} drank a {health_potion.name} and healed {health_recovered} hitpoint{self.pluralize(health_recovered)}.\n")
 
                     else:
                         print(f"{adventurer.name} does not have a vision potion.")
@@ -112,7 +117,7 @@ class Main:
                 elif move_or_command == "v":  # if player choose to use vision potion
                     if adventurer.has_vision_potion():
 
-                        player_stats["used vision pots"] += 1
+                        player_stats["vision potions used"] += 1
                         adv_curr_map.use_vision_potion(row=dungeon.adventurer_loc[0], col=dungeon.adventurer_loc[1])
                         print(f"{adventurer.name} drank a vision potion, which revealed adjacent rooms.")
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
@@ -147,7 +152,7 @@ class Main:
                     print(player_stats)
 
                 elif move_or_command == "q":  # quit
-                    print("\nThanks, Bye!")
+                    print("\nThanks, Bye!\n")
                     break
 
                 elif move_or_command in ("w", "a", "s", "d"):
@@ -193,19 +198,45 @@ class Main:
                                 f"{adventurer.name} has collected all the pillars.  The dungeon is starting to collapse."
                                 f"\nFlee to the exit as quickly as possible before it's too late!")
                     
-                    adventurer.add_potions(dungeon.collect_potions())
+                    # potion collection
+                    if new_room.contents in ("H", "V", "M"):
+
+                        heal_pot, vision_pot = adventurer.add_potions(dungeon.collect_potions())
+                        adventurer.add_potions((heal_pot, vision_pot))
+                        
+                        if adventurer.pillars_collected["A"] and heal_pot > 0:
+                            print(f"{adventurer.name} used the powers of Abstraction to double health potion collection.")
+                        
+                        if adventurer.pillars_collected["P"] and vision_pot > 0:
+                            print(f"{adventurer.name} used the powers of Polymorphism to double vision potion collection.")
+
+                        if heal_pot != 0:
+                            print(f"{adventurer.name} found {heal_pot} health potion{self.pluralize(heal_pot)}.")
+
+                        if vision_pot != 0:
+                            print(f"{adventurer.name} found {vision_pot} vision potion{self.pluralize(vision_pot)}.")
 
                     # automatically take damage if there is a pit
                     if new_room.pit_damage:
-                        recieved_dmg = new_room.pit_damage
-                        adventurer.damage_adventurer(recieved_dmg)
-                        player_stats["potential pit damage"] += recieved_dmg
+
+                        if adventurer.pillars_collected["I"]:
+                            print(f"{adventurer.name} used the powers of Inheritance to fall slower reducing pit damage by half.")
+
+                        recieved_damage = new_room.pit_damage
+                        adventurer.damage_adventurer(recieved_damage)
+                        real_damage = adventurer.damage_adventurer(recieved_damage)
+
+                        print(f"{adventurer.name} fell into a pit and took {real_damage} point{self.pluralize(real_damage)} of damage.")
+
+                        player_stats["pit damage received"] += real_damage
                         player_stats["heroic falls"] += 1
                 else:
                     print(f"Invalid input. {adventurer.name} is confused. Please choose again.")
                     self.print_complete_menu()
                     continue
-
+        
+        # Endgame console
+        print(adventurer)
         self.print_player_statistics(adventurer_name.upper(), player_stats)
 
     @staticmethod
@@ -276,11 +307,25 @@ Good luck!!!
         )
     @staticmethod
     def print_player_statistics(name, stat_dict):
-        print(f"\n{name}'s Endgame Summary")
+        print(f"{name}'s Endgame Summary")
 
         for key, value in stat_dict.items():
             print(f"{key}: {value}".capitalize())
         print("\n")
+    
+    @staticmethod
+    def pluralize(value):
+        """Method to determine if a value would be a plural value.
+        :param value: quantity to assess
+        :type value: int
+        :return: an s or empty character
+        :rtype: string
+        """
+        if isinstance(value, int):
+            plural = "s" if value != 1 else ""
+            return plural
+        else:
+            raise TypeError("Incorrect value. Must pass in a integer.")
 
 if __name__ == "__main__":
     main = Main()

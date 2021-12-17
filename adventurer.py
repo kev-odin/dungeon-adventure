@@ -58,21 +58,15 @@ class Adventurer:
                 room_health, room_vision = room_potions
 
                 if self.pillars_collected["A"] and room_health > 0:
-                    print(f"{self.name} used the powers of Abstration to double health potion collection.")
                     room_health = room_health * better_collect
 
                 if self.pillars_collected["P"] and room_vision > 0:
-                    print(f"{self.name} used the powers of Polymorphism to double vision potion collection.")
                     room_vision = room_vision * better_collect
 
                 self.health_pots += room_health
                 self.vision_pots += room_vision
 
-                if room_health != 0:
-                    print(f"{self.name} found {room_health} health potion{self._pluralize(room_health)}.")
-
-                if room_vision != 0:
-                    print(f"{self.name} found {room_vision} vision potion{self._pluralize(room_vision)}.")
+                return room_health, room_vision
 
             else:
                 raise TypeError("Potion values are not integers.")
@@ -107,17 +101,15 @@ class Adventurer:
         if isinstance(pit_damage, int):
 
             if self.pillars_collected["I"]:
-                print(f"{self.name} used the powers of Inheritance to fall slower reducing pit damage by half.")
                 pit_damage = pit_damage // 2
-
-            print(f"{self.name} fell into a pit and took {pit_damage} "
-                  f"point{self._pluralize(pit_damage)} of damage.")
 
             new_health = self.current_hitpoints - pit_damage
             if new_health <= 0:
                 self.current_hitpoints = 0
             else:
                 self.current_hitpoints = new_health
+            
+            return pit_damage
 
     def heal_adventurer(self, heal_pot : HealthPotion):
         """ Helper method to heal adventurer based on the health potion.
@@ -135,17 +127,20 @@ class Adventurer:
             if self.has_all_pillars():
                 self.max_hitpoints += heal
 
-            if self.pillars_collected["E"]:
+            if self.pillars_collected["E"]:     # Non adjusted health intentional, otherwise too strong.
                 heal *= 2
 
+            old_health = self.current_hitpoints
             new_health = self.current_hitpoints + heal
 
             if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
+
+            actual_heal = self.current_hitpoints - old_health
             
-            return heal
+            return heal, actual_heal
 
         else:
             raise TypeError("Health potion needs to passed into this method.")
@@ -263,20 +258,6 @@ class Adventurer:
         player_stats += f"{self.vision_pots}\n"
         player_stats += f"{self.pillars_collected}\n"
         return player_stats
-
-    @staticmethod
-    def _pluralize(value):
-        """Method to determine if a value would be a plural value.
-        :param value: quantity to assess
-        :type value: int
-        :return: an s or empty character
-        :rtype: string
-        """
-        if isinstance(value, int):
-            plural = "s" if value != 1 else ""
-            return plural
-        else:
-            raise TypeError("Incorrect value. Must pass in a integer.")
 
     @property
     def name(self):
