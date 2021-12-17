@@ -132,7 +132,7 @@ class Adventurer:
         :rtype: int
         """
         if isinstance(heal_pot, HealthPotion):
-            heal = heal_pot.heal_amount
+            heal = heal_pot.action()
 
             if self.has_all_pillars():
                 self.max_hitpoints += heal

@@ -133,7 +133,7 @@ class Main:
                         adv_curr_map.use_vision_potion(row=dungeon.adventurer_loc[0], col=dungeon.adventurer_loc[1])
                         player_stats["vision potions used"] += 1
 
-                        print(f"{adventurer.name} drank a vision potion, which revealed adjacent rooms.")
+                        print(f"{adventurer.name} drank a vision potion, which revealed adjacent rooms.\n")
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
                     
                     else:
