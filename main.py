@@ -63,17 +63,32 @@ class Main:
         print(f"{dungeon.get_room(dungeon.entrance)}")  # print current room
         print(f"{adventurer}")  # print initial adventurer for player, otherwise will need to use "i"
 
+        player_stats = {
+                "used health pots"      : 0,#
+                "used vision pots"      : 0,#
+                "heroic falls"          : 0,#
+                "potential pit damage"  : 0,#
+                "moves to exit"         : 0,#
+                "map opened"            : 0,#
+                "pillars collected"     : 0,#
+                "cheat counter"         : 0 #
+            }
+
         while True:  # another while game loop
+
             if adventurer.is_alive() and \
                     adventurer.has_all_pillars() and \
                     dungeon.adventurer_loc == dungeon.exit:
+    
                 print("\n:) Woo-hoo! you win the game!")
                 print("\nWhole dungeon displayed below: ")
                 print(dungeon.get_visible_dungeon_string())  # print whole dungeon
                 break
+
             elif not adventurer.is_alive():
                 print("\n:( Uh-oh, better luck next time!")
                 break
+
             else:
                 move_or_command = (input("Your move or command: ")).lower()
                 if move_or_command == "p":  # if player choose to use health potion
@@ -81,11 +96,13 @@ class Main:
                         
                         health_potion_created = PotionFactory.create_potion("health")
                         adventurer.heal_adventurer(health_potion_created)
+                        player_stats["used health pots"] += 1
 
                 elif move_or_command == "v":  # if player choose to use vision potion
                     if adventurer.has_vision_potion():
                         adv_curr_map.use_vision_potion(row=dungeon.adventurer_loc[0], col=dungeon.adventurer_loc[1])
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
+                        player_stats["used vision pots"] += 1
 
                 elif move_or_command == "h":
                     self.print_complete_menu() # h: show entire command menu
@@ -94,6 +111,8 @@ class Main:
                     print(adventurer.name+"'s status listed below: \n" + f"{adventurer}")
 
                 elif move_or_command == "m":   # m: show adventurer map
+                    player_stats["map opened"] += 1
+
                     print("Map Key:\n@ - YOU ARE HERE! :D\n"
                           "A P I E - A pillar!  Collect to unlock powers and win the game!\nX - a pit\n"
                           "H - Health Potion\nV - Vision Potion\nM - Multiple (pit, potions)\ni - Entrance\nO - Exit\n"
@@ -103,11 +122,14 @@ class Main:
                     print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
 
                 elif move_or_command == "wd":   # w: show whole dungeon
+                    player_stats["cheat counter"] += 1
                     print("Whole dungeon displayed below: \n")
                     print(dungeon.get_visible_dungeon_string())  # print whole dungeon
+                    print(adventurer)
+                    print(player_stats)
 
                 elif move_or_command == "q":  # quit
-                    print("Thanks, Bye!")
+                    print("\nThanks, Bye!")
                     break
 
                 elif move_or_command in ("w", "a", "s", "d"):
@@ -116,6 +138,7 @@ class Main:
                     try:
                         new_room = dungeon.move_adventurer(move[move_or_command])
                         adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])  # update map
+                        player_stats["moves to exit"] += 1
                         print("Current room displayed below: \n" + f"{new_room}")
                     except ValueError:
                         print("No doors in that direction, please choose again.")
@@ -145,20 +168,27 @@ class Main:
                         pillar_str = dungeon.collect_pillars()
                         if pillar_str:
                             adventurer.add_pillar(pillar_str)
+                            player_stats["pillars collected"] += 1
+
                         if adventurer.has_all_pillars():
                             print(
                                 f"{adventurer.name} has collected all the pillars.  The dungeon is starting to collapse."
                                 f"\nFlee to the exit as quickly as possible before it's too late!")
-
+                    
                     adventurer.add_potions(dungeon.collect_potions())
 
                     # automatically take damage if there is a pit
                     if new_room.pit_damage:
-                        adventurer.damage_adventurer(new_room.pit_damage)
+                        recieved_dmg = new_room.pit_damage
+                        adventurer.damage_adventurer(recieved_dmg)
+                        player_stats["potential pit damage"] += recieved_dmg
+                        player_stats["heroic falls"] += 1
                 else:
                     print(f"Invalid input. {adventurer.name} is confused. Please choose again.")
                     self.print_complete_menu()
                     continue
+
+        self.print_player_statistics(adventurer_name.upper(), player_stats)
 
     @staticmethod
     def print_welcome():
@@ -220,13 +250,19 @@ Good luck!!!
     @staticmethod
     def print_difficulty_description():
         print(
-            f"\nAvailable difficulty settings:"
+            f"\nAvailable difficulty settings:\n"
             f"\n\teasy - more than 100 hitpoints, two health and vision potions\n"
             f"\tmedium - more than 95 hitpoints, one health and vision potion\n"
             f"\thard - more than 90 hitpoints, one health and vision potion\n"
             f"\tinhumane - more than 85 hitpoints, ONLY one vision potion\n"
         )
+    @staticmethod
+    def print_player_statistics(name, stat_dict):
+        print(f"\n{name}'s Endgame Summary")
 
+        for key, value in stat_dict.items():
+            print(f"{key}: {value}".capitalize())
+        print("\n")
 
 if __name__ == "__main__":
     main = Main()

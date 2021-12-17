@@ -12,7 +12,7 @@ class HealthPotion(Potion):
         :param extra_effects: provides random integer values, defaults to True (used for testing)
         :type extra_effects: bool, optional
         """
-        self.__name = "Health Potion"
+        self.__name = "Common Health Potion"
         self.__heal_amount = 0
 
         if random:
