@@ -1,4 +1,4 @@
-# Kevin"s Time Tracker: 16 hours
+# Kevin"s Time Tracker: 20 hours
 from health_potion import HealthPotion
 import random
 class Adventurer:
@@ -17,7 +17,7 @@ class Adventurer:
         """
         self.__name = name
         self.__dev_powers = False
-        self.__max_hitpoints = 75
+        self.__max_hitpoints = None
         self.__current_hitpoints = None
         self.__health_pots = 0
         self.__vision_pots = 0
@@ -45,20 +45,32 @@ class Adventurer:
     def add_potions(self, room_potions):
         """ Helper method to add potions found in a room to the adventurer's
         inventory. To be used by the main method.
+
+        Abstraction/Polymorphism pillar power increases potions found in each room.
+
         :param: tuple (health_potions : int, vision_potions : int)
         :raise: TypeError when tuple length is not 2
+        :return:
+            room_health - health potions added to inventory,
+            room_vision - vision potions added to inventory
+        :rtype: int
         """
+        better_collect = 2
+
         if len(room_potions) == 2:
             if all(isinstance(val, int) for val in room_potions):
                 room_health, room_vision = room_potions
+
+                if self.pillars_collected["A"] and room_health > 0:
+                    room_health = room_health * better_collect
+
+                if self.pillars_collected["P"] and room_vision > 0:
+                    room_vision = room_vision * better_collect
+
                 self.health_pots += room_health
                 self.vision_pots += room_vision
 
-                if room_health != 0:
-                    print(f"{self.name} found {room_health} health potion{self._pluralize(room_health)}.")
-
-                if room_vision != 0:
-                    print(f"{self.name} found {room_vision} vision potion{self._pluralize(room_vision)}.")
+                return room_health, room_vision
 
             else:
                 raise TypeError("Potion values are not integers.")
@@ -72,6 +84,10 @@ class Adventurer:
         """
         if pillar is not None:
             if isinstance(pillar, str):
+
+                if self.pillars_collected[pillar]:
+                    return
+
                 for val in self.pillars_collected:
                     if val == pillar:
                         self.pillars_collected[pillar] = True
@@ -81,36 +97,64 @@ class Adventurer:
     def damage_adventurer(self, pit_damage):
         """ Helper method to damage adventurer based on the pit damage
         provided by the room. To be used by the main method.
+
+        Inheritance pillar power reduces pit damage by half.
+
         :param: int - damage values that will decrement current health
+        :return: pit_damage inflicted on the adventurer
+        :rtype: int
         """
         if isinstance(pit_damage, int):
-            print(f"{self.name} fell into a pit and took {pit_damage} "
-                  f"point{self._pluralize(pit_damage)} of damage.")
+
+            if self.pillars_collected["I"]:
+                pit_damage = pit_damage // 2
 
             new_health = self.current_hitpoints - pit_damage
             if new_health <= 0:
                 self.current_hitpoints = 0
             else:
                 self.current_hitpoints = new_health
+            
+            return pit_damage
 
     def heal_adventurer(self, heal_pot : HealthPotion):
         """ Helper method to heal adventurer based on the health potion.
         To be used by the main method. Adventurer has to be alive to use potion.
+
+        Encapsulation pillar power doubles the potency of healing potions.
+        All pillars collected increases maximum hit points
+
         :param: HealthPotion - heal values that will increment current health
         :raise: TypeError - raised when a health potion is not a parameter
+        :return:
+            heal - potion heal amount,
+            actual_heal - adventurer health increased by potion
+        :rtype: int
         """
         if isinstance(heal_pot, HealthPotion):
-            new_health = self.current_hitpoints + heal_pot.heal_amount
-            
+            heal = heal_pot.action()
+
+            if self.has_all_pillars():
+                self.max_hitpoints += heal
+
+            if self.pillars_collected["E"]:     # Non adjusted health intentional, otherwise too strong.
+                heal *= 2
+
+            old_health = self.current_hitpoints
+            new_health = self.current_hitpoints + heal
+
             if new_health >= self.max_hitpoints:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
-            print(f"{self.name} drank {heal_pot.name} and restored {heal_pot.heal_amount} hit point{self._pluralize(heal_pot.heal_amount)}.")
-        
+
+            actual_heal = self.current_hitpoints - old_health
+            
+            return heal, actual_heal
+
         else:
             raise TypeError("Health potion needs to passed into this method.")
-        
+
     def has_health_potion(self):
         """ Helper method to decrement health potions in the adventurer's
         inventory. To be used by the main method.
@@ -120,7 +164,6 @@ class Adventurer:
             self.health_pots -= 1
             return True
 
-        print(f"{self.name} does not have a health potion.")
         return False
 
     def has_vision_potion(self):
@@ -130,10 +173,8 @@ class Adventurer:
         """
         if self.vision_pots > 0:
             self.vision_pots -= 1
-            print(f"{self.name} used a vision potion, which revealed all valid adjacent rooms.")
             return True
 
-        print(f"{self.name} does not have a vision potion.")
         return False
 
     def _create_adventurer(self, name, challenge):
@@ -142,34 +183,44 @@ class Adventurer:
 
         :param: name: str if found in cheat_code dictionary, modification applied to adventurer
         :param: challenge: str sets to following challenge level:
-             "easy" 3x, "medium" 2x, "hard" 1x, "inhumane" 0x
+
+        difficulty
+            (hp modification, max hitpoints, default health potion, default vision potion)
+        cheat_codes
+            (max_hp, potions, pillar_collect_status)
         """
         difficulty = {
-            "easy" : 3,
-            "medium" : 2,
-            "hard" : 1,
-            "inhumane" : 0
+            "easy" : (3, 100, 2, 2),
+            "medium" : (2, 95, 1, 1),
+            "hard" : (1, 90, 1, 1),
+            "inhumane" : (1, 85, 0, 1)
         }
 
         cheat_codes = {
-            "tom" : (1000, 1000, 0, 0, False),
-            "kevin" : (75, 75, 50, 50, False),
-            "gary" : (100, 100, 0, 0, True)
+            "tom" : (1000, 0, False),
+            "kevin" : (85, 50, False),
+            "gary" : (100, 0, True)
         }
 
         if challenge in difficulty:
-            hp_mod = difficulty[challenge]
+            hp_mod = difficulty[challenge][0]
+            self.max_hitpoints = difficulty[challenge][1]
             self.max_hitpoints += hp_mod * random.randint(0, 10)
-            self.current_hitpoints = self.max_hitpoints
+
+            self.health_pots = difficulty[challenge][2]
+            self.vision_pots = difficulty[challenge][3]
 
         if name in cheat_codes:
             self.dev_powers = True
-            self.current_hitpoints = cheat_codes[name][0]
-            self.max_hitpoints = cheat_codes[name][1]
-            self.health_pots = cheat_codes[name][2]
-            self.vision_pots = cheat_codes[name][3]
+            self.max_hitpoints = cheat_codes[name][0]
+
+            self.health_pots = cheat_codes[name][1]
+            self.vision_pots = cheat_codes[name][1]
+
             for value in self.pillars_collected:
-                self.pillars_collected[value] = cheat_codes[name][4]
+                self.pillars_collected[value] = cheat_codes[name][2]
+
+        self.current_hitpoints = self.max_hitpoints
 
     def _readable_pillars(self):
         """ Helper method for converting pillars collection to a player readable string.
@@ -217,20 +268,6 @@ class Adventurer:
         player_stats += f"{self.vision_pots}\n"
         player_stats += f"{self.pillars_collected}\n"
         return player_stats
-
-    @staticmethod
-    def _pluralize(value):
-        """Method to determine if a value would be a plural value.
-        :param value: quantity to assess
-        :type value: int
-        :return: an s or empty character
-        :rtype: string
-        """
-        if isinstance(value, int):
-            plural = "s" if value != 1 else ""
-            return plural
-        else:
-            raise TypeError("Incorrect value. Must pass in a integer.")
 
     @property
     def name(self):

@@ -225,7 +225,11 @@ class Dungeon(Iterable):
                 if bool_list is None or bool_list[row][col]:  # If visible or no bool_list (for __str__ method)
                     room = self.__dungeon[row][col]
                     string_top += room.string_top()
-                    string_middle += room.string_middle()
+                    room_middle_string = room.string_middle()
+                    if (row, col) == self.adventurer_loc:  # replaces middle to @ if adv loc.
+                        room_middle_string = room_middle_string[:1] + "@" + room_middle_string[2:]
+                    string_middle += room_middle_string
+
                     string_bottom += room.string_bottom()
                 else:  # If not visible, prints nooooothingness instead.
                     empty = "       "

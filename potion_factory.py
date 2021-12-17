@@ -4,8 +4,7 @@ from health_potion import HealthPotion
 from vision_potion import VisionPotion
 
 class PotionFactory:
-    """Basic factory pattern to provide two types of potions that can be used
-    by the adventurer object.
+    """Basic factory pattern to provide two types of potion objects.
     """
 
     @staticmethod
