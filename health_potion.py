@@ -27,7 +27,7 @@ class HealthPotion(Potion):
 
     def action(self):
         """
-        User decides to use a potion in the inventory, to be used by main
+        User decides to use a potion in the inventory.
         :return: value of the amount healed by potion
         :rtype: int
         """
@@ -87,6 +87,6 @@ class HealthPotion(Potion):
         :raises TypeError: When an integer is not provided to the setter
         """
         if isinstance(value, int):
-            self.__heal_amount += value
+            self.__heal_amount = value
         else:
             raise TypeError("Value passed into method was not an integer value.")
