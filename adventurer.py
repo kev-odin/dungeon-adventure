@@ -133,11 +133,9 @@ class Adventurer:
             heal = heal_pot.heal_amount
 
             if self.has_all_pillars():
-                print(f"{self.name} used all pillars to increase max hit points.")
                 self.max_hitpoints += heal
 
             if self.pillars_collected["E"]:
-                print(f"{self.name} used the powers of Encapsulation to increase health potion potency.")
                 heal *= 2
 
             new_health = self.current_hitpoints + heal
@@ -146,7 +144,8 @@ class Adventurer:
                 self.current_hitpoints = self.max_hitpoints
             else:
                 self.current_hitpoints = new_health
-            print(f"{self.name} drank {heal_pot.name} and restored {heal} hit point{self._pluralize(heal)}.")
+            
+            return heal
 
         else:
             raise TypeError("Health potion needs to passed into this method.")
@@ -160,7 +159,6 @@ class Adventurer:
             self.health_pots -= 1
             return True
 
-        print(f"{self.name} does not have a health potion.")
         return False
 
     def has_vision_potion(self):
@@ -170,10 +168,8 @@ class Adventurer:
         """
         if self.vision_pots > 0:
             self.vision_pots -= 1
-            print(f"{self.name} used a vision potion, which revealed all valid adjacent rooms.")
             return True
 
-        print(f"{self.name} does not have a vision potion.")
         return False
 
     def _create_adventurer(self, name, challenge):

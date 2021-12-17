@@ -94,15 +94,32 @@ class Main:
                 if move_or_command == "p":  # if player choose to use health potion
                     if adventurer.has_health_potion():
                         
-                        health_potion_created = PotionFactory.create_potion("health")
-                        adventurer.heal_adventurer(health_potion_created)
+                        if adventurer.has_all_pillars():
+                            print(f"{adventurer.name} used all pillars to increase max hit points.")
+                        
+                        if adventurer.pillars_collected["E"]:
+                            print(f"{adventurer.name} used the powers of Encapsulation to increase health potion potency.")
+
                         player_stats["used health pots"] += 1
+                        health_potion = PotionFactory.create_potion("health")
+                        adventurer.heal_adventurer(health_potion)
+                        heal = adventurer.heal_adventurer(health_potion)
+                        print(f"{adventurer.name} drank a {health_potion.name} and healed {heal} hitpoints.\n")
+
+                    else:
+                        print(f"{adventurer.name} does not have a vision potion.")
 
                 elif move_or_command == "v":  # if player choose to use vision potion
                     if adventurer.has_vision_potion():
-                        adv_curr_map.use_vision_potion(row=dungeon.adventurer_loc[0], col=dungeon.adventurer_loc[1])
-                        print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
+
                         player_stats["used vision pots"] += 1
+                        adv_curr_map.use_vision_potion(row=dungeon.adventurer_loc[0], col=dungeon.adventurer_loc[1])
+                        print(f"{adventurer.name} drank a vision potion, which revealed adjacent rooms.")
+                        print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
+                    
+                    else:
+                        print(f"{adventurer.name} does not have a vision potion.")
+
 
                 elif move_or_command == "h":
                     self.print_complete_menu() # h: show entire command menu
@@ -111,14 +128,15 @@ class Main:
                     print(adventurer.name+"'s status listed below: \n" + f"{adventurer}")
 
                 elif move_or_command == "m":   # m: show adventurer map
-                    player_stats["map opened"] += 1
-
                     print("Map Key:\n@ - YOU ARE HERE! :D\n"
                           "A P I E - A pillar!  Collect to unlock powers and win the game!\nX - a pit\n"
                           "H - Health Potion\nV - Vision Potion\nM - Multiple (pit, potions)\ni - Entrance\nO - Exit\n"
                           "|| or - Open doors\n* - Boulders blocking your path.")
                     print("Currently known rooms displayed below: \n")
+                    
                     adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
+                    player_stats["map opened"] += 1
+
                     print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
 
                 elif move_or_command == "wd":   # w: show whole dungeon
