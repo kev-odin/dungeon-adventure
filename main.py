@@ -8,11 +8,12 @@ class Main:
     main method that contains the main logic for the game
     when choosing adventurer names:
         "gary"  : hidden name for all pillars collected
+        "hcf"   : hidden name for 1 hp and all pillars collected
         "kevin" : hidden name for pre collected health and vision potion
-        "tom"   : hidden name for 1000 hit points.
-    
+        "tom"   : hidden name for 1000 hit points
+
     when playing the game:
-        "w"     : hidden option for testing that prints out the entire Dungeon.
+        "wd"     : hidden option for testing that prints out the entire Dungeon
     """
 
     def game_flow(self):
@@ -85,7 +86,7 @@ class Main:
             if adventurer.is_alive() and \
                     adventurer.has_all_pillars() and \
                     dungeon.adventurer_loc == dungeon.exit:
-    
+
                 print("\n:) Woo-hoo! you win the game!")
                 self.print_player_statistics(dungeon, adventurer, player_stats)
 
@@ -108,16 +109,16 @@ class Main:
                 move_or_command = (input("Your move or command: ")).lower()
                 if move_or_command == "p":  # if player choose to use health potion
                     if adventurer.has_health_potion():
-                        
+
                         if adventurer.has_all_pillars():
                             print(f"{adventurer.name} used all pillars to increase max hit points.")
-                        
+
                         if adventurer.pillars_collected["E"]:
                             print(f"{adventurer.name} used the powers of Encapsulation to increase health potion potency.")
 
                         health_potion = PotionFactory.create_potion("health")
                         heal, health_recovered = adventurer.heal_adventurer(health_potion)
-                        
+
                         player_stats["health potions used"] += 1
                         player_stats["potential health recovered"] += heal
                         player_stats["health recovered"] += health_recovered
@@ -135,7 +136,7 @@ class Main:
 
                         print(f"{adventurer.name} drank a vision potion, which revealed adjacent rooms.\n")
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
-                    
+
                     else:
                         print(f"{adventurer.name} does not have a vision potion.")
 
@@ -152,7 +153,7 @@ class Main:
                           "H - Health Potion\nV - Vision Potion\nM - Multiple (pit, potions)\ni - Entrance\nO - Exit\n"
                           "|| or - Open doors\n* - Boulders blocking your path.")
                     print("Currently known rooms displayed below: \n")
-                    
+
                     adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])
                     player_stats["map opened"] += 1
 
@@ -210,17 +211,17 @@ class Main:
                             print(
                                 f"{adventurer.name} has collected all the pillars.  The dungeon is starting to collapse."
                                 f"\nFlee to the exit as quickly as possible before it's too late!")
-                    
+
                     # potion collection
                     if new_room.contents in ("H", "V", "M"):
 
                         heal_pot, vision_pot = adventurer.add_potions(dungeon.collect_potions())
                         player_stats["health potions collected"] += heal_pot
                         player_stats["vision potions collected"] += vision_pot
-                                                
+
                         if adventurer.pillars_collected["A"] and heal_pot > 0:
                             print(f"{adventurer.name} used the powers of Abstraction to double health potion collection.")
-                        
+
                         if adventurer.pillars_collected["P"] and vision_pot > 0:
                             print(f"{adventurer.name} used the powers of Polymorphism to double vision potion collection.")
 
@@ -247,7 +248,7 @@ class Main:
                     print(f"Invalid input. {adventurer.name} is confused. Please choose again.")
                     self.print_complete_menu()
                     continue
- 
+
     @staticmethod
     def print_welcome():
         welcome_page = """

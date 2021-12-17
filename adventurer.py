@@ -190,16 +190,17 @@ class Adventurer:
             (max_hp, potions, pillar_collect_status)
         """
         difficulty = {
-            "easy" : (3, 100, 2, 2),
-            "medium" : (2, 95, 1, 1),
-            "hard" : (1, 90, 1, 1),
-            "inhumane" : (1, 85, 0, 1)
+            "easy"      : (3, 100, 2, 2),
+            "medium"    : (2, 95, 1, 1),
+            "hard"      : (1, 90, 1, 1),
+            "inhumane"  : (1, 85, 0, 1)
         }
 
         cheat_codes = {
-            "tom" : (1000, 0, False),
-            "kevin" : (85, 50, False),
-            "gary" : (100, 0, True)
+            "gary"      : (150, 5, True),
+            "hcf"       : (1, 15, True),
+            "kevin"     : (185, 25, False),
+            "tom"       : (1000, 0, False)
         }
 
         if challenge in difficulty:
