@@ -261,9 +261,7 @@ Good luck!!!
         print(f"\n{name}'s Endgame Summary")
 
         for key, value in stat_dict.items():
-            print(
-                "\t"
-                f"{key}: {value}".capitalize())
+            print(f"{key}: {value}".capitalize())
         print("\n")
 
 if __name__ == "__main__":
