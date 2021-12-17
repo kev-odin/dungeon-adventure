@@ -8,11 +8,12 @@ class Main:
     main method that contains the main logic for the game
     when choosing adventurer names:
         "gary"  : hidden name for all pillars collected
+        "hcf"   : hidden name for 1 hp and all pillars collected
         "kevin" : hidden name for pre collected health and vision potion
-        "tom"   : hidden name for 1000 hit points.
-    
+        "tom"   : hidden name for 1000 hit points
+
     when playing the game:
-        "w"     : hidden option for testing that prints out the entire Dungeon.
+        "wd"     : hidden option for testing that prints out the entire Dungeon
     """
 
     def game_flow(self):
