@@ -50,6 +50,10 @@ class Adventurer:
 
         :param: tuple (health_potions : int, vision_potions : int)
         :raise: TypeError when tuple length is not 2
+        :return:
+            room_health - health potions added to inventory,
+            room_vision - vision potions added to inventory
+        :rtype: int
         """
         better_collect = 2
 
@@ -97,6 +101,8 @@ class Adventurer:
         Inheritance pillar power reduces pit damage by half.
 
         :param: int - damage values that will decrement current health
+        :return: pit_damage inflicted on the adventurer
+        :rtype: int
         """
         if isinstance(pit_damage, int):
 
@@ -120,6 +126,10 @@ class Adventurer:
 
         :param: HealthPotion - heal values that will increment current health
         :raise: TypeError - raised when a health potion is not a parameter
+        :return:
+            heal - potion heal amount,
+            actual_heal - adventurer health increased by potion
+        :rtype: int
         """
         if isinstance(heal_pot, HealthPotion):
             heal = heal_pot.heal_amount
