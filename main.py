@@ -60,7 +60,7 @@ class Main:
         # Creates an Adventurer Object
         adventurer = Adventurer(adventurer_name, desired_difficulty)
 
-        print("Entrance room displayed below: ")
+        print("\nEntrance room displayed below: \n")
         print(f"{dungeon.get_room(dungeon.entrance)}")  # print current room
         print(f"{adventurer}")  # print initial adventurer for player, otherwise will need to use "i"
 
@@ -84,11 +84,10 @@ class Main:
                     dungeon.adventurer_loc == dungeon.exit:
     
                 print("\n:) Woo-hoo! you win the game!")
-                print("\nWhole dungeon displayed below: ")
-                print(dungeon.get_visible_dungeon_string())  # print whole dungeon
+                self.print_player_statistics(dungeon, adventurer,  player_stats)
 
                 # if win, ask player if they would like to play again
-                play_again = input("Play again? (y/n): ")
+                play_again = input("\nPlay again? (y/n): ")
                 if play_again.lower() == "y":
                     self.game_flow()
                 else:
@@ -97,6 +96,7 @@ class Main:
 
             elif not adventurer.is_alive():
                 print("\n:( Uh-oh, better luck next time!")
+                self.print_player_statistics(dungeon, adventurer,  player_stats)
                 break
 
             else:
@@ -155,13 +155,12 @@ class Main:
 
                 elif move_or_command == "wd":   # w: show whole dungeon
                     player_stats["cheat counter"] += 1
-                    print("Whole dungeon displayed below: \n")
-                    print(dungeon.get_visible_dungeon_string())  # print whole dungeon
-                    print(adventurer)
-                    print(player_stats)
+                    print("CHEATER CHEATER CHEATER or Game Dev\n")
+                    self.print_player_statistics(dungeon, adventurer, player_stats)
 
                 elif move_or_command == "q":  # quit
-                    print("\nThanks, Bye!\n")
+                    print("Thanks, Bye!\n")
+                    self.print_player_statistics(dungeon, adventurer, player_stats)
                     break
 
                 elif move_or_command in ("w", "a", "s", "d"):
@@ -171,7 +170,7 @@ class Main:
                         new_room = dungeon.move_adventurer(move[move_or_command])
                         adv_curr_map.set_visited_room(dungeon.adventurer_loc[0], dungeon.adventurer_loc[1])  # update map
                         player_stats["moves to exit"] += 1
-                        print("Current room displayed below: \n" + f"{new_room}")
+                        print("\nCurrent room displayed below:\n" + f"\n{new_room}")
                     except ValueError:
                         print("No doors in that direction, please choose again.")
                         continue
@@ -241,11 +240,7 @@ class Main:
                     print(f"Invalid input. {adventurer.name} is confused. Please choose again.")
                     self.print_complete_menu()
                     continue
-        
-        # Endgame console
-        print(adventurer)
-        self.print_player_statistics(adventurer_name.upper(), player_stats)
-
+ 
     @staticmethod
     def print_welcome():
         welcome_page = """
@@ -312,14 +307,16 @@ Good luck!!!
             f"\thard - more than 90 hitpoints, one health and vision potion\n"
             f"\tinhumane - more than 85 hitpoints, ONLY one vision potion\n"
         )
-    @staticmethod
-    def print_player_statistics(name, stat_dict):
-        print(f"{name}'s Endgame Summary")
 
+    @staticmethod
+    def print_player_statistics(dungeon, adventurer, stat_dict):
+        print("Whole dungeon displayed below:\n")
+        print(dungeon.get_visible_dungeon_string())
+        print(adventurer)
+        print(f"{adventurer.name}'s Endgame Summary")
         for key, value in stat_dict.items():
             print(f"{key}: {value}".capitalize())
-        print("\n")
-    
+
     @staticmethod
     def pluralize(value):
         """Method to determine if a value would be a plural value.
