@@ -83,7 +83,14 @@ class Main:
                 print("\n:) Woo-hoo! you win the game!")
                 print("\nWhole dungeon displayed below: ")
                 print(dungeon.get_visible_dungeon_string())  # print whole dungeon
-                break
+
+                # if win, ask player if they would like to play again
+                play_again = input("Play again? (y/n): ")
+                if play_again.lower() == "y":
+                    self.game_flow()
+                else:
+                    print("Thanks, Bye!")
+                    exit()
 
             elif not adventurer.is_alive():
                 print("\n:( Uh-oh, better luck next time!")
