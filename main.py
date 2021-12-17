@@ -65,6 +65,7 @@ class Main:
         print(f"{adventurer}")  # print initial adventurer for player, otherwise will need to use "i"
 
         player_stats = {
+                "game difficulty setting"       : desired_difficulty,#
                 "health potions collected"      : 0,#
                 "health potions used"           : 0,#
                 "health recovered"              : 0,#
@@ -86,7 +87,7 @@ class Main:
                     dungeon.adventurer_loc == dungeon.exit:
     
                 print("\n:) Woo-hoo! you win the game!")
-                self.print_player_statistics(dungeon, adventurer,  player_stats)
+                self.print_player_statistics(dungeon, adventurer, player_stats)
 
                 # if win, ask player if they would like to play again
                 play_again = input("\nPlay again? (y/n): ")
@@ -100,7 +101,7 @@ class Main:
 
             elif not adventurer.is_alive():
                 print("\n:( Uh-oh, better luck next time!")
-                self.print_player_statistics(dungeon, adventurer,  player_stats)
+                self.print_player_statistics(dungeon, adventurer, player_stats)
                 break
 
             else:
