@@ -7,11 +7,12 @@ class Main:
     """
     main method that contains the main logic for the game
     when choosing adventurer names:
-        "gary" : hidden name for all pillars collected
+        "gary"  : hidden name for all pillars collected
         "kevin" : hidden name for pre collected health and vision potion
-        "tom" : hidden name for unlimited hit points.
+        "tom"   : hidden name for 1000 hit points.
+    
     when playing the game:
-        "w": hidden option for testing that prints out the entire Dungeon.
+        "w"     : hidden option for testing that prints out the entire Dungeon.
     """
 
     def game_flow(self):
@@ -103,8 +104,8 @@ class Main:
                             print(f"{adventurer.name} used the powers of Encapsulation to increase health potion potency.")
 
                         health_potion = PotionFactory.create_potion("health")
-                        adventurer.heal_adventurer(health_potion)
                         heal, health_recovered = adventurer.heal_adventurer(health_potion)
+                        
                         player_stats["health potions used"] += 1
                         player_stats["potential health recovered"] += heal
                         player_stats["health recovered"] += health_recovered
@@ -119,6 +120,7 @@ class Main:
 
                         player_stats["vision potions used"] += 1
                         adv_curr_map.use_vision_potion(row=dungeon.adventurer_loc[0], col=dungeon.adventurer_loc[1])
+                        
                         print(f"{adventurer.name} drank a vision potion, which revealed adjacent rooms.")
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
                     
@@ -202,8 +204,7 @@ class Main:
                     if new_room.contents in ("H", "V", "M"):
 
                         heal_pot, vision_pot = adventurer.add_potions(dungeon.collect_potions())
-                        adventurer.add_potions((heal_pot, vision_pot))
-                        
+                                                
                         if adventurer.pillars_collected["A"] and heal_pot > 0:
                             print(f"{adventurer.name} used the powers of Abstraction to double health potion collection.")
                         
@@ -223,7 +224,6 @@ class Main:
                             print(f"{adventurer.name} used the powers of Inheritance to fall slower reducing pit damage by half.")
 
                         recieved_damage = new_room.pit_damage
-                        adventurer.damage_adventurer(recieved_damage)
                         real_damage = adventurer.damage_adventurer(recieved_damage)
 
                         print(f"{adventurer.name} fell into a pit and took {real_damage} point{self.pluralize(real_damage)} of damage.")
