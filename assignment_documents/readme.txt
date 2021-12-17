@@ -32,11 +32,12 @@ main.py - 24 hours
 test_map.py - 9 hours
 Group meetings - 2 hours
 
-Steph -> Current time spent: 34 hours total so far?!
+Steph -> Current time spent: 36 hours total
 I need to stop refactoring code for fun and writing a bunch of tests.
 Time to working: 4.5 hours to minimal viable functionality.
 This readme!  Now with more exclamation points!
 Bug bash & refactoring~!
+UML uglification - 2 hr
 dungeon_builder.py
 dungeon.py
 room.py -> Done
