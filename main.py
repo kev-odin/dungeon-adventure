@@ -65,9 +65,11 @@ class Main:
         print(f"{adventurer}")  # print initial adventurer for player, otherwise will need to use "i"
 
         player_stats = {
+                "health potions collected"      : 0,#
                 "health potions used"           : 0,#
                 "health recovered"              : 0,#
                 "potential health recovered"    : 0,#
+                "vision potions collected"      : 0,#
                 "vision potions used"           : 0,#
                 "heroic falls"                  : 0,#
                 "pit damage received"           : 0,#
@@ -90,9 +92,11 @@ class Main:
                 play_again = input("\nPlay again? (y/n): ")
                 if play_again.lower() == "y":
                     self.game_flow()
-                else:
+                elif play_again.lower() == "n":
                     print("Thanks, Bye!")
                     exit()
+                else:
+                    print(f"{play_again} is an incorrect command. Please select 'y' or 'n'.")
 
             elif not adventurer.is_alive():
                 print("\n:( Uh-oh, better luck next time!")
@@ -125,9 +129,9 @@ class Main:
                 elif move_or_command == "v":  # if player choose to use vision potion
                     if adventurer.has_vision_potion():
 
-                        player_stats["vision potions used"] += 1
                         adv_curr_map.use_vision_potion(row=dungeon.adventurer_loc[0], col=dungeon.adventurer_loc[1])
-                        
+                        player_stats["vision potions used"] += 1
+
                         print(f"{adventurer.name} drank a vision potion, which revealed adjacent rooms.")
                         print(dungeon.get_visible_dungeon_string(adv_curr_map.visited_array()))
                     
@@ -210,6 +214,8 @@ class Main:
                     if new_room.contents in ("H", "V", "M"):
 
                         heal_pot, vision_pot = adventurer.add_potions(dungeon.collect_potions())
+                        player_stats["health potions collected"] += heal_pot
+                        player_stats["vision potions collected"] += vision_pot
                                                 
                         if adventurer.pillars_collected["A"] and heal_pot > 0:
                             print(f"{adventurer.name} used the powers of Abstraction to double health potion collection.")
@@ -232,10 +238,10 @@ class Main:
                         recieved_damage = new_room.pit_damage
                         real_damage = adventurer.damage_adventurer(recieved_damage)
 
-                        print(f"{adventurer.name} fell into a pit and took {real_damage} point{self.pluralize(real_damage)} of damage.")
-
-                        player_stats["pit damage received"] += real_damage
                         player_stats["heroic falls"] += 1
+                        player_stats["pit damage received"] += real_damage
+
+                        print(f"{adventurer.name} fell into a pit and took {real_damage} point{self.pluralize(real_damage)} of damage.")
                 else:
                     print(f"Invalid input. {adventurer.name} is confused. Please choose again.")
                     self.print_complete_menu()
