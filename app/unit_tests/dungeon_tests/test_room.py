@@ -1,5 +1,5 @@
 import unittest
-from model.dungeon.room import Room
+from app.model.dungeon.room import Room
 
 
 class TestRoom(unittest.TestCase):

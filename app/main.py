@@ -1,6 +1,6 @@
-from model.dungeon.adventurer import Adventurer
-from model.dungeon.dungeon_builder import DungeonBuilder
-from model.items.potion_factory import PotionFactory
+from app.model.dungeon.adventurer import Adventurer
+from app.model.dungeon.dungeon_builder import DungeonBuilder
+from app.model.items.potion_factory import PotionFactory
 
 
 class Main:

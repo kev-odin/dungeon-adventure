@@ -1,7 +1,7 @@
 import unittest
-from model.dungeon.dungeon_builder import DungeonBuilder
-from model.dungeon.room import Room
-from model.dungeon import Dungeon
+from app.model.dungeon.dungeon_builder import DungeonBuilder
+from app.model.dungeon.room import Room
+from app.model.dungeon import Dungeon
 
 
 class TestDungeonBuilder(unittest.TestCase):

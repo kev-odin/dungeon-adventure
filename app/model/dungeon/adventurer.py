@@ -1,5 +1,5 @@
 # Kevin"s Time Tracker: 20 hours
-from model.items.health_potion import HealthPotion
+from app.model.items.health_potion import HealthPotion
 import random
 
 

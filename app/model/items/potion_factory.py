@@ -1,7 +1,7 @@
 # Kevin's Time Tracker: 1 hours
 
-from model.items.health_potion import HealthPotion
-from model.items.vision_potion import VisionPotion
+from app.model.items.health_potion import HealthPotion
+from app.model.items.vision_potion import VisionPotion
 
 class PotionFactory:
     """Basic factory pattern to provide two types of potion objects.
