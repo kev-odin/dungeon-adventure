@@ -12,7 +12,8 @@ class dungeon_adventure_GUI:
         self.root.mainloop()
 
     def create_new_game_window(self):
-        global pop
+        # checkout this site https://www.youtube.com/watch?v=tpwu5Zb64lQ
+        global pop  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         top = Toplevel(self.root)
         # top.mainloop()
 
@@ -24,7 +25,7 @@ class dungeon_adventure_GUI:
         load_game_btn = Button(canvas, text="Load Game", command='Need a command').place(relx=0.5, rely=0.6)
         quit_game_btn = Button(canvas, text="Quit Game", command=self.root.destroy).place(relx=0.5, rely=0.7)
 
-        global img
+        global img # to make it accessiable to other functions, otherwise tkinter won't work in our way
         img = PhotoImage(file="welcome_bg.gif")
         canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
