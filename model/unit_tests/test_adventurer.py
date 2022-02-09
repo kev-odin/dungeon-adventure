@@ -1,8 +1,8 @@
 # Kevin's Time Tracker: 5 hour
 
 import unittest
-from adventurer import Adventurer
-from health_potion import HealthPotion
+from model.dungeon.adventurer import Adventurer
+from model.items.health_potion import HealthPotion
 
 class AdventurerTest(unittest.TestCase):
 

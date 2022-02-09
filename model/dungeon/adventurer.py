@@ -1,6 +1,8 @@
 # Kevin"s Time Tracker: 20 hours
-from health_potion import HealthPotion
+from model.items.health_potion import HealthPotion
 import random
+
+
 class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.

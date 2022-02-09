@@ -1,7 +1,6 @@
 import unittest
 
-from dungeon_builder import DungeonBuilder
-from dungeon import Dungeon
+from model.dungeon.dungeon_builder import DungeonBuilder
 
 
 class TestDungeonIterator(unittest.TestCase):

@@ -1,5 +1,5 @@
 import unittest
-from map import Map
+from model.dungeon.map import Map
 
 
 class TestMap(unittest.TestCase):

@@ -1,8 +1,8 @@
 # Kevin's Time Tracker: 1.5 hours
 
-from potion_factory import PotionFactory
-from health_potion import HealthPotion
-from vision_potion import VisionPotion
+from model.items.potion_factory import PotionFactory
+from model.items.health_potion import HealthPotion
+from model.items.vision_potion import VisionPotion
 import unittest
 
 class PotionFactoryTest(unittest.TestCase):

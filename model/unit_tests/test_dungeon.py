@@ -5,7 +5,7 @@ test_adventurer_find_exit_and_pillars - Breadth first search w/ pillar pick up a
 """
 
 import unittest
-from dungeon_builder import DungeonBuilder
+from model.dungeon.dungeon_builder import DungeonBuilder
 
 
 class TestDungeon(unittest.TestCase):
