@@ -6,10 +6,11 @@ class dungeon_adventure_GUI:
     def __init__(self):
         self.root = Tk()  # create the root window
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
-        self.welcome_screen_canvas = Canvas(self.welcome_screen_frame, width=800, height=600, bg="black") # canvas within that frame
+        self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="black") # canvas within that frame
 
         self.welcome_window()
         self.welcome_screen_frame.pack()
+        # self.welcome_screen_frame.forget
         self.root.mainloop()
 
     def create_new_game_window(self):
