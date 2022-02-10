@@ -1,12 +1,16 @@
 # Kevin"s Time Tracker: 20 hours
-from health_potion import HealthPotion
+from app.model.items.health_potion import HealthPotion
 import random
+
+import sqlite3
+
+
 class Adventurer:
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
 
-    def __init__(self, name = None, challenge = "easy"):
+    def __init__(self, name = None, challenge="easy"):
         """Adventurer object that maintains the inventory collection of potions,
         pillars collected, and current hitpoints.
 

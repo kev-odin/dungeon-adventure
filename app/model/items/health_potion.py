@@ -1,6 +1,6 @@
 # Kevin's Time Tracker: 2 hours
 
-from potion import Potion
+from app.model.items.potion import Potion
 from random import randint
 
 class HealthPotion(Potion):

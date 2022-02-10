@@ -4,9 +4,9 @@ Modified simple builder pattern to allow difficulty settings and single location
 Didn't seem necessary to include the layers of abstraction for a director or multiple builders when I just wanted to put
 all my creation stuff in one spot.
 """
-from dungeon import Dungeon
-from room import Room
-from map import Map
+from app.model.dungeon.dungeon import Dungeon
+from app.model.dungeon.room import Room
+from app.model.dungeon.map import Map
 import random
 
 

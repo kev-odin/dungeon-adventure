@@ -1,7 +1,7 @@
 # Kevin's Time Tracker: 2 hours
 # We can still figure out how a vision potion can be implemented with this. Or scrap it.
 
-from potion import Potion
+from app.model.items.potion import Potion
 
 class VisionPotion(Potion):
     """Vision potion that an adventurer can use to reveal surrounding rooms.
