@@ -51,8 +51,7 @@ class dungeon_adventure_GUI:
         description_details.pack()
 
 
-        btn2 = Button(pop1, text="Confirm",command=pop1.destroy).place(relx=0.75,rely=0.9)
-        btn2.pack()
+        btn2 = Button(pop1, text="Confirm New",command=pop1.destroy).place(relx=0.75,rely=0.9)
 
 
     def load_existing_game_window(self):
@@ -62,7 +61,7 @@ class dungeon_adventure_GUI:
         pop2.geometry("600x300")
 
 
-        btn3 = Button(pop2, text="Load Gxisting Game", command = pop2.destroy).place(relx=0.75, rely=0.9)
+        btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
 
     def welcome_window(self):
 
