@@ -1,8 +1,6 @@
-# Kevin"s Time Tracker: 20 hours
 from app.model.items.health_potion import HealthPotion
+from app.model.db.query_helper import QueryHelper
 import random
-
-import sqlite3
 
 
 class Adventurer:
@@ -10,16 +8,15 @@ class Adventurer:
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
 
-    def __init__(self, name = None, challenge="easy"):
+    def __init__(self, name = None, adv_class="Warrior"):
         """Adventurer object that maintains the inventory collection of potions,
         pillars collected, and current hitpoints.
 
-        :param name: name of the adventurer provided by user, defaults to None
-        :type name: str
-        :param challenge: challenge provided by user, defaults to "easy"
-        :type challenge: str
+        :param name: str name of the adventurer provided by user, defaults to None
+        :param adv_class: str - defaults to Warrior
         """
         self.__name = name
+        self.__class_data = None
         self.__dev_powers = False
         self.__max_hitpoints = None
         self.__current_hitpoints = None
@@ -32,7 +29,7 @@ class Adventurer:
             "E" : False
         }
 
-        self._create_adventurer(name, challenge)
+        self._create_adventurer(name, adv_class)
 
     def is_alive(self):
         """Helper method to determine that the adventurer is alive during the dungeon adventure
@@ -181,7 +178,8 @@ class Adventurer:
 
         return False
 
-    def _create_adventurer(self, name, challenge):
+    # TODO update comments
+    def _create_adventurer(self, name: str, adv_class: str):
         """Helper method for character creation. Difficulty and name are checked,
         based on those values, create an adventurer with modified base values.
 
@@ -193,12 +191,8 @@ class Adventurer:
         cheat_codes
             (max_hp, potions, pillar_collect_status)
         """
-        difficulty = {
-            "easy"      : (3, 100, 2, 2),
-            "medium"    : (2, 95, 1, 1),
-            "hard"      : (1, 90, 1, 1),
-            "inhumane"  : (1, 85, 0, 1)
-        }
+        qh = QueryHelper()
+        class_dict = qh.query(adv_class)
 
         cheat_codes = {
             "gary"      : (150, 5, True),
@@ -207,13 +201,7 @@ class Adventurer:
             "tom"       : (1000, 0, False)
         }
 
-        if challenge in difficulty:
-            hp_mod = difficulty[challenge][0]
-            self.max_hitpoints = difficulty[challenge][1]
-            self.max_hitpoints += hp_mod * random.randint(0, 10)
-
-            self.health_pots = difficulty[challenge][2]
-            self.vision_pots = difficulty[challenge][3]
+        self.max_hitpoints = class_dict["hp"]
 
         if name in cheat_codes:
             self.dev_powers = True
@@ -226,6 +214,7 @@ class Adventurer:
                 self.pillars_collected[value] = cheat_codes[name][2]
 
         self.current_hitpoints = self.max_hitpoints
+        self.__adv_class = class_dict
 
     def _readable_pillars(self):
         """ Helper method for converting pillars collection to a player readable string.
