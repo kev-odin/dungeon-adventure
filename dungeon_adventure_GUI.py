@@ -38,18 +38,34 @@ class dungeon_adventure_GUI:
         clicked = StringVar()
         clicked.set(level_options[0]) # set the default greyed out level
 
-        drop_down_difficulty = OptionMenu(pop1, clicked, *level_options) # create a dropdown menu
+
+        # description_frame = Frame(pop1)
+        # description_frame.pack()
+
+        def display_selected(selected):
+            # for widget in description_frame.winfo_children():
+            #     widget.destroy()
+            # selected = clicked.get()
+
+            difficulty_description = Label(pop1, text="Difficulty level descriptions:")
+            difficulty_description.pack()
+
+            description_frame = LabelFrame(pop1, text=selected)
+            description_frame.pack()
+
+            description_message = Message(description_frame, text=level_options_description[selected], aspect=500)
+            description_message.pack()
+
+
+
+            # description_frame.text = clicked.get()
+            # description_message.text = level_options_description[description_frame.text]
+            print(selected)
+
+        drop_down_difficulty = OptionMenu(pop1, clicked, *level_options, command=display_selected) # create a dropdown menu
         drop_down_difficulty.pack()
 
-        difficulty_description = Label(pop1, text="Difficulty level decription:")
-        difficulty_description.pack()
-
-        description_frame = LabelFrame(pop1, text=clicked.get())
-        description_frame.pack()
-
-        description_details = Message(description_frame, text=level_options_description[clicked.get()],aspect=500)
-        description_details.pack()
-
+        display_selected(clicked.get())
 
         btn2 = Button(pop1, text="Confirm New",command=pop1.destroy).place(relx=0.75,rely=0.9)
 
@@ -71,7 +87,7 @@ class dungeon_adventure_GUI:
         load_game_btn = Button(canvas, text="Load Game", command=self.load_existing_game_window).place(relx=0.5, rely=0.6)
         quit_game_btn = Button(canvas, text="Quit Game", command=self.root.destroy).place(relx=0.5, rely=0.7)
 
-        global img # to make it accessiable to other functions, otherwise tkinter won't work in our way
+        global img # to make it accessible to other functions, otherwise tkinter won't work in our way
         img = PhotoImage(file="welcome_bg.gif")
         canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
