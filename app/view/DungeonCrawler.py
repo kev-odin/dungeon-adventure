@@ -3,6 +3,7 @@ from tkinter import *
 class DungeonCrawler:
     def __init__(self):
         self.root = Tk()  # create the root window
+        self.root.resizable(height = False, width = False)
         self.root.title("Dungeon Adventure 2.0 - The Spoony Bard Returns")
         self.root.geometry("800x600")
         self.dungeon_crawl_frame = Frame(self.root)  # create a frame within that root window
