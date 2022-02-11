@@ -1,5 +1,6 @@
+# checkout Kevin shared site https://www.pythontutorial.net/tkinter/
+# checkout this site https://www.youtube.com/watch?v=tpwu5Zb64lQ
 from tkinter import *
-from tkinter import filedialog
 
 class dungeon_adventure_GUI:
 
@@ -14,12 +15,44 @@ class dungeon_adventure_GUI:
         self.root.mainloop()
 
     def create_new_game_window(self):
-        # checkout this site https://www.youtube.com/watch?v=tpwu5Zb64lQ
         global pop  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         pop = Toplevel(self.root)
         pop.title("New Game")
         pop.geometry("600x300")
-        btn2 = Button(pop, text="Confirm New Game").place(relx=0.75,rely=0.9)
+
+        difficulty_label= Label(pop, text="Select your game difficulty level")
+        difficulty_label.pack()
+
+
+        level_options = [
+            "Easy",
+            "Medium",
+            "Hard"
+        ]
+
+        clicked = StringVar()
+        clicked.set(level_options[0]) # set the default greyed out level
+
+        drop_down_difficulty = OptionMenu(pop, clicked, *level_options) # create a dropdown menu
+        drop_down_difficulty.pack()
+
+        difficulty_description = Label(pop, text="Difficulty level decription:")
+        difficulty_description.pack()
+
+        difficulty_description_details = Label(pop, text="box shape here...and the details in it")
+        difficulty_description_details.pack()
+
+
+        # name_label = Label(pop, text="Enter your hero's name:")
+        # name_label.pack()
+        # e = Entry(pop)
+        # e.pack()
+
+
+
+
+        btn2 = Button(pop, text="Confirm",command=pop.destroy).place(relx=0.75,rely=0.9)
+        btn2.pack()
 
 
     def load_existing_game_window(self):
@@ -27,7 +60,9 @@ class dungeon_adventure_GUI:
         pop = Toplevel(self.root)
         pop.title("Load Game")
         pop.geometry("600x300")
-        btn3 = Button(pop, text="Load Gxisting Game").place(relx=0.75, rely=0.9)
+
+
+        btn3 = Button(pop, text="Load Gxisting Game", command = pop.destroy).place(relx=0.75, rely=0.9)
 
     def welcome_window(self):
 
