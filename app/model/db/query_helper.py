@@ -21,7 +21,7 @@ class QueryHelper:
         :return: dict of values for defaults queried, with keys as table names and values as value.
         """
         sql_select_query = ("""SELECT difficulty FROM dng_diff""", """SELECT name FROM monsters""",
-                            """SELECT name FROM classes""")
+                            """SELECT adv_class FROM classes""")
         diff_options = self._select_query(sql_select_query[0])
         monster_options = self._select_query(sql_select_query[1])
         class_options = self._select_query(sql_select_query[2])
@@ -30,7 +30,7 @@ class QueryHelper:
         elif target in str(monster_options[0]):
             sql_select_query = """SELECT * FROM monsters where name = ?"""
         elif target in str(class_options[0]):
-            sql_select_query = """SELECT * FROM classes where name = ?"""
+            sql_select_query = """SELECT * FROM classes where adv_class = ?"""
         else:
             raise KeyError(f"{target} is not a valid query.")
         values, keys = self._select_query(sql_select_query, target)
