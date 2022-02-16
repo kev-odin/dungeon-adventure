@@ -6,6 +6,7 @@ class dungeon_adventure_GUI:
 
     def __init__(self):
         self.root = Tk()  # create the root window
+        self.root.resizable(width=False, height=False) # fixed size
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
         self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="black") # canvas within that frame
         self.welcome_window()
@@ -14,33 +15,34 @@ class dungeon_adventure_GUI:
         self.root.mainloop()
 
     def create_new_game_window(self):
+        global game_difficulty  # global variable, look for details in def display_selected()
         global pop1  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         pop1 = Toplevel(self.root)
+        pop1.geometry("750x450")
+        pop1.resizable(width=False, height=False)
         pop1.title("New Game")
-        pop1.geometry("600x300")
-
-        global game_difficulty  # store the
-        # game_difficulty = ''
 
 
-        difficulty_label= Label(pop1, text="Select your game difficulty level")
-        difficulty_label.pack()
+        label1= Label(pop1, text="Select your game difficulty level")
+        label1.pack()
 
         level_options = [
             "Easy",
             "Medium",
-            "Hard"
+            "Hard",
+            "Inhumane"
         ]
         level_options_description = {
-            "Easy":"This is the easy mode.This is the easy mode.This is the easy mode.This is the easy mode.",
-            "Medium":"This is the medium mode.This is the medium mode.This is the medium mode.This is the medium mode.",
-            "Hard":"This is the hard mode.This is the hard mode.This is the hard mode.This is the hard mode."
+            "Easy":"This is the easy mode.....",
+            "Medium":"This is the medium mode.....",
+            "Hard":"This is the hard mode.....",
+            "Inhumane": "This is the Inhumane mode....."
         }
 
         clicked = StringVar()
         clicked.set(level_options[0]) # set the default greyed out level
 
-        description_frame = Frame(pop1) # create a frame to hold description_label_frame and description_message
+        description_frame = Frame(pop1) # create a frame to hold label_frame1 and description_message
 
         def display_selected(selected):
             for widget in description_frame.winfo_children(): # Way to rewrite the label frame, looks for every child of frame
@@ -48,20 +50,20 @@ class dungeon_adventure_GUI:
             selected = clicked.get()
             game_difficulty = selected # store the difficulty level in a variable
 
-            description_label_frame = LabelFrame(description_frame, text=selected)
-            description_label_frame.pack()
+            label_frame1 = LabelFrame(description_frame, text=selected)
+            label_frame1.pack()
 
-            description_message = Message(description_label_frame, text=level_options_description[selected], aspect=500)
+            description_message = Message(label_frame1, text=level_options_description[selected], aspect=500)
             description_message.pack()
 
 
-        drop_down_difficulty = OptionMenu(pop1, clicked, *level_options, command=display_selected) # create a dropdown menu
-        drop_down_difficulty.pack()
+        option_menu1 = OptionMenu(pop1, clicked, *level_options, command=display_selected) # create a dropdown menu
+        option_menu1.pack()
 
-        difficulty_description = Label(pop1, text="Difficulty level descriptions:")
-        difficulty_description.pack()
+        lable2 = Label(pop1, text="Difficulty level descriptions:")
+        lable2.pack()
 
-        description_frame.pack() # pack it afterwards line 41
+        description_frame.pack() # pack it afterwards the line of "description_frame = Frame(pop1)"
 
         display_selected(clicked.get())
 
@@ -71,25 +73,52 @@ class dungeon_adventure_GUI:
         for widget in pop1.winfo_children():  # Way to rewrite the label frame, looks for every child of frame
             widget.destroy()  # delete
 
+        label3 = Label(pop1, text="Choose your hero's name:").pack()
+        hero_name = Entry(pop1).pack()
+
+        label4 = Label(pop1, text="Choose your hero type:").pack()
+
         hero_options = [
-            "A",
-            "B",
-            "C"
+            "Warrior",
+            "Priest",
+            "Thief"
         ]
+        hero_options_description = {
+            "Warrior": "This is the Warrior description.",
+            "Priest": "This is the Priest description.",
+            "Thief": "This is the Thief description."
+        }
         clicked = StringVar()
         clicked.set(hero_options[0])  # set the default greyed out level
 
-        name = Label(pop1, text="Choose your name").pack()
-        name_input = Entry(pop1).pack()
+        hero_frame = Frame(pop1)
 
-        # drop_down_hero_type = OptionMenu(pop1, clicked, *hero_options, command=display_selected)
+        def display_selected_hero(selected):
+            for widget in hero_frame.winfo_children(): # Way to rewrite the label frame, looks for every child of frame
+                widget.destroy() # delete
+            selected = clicked.get()
+            hero_type = selected # store the difficulty level in a variable
+
+            label_frame2 = LabelFrame(hero_frame, text=selected)
+            label_frame2.pack()
+
+            hero_description = Message(label_frame2, text=hero_options_description[selected], aspect=500)
+            hero_description.pack()
+
+        option_menu2 = OptionMenu(pop1, clicked, *hero_options, command=display_selected_hero) # dropdown menu of hero types
+        option_menu2.pack()
+
+        hero_frame.pack() # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
+        display_selected_hero(clicked.get()) # display the default hero type description.
+
+        btn = Button(pop1, text="Confirm", command=pop1.destroy).place(relx=0.75,rely=0.9) # here the pop1.destroy should be replaced by a function to send info the controller
 
     def load_existing_game_window(self):
         global pop2  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         pop2 = Toplevel(self.root)
+        pop2.geometry("750x450")
+        pop2.resizable(width=False, height=False)
         pop2.title("Load Game")
-        pop2.geometry("600x300")
-
 
         btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
 
@@ -105,7 +134,6 @@ class dungeon_adventure_GUI:
         img = PhotoImage(file="welcome_bg.gif")
         canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
-
 
 if __name__ == "__main__":
     game = dungeon_adventure_GUI()
