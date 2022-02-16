@@ -1,8 +1,3 @@
-"""
-Time Tracker~!
-17 hours
-"""
-
 from collections.abc import Iterable, Iterator
 
 

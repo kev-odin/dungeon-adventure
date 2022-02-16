@@ -2,32 +2,28 @@ import unittest
 from app.model.dungeon.dungeon_builder import DungeonBuilder
 from app.model.dungeon.room import Room
 from app.model.dungeon.dungeon import Dungeon
+from app.model.dungeon.adventurer import Adventurer
+from app.model.db.query_helper import QueryHelper
 
 
 class TestDungeonBuilder(unittest.TestCase):
     @staticmethod
     def init_diff_expected(difficulty):
-        expected = {"easy": [0.05, 0.1, 0.05, 0.05, 0.1, 2, 2, 10, 5, 5],
-                    "medium": [0.07, 0.1, 0.05, 0.1, 0.12, 2, 1, 20, 8, 8],
-                    "hard": [0.08, 0.1, 0.05, 0.15, 0.15, 1, 1, 30, 10, 10],
-                    "inhumane": [0.1, 0.01, 0.01, 0.3, 0.2, 1, 1, 80, 20, 20]}[difficulty]
+        qh = QueryHelper()
+        expected = qh.query(difficulty)
         return expected
 
     @staticmethod
     def get_builder_diff_params(difficulty):
         db = DungeonBuilder(difficulty)
-        actual = [db._DungeonBuilder__impassable_chance, db._DungeonBuilder__hp_pot_chance,
-                  db._DungeonBuilder__vision_chance, db._DungeonBuilder__many_chance, db._DungeonBuilder__pit_chance,
-                  db._DungeonBuilder__max_hp_pots, db._DungeonBuilder__max_vision, db._DungeonBuilder__max_pit_damage,
-                  db._DungeonBuilder__row_count, db._DungeonBuilder__col_count]
+        actual = db._DungeonBuilder__settings
         return actual
 
     def test_init_medium(self):
         difficulty = "medium"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
-        for index in range(0, len(expected)):
-            self.assertEqual(expected[index], actual[index], f"Check init for {difficulty}")
+        self.assertDictEqual(expected, actual, f"Check init for {difficulty}")
 
     def test_init_medium_size(self):
         db = DungeonBuilder()
@@ -39,8 +35,7 @@ class TestDungeonBuilder(unittest.TestCase):
         difficulty = "easy"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
-        for index in range(0, len(expected)):
-            self.assertEqual(expected[index], actual[index], f"Check init for {difficulty}")
+        self.assertDictEqual(expected, actual, f"Check init for {difficulty}")
 
     def test_init_easy_size(self):
         db = DungeonBuilder()
@@ -52,8 +47,7 @@ class TestDungeonBuilder(unittest.TestCase):
         difficulty = "hard"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
-        for index in range(0, len(expected)):
-            self.assertEqual(expected[index], actual[index], f"Check init for {difficulty}")
+        self.assertDictEqual(expected, actual, f"Check init for {difficulty}")
 
     def test_init_hard_size(self):
         db = DungeonBuilder()
@@ -65,8 +59,7 @@ class TestDungeonBuilder(unittest.TestCase):
         difficulty = "inhumane"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
-        for index in range(0, len(expected)):
-            self.assertEqual(expected[index], actual[index], f"Check init for {difficulty}")
+        self.assertDictEqual(expected, actual, f"Check init for {difficulty}")
 
     def test_init_inhumane_size(self):
         db = DungeonBuilder()
@@ -84,7 +77,7 @@ class TestDungeonBuilder(unittest.TestCase):
         db = DungeonBuilder()
         db.build_dungeon("hard")
         db._DungeonBuilder__reset("medium")
-        self.assertEqual("medium", db._DungeonBuilder__difficulty, "Should be reset to medium.")
+        self.assertEqual("medium", db._DungeonBuilder__settings["difficulty"], "Should be reset to medium.")
 
     def test__set(self):
         db = DungeonBuilder()
@@ -173,3 +166,9 @@ class TestDungeonBuilder(unittest.TestCase):
         dungeon = db.build_dungeon()
         is_a_dungeon = isinstance(dungeon, Dungeon)
         self.assertEqual(True, is_a_dungeon, "Expected type of build_dungeon results to be a dungeon")
+
+    def test_build_adventurer(self):
+        db = DungeonBuilder()
+        adventurer = db.build_adventurer("Bob", "Priestess")
+        is_a_adventurerer = isinstance(adventurer, Adventurer)
+        self.assertTrue(is_a_adventurerer, "Expected adventurer to be type adventurer")
