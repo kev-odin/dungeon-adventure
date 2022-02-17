@@ -1,8 +1,6 @@
-# Kevin"s Time Tracker: 20 hours
 from app.model.items.health_potion import HealthPotion
+from app.model.db.query_helper import QueryHelper
 import random
-
-import sqlite3
 
 
 class Adventurer:
@@ -10,19 +8,16 @@ class Adventurer:
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
 
-    def __init__(self, name = None, challenge="easy"):
+    def __init__(self, adv_dict: dict):
         """Adventurer object that maintains the inventory collection of potions,
         pillars collected, and current hitpoints.
 
-        :param name: name of the adventurer provided by user, defaults to None
-        :type name: str
-        :param challenge: challenge provided by user, defaults to "easy"
-        :type challenge: str
+        :param name: str name of the adventurer provided by user, defaults to None
+        :param adv_class: str - defaults to Warrior
         """
-        self.__name = name
-        self.__dev_powers = False
-        self.__max_hitpoints = None
-        self.__current_hitpoints = None
+        self.__adv_dict = adv_dict
+
+        # TODO refactor below into a bag class potentially
         self.__health_pots = 0
         self.__vision_pots = 0
         self.__pillars_collected = {
@@ -31,8 +26,6 @@ class Adventurer:
             "I" : False,
             "E" : False
         }
-
-        self._create_adventurer(name, challenge)
 
     def is_alive(self):
         """Helper method to determine that the adventurer is alive during the dungeon adventure
@@ -181,52 +174,6 @@ class Adventurer:
 
         return False
 
-    def _create_adventurer(self, name, challenge):
-        """Helper method for character creation. Difficulty and name are checked,
-        based on those values, create an adventurer with modified base values.
-
-        :param: name: str if found in cheat_code dictionary, modification applied to adventurer
-        :param: challenge: str sets to following challenge level:
-
-        difficulty
-            (hp modification, max hitpoints, default health potion, default vision potion)
-        cheat_codes
-            (max_hp, potions, pillar_collect_status)
-        """
-        difficulty = {
-            "easy"      : (3, 100, 2, 2),
-            "medium"    : (2, 95, 1, 1),
-            "hard"      : (1, 90, 1, 1),
-            "inhumane"  : (1, 85, 0, 1)
-        }
-
-        cheat_codes = {
-            "gary"      : (150, 5, True),
-            "hcf"       : (1, 15, True),
-            "kevin"     : (185, 25, False),
-            "tom"       : (1000, 0, False)
-        }
-
-        if challenge in difficulty:
-            hp_mod = difficulty[challenge][0]
-            self.max_hitpoints = difficulty[challenge][1]
-            self.max_hitpoints += hp_mod * random.randint(0, 10)
-
-            self.health_pots = difficulty[challenge][2]
-            self.vision_pots = difficulty[challenge][3]
-
-        if name in cheat_codes:
-            self.dev_powers = True
-            self.max_hitpoints = cheat_codes[name][0]
-
-            self.health_pots = cheat_codes[name][1]
-            self.vision_pots = cheat_codes[name][1]
-
-            for value in self.pillars_collected:
-                self.pillars_collected[value] = cheat_codes[name][2]
-
-        self.current_hitpoints = self.max_hitpoints
-
     def _readable_pillars(self):
         """ Helper method for converting pillars collection to a player readable string.
         This took longer than I care to admit...
@@ -281,7 +228,7 @@ class Adventurer:
         :return: name of adventurer
         :rtype: str
         """
-        return self.__name
+        return self.__adv_dict["name"]
 
     @name.setter
     def name(self, value):
@@ -291,25 +238,7 @@ class Adventurer:
         :type value: str
         """
         if isinstance(value, str):
-            self.__name = value
-
-    @property
-    def dev_powers(self):
-        """Getter for the dev_powers property
-
-        :return: status if cheat codes are enabled
-        :rtype: bool
-        """
-        return self.__dev_powers
-
-    @dev_powers.setter
-    def dev_powers(self, value):
-        """Setter for the dev_powers property
-
-        :param value: boolean if cheat codes are enabled
-        """
-        if isinstance(value, bool):
-            self.__dev_powers = value
+            self.__adv_dict["name"] = value
 
     @property
     def max_hitpoints(self):
@@ -318,7 +247,7 @@ class Adventurer:
         :return: health remaining of adventurer
         :rtype: int
         """
-        return self.__max_hitpoints
+        return self.__adv_dict["max_hp"]
 
     @max_hitpoints.setter
     def max_hitpoints(self, value):
@@ -328,7 +257,7 @@ class Adventurer:
         :type value: int
         """
         if isinstance(value, int):
-            self.__max_hitpoints = value
+            self.__adv_dict["max_hp"] = value
 
     @property
     def current_hitpoints(self):
@@ -337,13 +266,13 @@ class Adventurer:
         :return: value of the current hitpoints for adventurer
         :rtype: int
         """
-        return self.__current_hitpoints
+        return self.__adv_dict["current_hp"]
 
     @current_hitpoints.setter
     def current_hitpoints(self, value):
         if isinstance(value, int):
             if value >= 0:
-                self.__current_hitpoints = value
+                self.__adv_dict["current_hp"] = value
             else:
                 raise ValueError("Cannot set current hitpoints to a negative value.")
 
@@ -400,3 +329,27 @@ class Adventurer:
         :return: str of dictionary values {pillar : bool}
         """
         return self.__pillars_collected
+
+    @property
+    def adv_class(self):
+        return self.__adv_dict["adv_class"]
+
+    @property
+    def attack_speed(self):
+        return self.__adv_dict["attack_speed"]
+
+    @property
+    def hit_chance(self):
+        return self.__adv_dict["hit_chance"]
+
+    @property
+    def dmg(self):
+        return random.randint(self.__adv_dict["min_dmg"], self.__adv_dict["max_dmg"])
+
+    @property
+    def block_chance(self):
+        return self.__adv_dict["block_chance"]
+
+    @property
+    def special(self):
+        return self.__adv_dict["special"]

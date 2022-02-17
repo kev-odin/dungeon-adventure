@@ -3,7 +3,7 @@ con = sqlite3.connect('app.db')
 cur = con.cursor()
 
 # cur.execute('''CREATE TABLE dng_diff
-#                 (difficulty text, impassable_chance float, hp_chance float, vp_chance float, many_chance float, monster_chance float, max_hp_pots int, max_vp int, max_pit_dmg int, row int, col int)''')
+#                 (difficulty text, impassable_chance real, hp_chance real, vp_chance real, many_chance real, monster_chance real, max_hp_pots int, max_vp int, max_pit_dmg int, row int, col int)''')
 #
 # cur.execute("INSERT INTO dng_diff VALUES ('easy', 0.05, 0.1, 0.05, 0.05, 0.1, 2, 2, 5, 5, 5)")
 # cur.execute("INSERT INTO dng_diff VALUES ('medium', 0.07, 0.1, 0.05, 0.1, 0.12, 2, 1, 10, 8, 8)")
