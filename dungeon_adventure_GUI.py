@@ -15,6 +15,10 @@ class dungeon_adventure_GUI:
         self.root.mainloop()
 
     def create_new_game_window(self):
+        '''
+        Create a main window for the user to choose : new game, load game, quit game
+        :return: None
+        '''
         global game_difficulty  # global variable, look for details in def display_selected()
         global pop1  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         pop1 = Toplevel(self.root)
@@ -67,9 +71,14 @@ class dungeon_adventure_GUI:
 
         display_selected(clicked.get())
 
-        btn2 = Button(pop1, text="Confirm New",command=lambda : self.get_adventurer_info(pop1)).place(relx=0.75,rely=0.9)
+        btn2 = Button(pop1, text="Confirm New",command=lambda: self.get_adventurer_info(pop1)).place(relx=0.75,rely=0.9)
 
     def get_adventurer_info(self,pop1):
+        '''
+        To get user's preference of the hero name and the hero type
+        :param pop1: the toplevel pop1 as the pop up window
+        :return: None
+        '''
         for widget in pop1.winfo_children():  # Way to rewrite the label frame, looks for every child of frame
             widget.destroy()  # delete
 
@@ -111,13 +120,18 @@ class dungeon_adventure_GUI:
         hero_frame.pack() # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
         display_selected_hero(clicked.get()) # display the default hero type description.
 
-        btn = Button(pop1, text="Confirm", command=pop1.destroy).place(relx=0.75,rely=0.9) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn = Button(pop1, text="Confirm Hero", command=pop1.destroy).place(relx=0.75,rely=0.9) # here the pop1.destroy should be replaced by a function to send info the controller
 
     def load_existing_game_window(self):
         global pop2  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         pop2 = Toplevel(self.root)
         pop2.geometry("750x450")
         pop2.resizable(width=False, height=False)
+        label4 = Label(pop2, text="Choose the saved game:").pack()
+
+        # option_menu3 = OptionMenu(pop2, clicked, *hero_options, command=display_selected_hero) # needs debug
+        # option_menu3 = OptionMenu(pop2, "saved1","saved2")  # needs debug
+
         pop2.title("Load Game")
 
         btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
