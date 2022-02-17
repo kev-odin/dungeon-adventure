@@ -1,4 +1,6 @@
 from app.model.dungeon.dungeon_builder import DungeonBuilder
+from app.view.DungeonCrawler import DungeonCrawler
+from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 # From here everything you need from the dungeon and adventurer can be accessed via dungeon builder.
 # Depending on how you want to receive information, may translate it into a different format.
 # The idea is that the view has no idea who it is talking to or what, and aside from function calls,
@@ -15,6 +17,11 @@ from app.model.dungeon.dungeon_builder import DungeonBuilder
 class GameController():
     def __init__(self):
         self.__game = DungeonBuilder()
+        self.__game_setup = dungeon_adventure_GUI()
+        self.__dungeon_view = DungeonCrawler()
+
+    def game_flow(self):
+        pass
 
     def create_adventurer(self, name: str, class_name: str):  # Or however you want to pass this.
         try:
@@ -26,6 +33,7 @@ class GameController():
 
     def create_dungeon(self, difficulty: str):
         try:
+            self.__game_setup()
             self.__game.build_dungeon(difficulty)  # If not like this, translate it to look like this
         except ValueError as e:
             # How you want to display the error to the view / player.
@@ -36,3 +44,15 @@ class GameController():
 
     def still_playing(self):  # Whatever that is, this will probably be a check after the user tries to do something
         return self.__game.adventurer.is_alive()
+
+    def move_adventurer(self):
+        self.__dungeon_view()
+
+    def show_adventurer(self):
+        self.__dungeon_view.adventurer_info(self.adventurer())
+
+if __name__ == "__main__":
+    gc = GameController()
+    gc.create_dungeon("Easy")
+    adv = gc.build_adventurer("Uncle Bob", "Warrior")
+    print(adv)

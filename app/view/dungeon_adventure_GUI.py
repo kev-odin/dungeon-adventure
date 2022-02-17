@@ -131,7 +131,7 @@ class dungeon_adventure_GUI:
         quit_game_btn = Button(canvas, text="Quit Game", command=self.root.destroy).place(relx=0.5, rely=0.7)
 
         global img # to make it accessible to other functions, otherwise tkinter won't work in our way
-        img = PhotoImage(file="welcome_bg.gif")
+        img = PhotoImage(file="app/view/welcome_bg.gif")
         canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
 
