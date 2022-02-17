@@ -1,6 +1,7 @@
 from app.model.dungeon.dungeon_builder import DungeonBuilder
 from app.view.DungeonCrawler import DungeonCrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
+
 # From here everything you need from the dungeon and adventurer can be accessed via dungeon builder.
 # Depending on how you want to receive information, may translate it into a different format.
 # The idea is that the view has no idea who it is talking to or what, and aside from function calls,
@@ -14,7 +15,7 @@ from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 # I should go read your code, ahaha.
 
 
-class GameController():
+class GameController:
     def __init__(self):
         self.__game = DungeonBuilder()
         self.__game_setup = dungeon_adventure_GUI()
@@ -53,6 +54,3 @@ class GameController():
 
 if __name__ == "__main__":
     gc = GameController()
-    gc.create_dungeon("Easy")
-    adv = gc.build_adventurer("Uncle Bob", "Warrior")
-    print(adv)
