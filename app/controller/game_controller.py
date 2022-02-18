@@ -27,6 +27,13 @@ class GameController:
         self.__view.setup(self)
         self.__view.start_main_loop()
 
+    def window_destroy(self):
+        print(f"Destroyed by Controller! {self}")
+        self.__view.destruct()
+    
+    def print_settings(self):
+        print(self.__view.send_settings())
+
     def create_adventurer(self, name: str, class_name: str):  # Or however you want to pass this.
         try:
             self.__model.build_adventurer(name, class_name)  # If not like this, translate it to look like this
@@ -52,14 +59,15 @@ class GameController:
     # def move_adventurer(self, movement):
     #     return self.__model.move_adventurer(move[movement])
 
-    def show_adventurer(self):
-        self.__dungeon_view.adventurer_info(self.adventurer())
+    # def show_adventurer(self):
+    #     self.__dungeon_view.adventurer_info(self.adventurer())
 
 if __name__ == "__main__":
     db = DungeonBuilder()
     gv = dungeon_adventure_GUI()
     gc = GameController(db, gv)
     gc.game_setup()
-    dc = DungeonCrawler()
-    gc = GameController(db, dc)
-    gc.game_setup()
+    gc.print_settings()
+    # dc = DungeonCrawler()
+    # gc = GameController(db, dc)
+    # gc.game_setup()
