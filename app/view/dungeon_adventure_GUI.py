@@ -4,14 +4,21 @@ from tkinter import *
 
 class dungeon_adventure_GUI:
 
-    def __init__(self):
+    def setup(self, controller):
         self.root = Tk()  # create the root window
         self.root.resizable(width=False, height=False) # fixed size
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
         self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="black") # canvas within that frame
-        self.welcome_window()
+        self.welcome_window(controller)
         self.welcome_screen_frame.pack()
-        # self.welcome_screen_frame.forget
+
+        self.settings = {
+            "name": None,
+            "difficulty" : None,
+            "class" : None
+        }
+
+    def start_main_loop(self):
         self.root.mainloop()
 
     def create_new_game_window(self):
@@ -21,7 +28,6 @@ class dungeon_adventure_GUI:
         pop1.geometry("750x450")
         pop1.resizable(width=False, height=False)
         pop1.title("New Game")
-
 
         label1= Label(pop1, text="Select your game difficulty level")
         label1.pack()
@@ -46,9 +52,9 @@ class dungeon_adventure_GUI:
 
         def display_selected(selected):
             for widget in description_frame.winfo_children(): # Way to rewrite the label frame, looks for every child of frame
-                widget.destroy() # delete
+                widget.destroy()
             selected = clicked.get()
-            game_difficulty = selected # store the difficulty level in a variable
+            self.settings["difficulty"] = selected # store the difficulty level in a variable
 
             label_frame1 = LabelFrame(description_frame, text=selected)
             label_frame1.pack()
@@ -69,7 +75,7 @@ class dungeon_adventure_GUI:
 
         btn2 = Button(pop1, text="Confirm New",command=lambda : self.get_adventurer_info(pop1)).place(relx=0.75,rely=0.9)
 
-    def get_adventurer_info(self,pop1):
+    def get_adventurer_info(self, pop1):
         for widget in pop1.winfo_children():  # Way to rewrite the label frame, looks for every child of frame
             widget.destroy()  # delete
 
@@ -97,7 +103,9 @@ class dungeon_adventure_GUI:
             for widget in hero_frame.winfo_children(): # Way to rewrite the label frame, looks for every child of frame
                 widget.destroy() # delete
             selected = clicked.get()
-            hero_type = selected # store the difficulty level in a variable
+            hero_type = selected
+            self.settings["name"] = hero_name
+            self.settings["class"] = hero_type      # store the class in a variable
 
             label_frame2 = LabelFrame(hero_frame, text=selected)
             label_frame2.pack()
@@ -122,21 +130,18 @@ class dungeon_adventure_GUI:
 
         btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
 
-    def welcome_window(self):
+    def welcome_window(self, controller):
 
         canvas = self.welcome_screen_canvas
 
-        new_game_btn = Button(canvas, text="New Game", command=self.create_new_game_window).place(relx=0.5,rely=0.5)
-        load_game_btn = Button(canvas, text="Load Game", command=self.load_existing_game_window).place(relx=0.5, rely=0.6)
-        quit_game_btn = Button(canvas, text="Quit Game", command=self.root.destroy).place(relx=0.5, rely=0.7)
+        new_game_btn = Button(canvas, text="New Game", command = self.create_new_game_window).place(relx=0.5,rely=0.5)
+        load_game_btn = Button(canvas, text="Load Game", command = self.load_existing_game_window).place(relx=0.5, rely=0.6)
+        quit_game_btn = Button(canvas, text="Quit Game", command = self.root.destroy).place(relx=0.5, rely=0.7)
 
         global img # to make it accessible to other functions, otherwise tkinter won't work in our way
         img = PhotoImage(file="app/view/welcome_bg.gif")
         canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
 
-if __name__ == "__main__":
-    game = dungeon_adventure_GUI()
-
-
-
+    def collect_settings(self):
+        pass

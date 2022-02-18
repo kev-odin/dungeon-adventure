@@ -39,30 +39,30 @@ class BaseFrame(tk.Frame):
         btn3.pack(self.root)
 
 class DungeonCrawler(BaseFrame):
-    def __init__(self):
 
-        super().__init__()
+    def setup(self, controller):
+        # super().__init__()
         self.dungeon_crawl_frame = Frame(self.root)
         self.dungeon_crawl_canvas = Canvas(self.dungeon_crawl_frame, width=800, height=600, bg = "grey")
         self.adventurer_canvas = Canvas(self.dungeon_crawl_frame, width = 400, height = 600, bg = "black")
 
-        self.adventurer_action()
-        self.adventurer_info()
-        self.dungeon_navigation()
-        self.dungeon_display()
-        
+        self.adventurer_action(controller)
+        self.adventurer_info(controller)
+        self.dungeon_navigation(controller)
+        self.dungeon_display(controller)
         self.dungeon_crawl_frame.pack()
+
+    def start_main_loop(self):
         self.root.mainloop()
 
-    def update_display(self, message):
+    def update_display(self, controller):
         canvas = self.root
         
         dungeon = LabelFrame(canvas, width = 600, height = 400, bg = "White")
-        text = Label(dungeon, text = f"{message}", bg = "White")
+        text = Label(dungeon, text = f"{controller}", bg = "White")
         text.place(relx = 0.5, rely = 0.5, anchor = N)
 
-    
-    def dungeon_display(self):
+    def dungeon_display(self, controller):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
         """
         canvas = self.root
@@ -73,11 +73,11 @@ class DungeonCrawler(BaseFrame):
         dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
         text.place(relx = 0.5, rely = 0.5, anchor = N)
 
-    def adventurer_action(self):
+    def adventurer_action(self, controller):
         """Display base actions such as map and bag inventory
         """
         canvas = self.dungeon_crawl_canvas
-        bag = Button(canvas, text= "Bag", command = self.bag_display)
+        bag = Button(canvas, text= "Bag", command = lambda: controller.adventurer())
         map = Button(canvas, text= "Map")
         
         bag.grid(row=3, column=1)
@@ -85,7 +85,7 @@ class DungeonCrawler(BaseFrame):
 
         canvas.pack()
 
-    def dungeon_navigation(self):
+    def dungeon_navigation(self, controller):
         canvas = self.dungeon_crawl_canvas
 
         travel_north = Button(canvas, text="North")
@@ -100,7 +100,7 @@ class DungeonCrawler(BaseFrame):
 
         canvas.pack()
 
-    def bag_display(self):
+    def bag_display(self, controller):
         global bag  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         bag = Toplevel(self.root)
         bag.title("Adventurer Inventory")
@@ -109,7 +109,7 @@ class DungeonCrawler(BaseFrame):
         close_bag = Button(bag, text="Close Bag", command = bag.destroy)
         close_bag.place(relx=0.75, rely=0.9)
         
-    def adventurer_info(self):
+    def adventurer_info(self, controller):
         canvas = self.dungeon_crawl_canvas
         # canvas.place(relx = 0.5, rely = 0.8)
         name = Label(canvas, text = f"Name: ", bg = 'White')

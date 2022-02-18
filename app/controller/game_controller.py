@@ -2,6 +2,10 @@ from app.model.dungeon.dungeon_builder import DungeonBuilder
 from app.view.DungeonCrawler import DungeonCrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
+# TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
+# Controller methods are accessed by the view because we are passing the reference to Controller.
+# 
+
 # From here everything you need from the dungeon and adventurer can be accessed via dungeon builder.
 # Depending on how you want to receive information, may translate it into a different format.
 # The idea is that the view has no idea who it is talking to or what, and aside from function calls,
@@ -16,41 +20,47 @@ from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
 
 class GameController:
-    def __init__(self):
-        self.__game = DungeonBuilder()
-        self.__game_setup = dungeon_adventure_GUI()
-        self.__dungeon_view = DungeonCrawler()
+    def __init__(self, model, view):
+        self.__model = model                            # Model
+        self.__view = view                              # View
 
-    def game_flow(self):
-        pass
+    def game_setup(self):
+        self.__view.setup(self)
+        self.__view.start_main_loop()
 
     def create_adventurer(self, name: str, class_name: str):  # Or however you want to pass this.
         try:
-            self.__game.build_adventurer(name, class_name)  # If not like this, translate it to look like this
-        except ValueError as e:
+            self.__model.build_adventurer(name, class_name)  # If not like this, translate it to look like this
+        except ValueError:
             # How you want to display the error to the view / player.  Suggest dropdowns for things that aren't
             # flexible.
             return f"An error occurred.  Please verify {class_name} and {name} are valid options."
 
     def create_dungeon(self, difficulty: str):
         try:
-            self.__game_setup()
-            self.__game.build_dungeon(difficulty)  # If not like this, translate it to look like this
-        except ValueError as e:
+            self.__view()
+            self.__model.build_dungeon(difficulty)  # If not like this, translate it to look like this
+        except ValueError:
             # How you want to display the error to the view / player.
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
     def adventurer(self):
-        return self.__game.adventurer.name
+        return self.__model.adventurer.name
 
     def still_playing(self):  # Whatever that is, this will probably be a check after the user tries to do something
-        return self.__game.adventurer.is_alive()
+        return self.__model.adventurer.is_alive()
 
-    def move_adventurer(self):
-        self.__dungeon_view()
+    # def move_adventurer(self, movement):
+    #     return self.__model.move_adventurer(move[movement])
 
     def show_adventurer(self):
         self.__dungeon_view.adventurer_info(self.adventurer())
 
 if __name__ == "__main__":
-    gc = GameController()
+    db = DungeonBuilder()
+    gv = dungeon_adventure_GUI()
+    gc = GameController(db, gv)
+    gc.game_setup()
+    dc = DungeonCrawler()
+    gc = GameController(db, dc)
+    gc.game_setup()
