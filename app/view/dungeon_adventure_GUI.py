@@ -100,6 +100,7 @@ class dungeon_adventure_GUI:
             "Priest": "This is the Priest description.",
             "Thief": "This is the Thief description."
         }
+
         clicked = StringVar()
         clicked.set(hero_options[0])  # set the default greyed out level
 
@@ -125,7 +126,8 @@ class dungeon_adventure_GUI:
         hero_frame.pack() # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
         display_selected_hero(clicked.get()) # display the default hero type description.
 
-        btn = Button(pop1, text="Confirm", command=pop1.destroy).place(relx=0.75,rely=0.9) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn = Button(pop1, text="Confirm", command = pop1.destroy) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn.place(relx=0.75,rely=0.9)
 
     def load_existing_game_window(self):
         global pop2 
@@ -134,23 +136,22 @@ class dungeon_adventure_GUI:
         pop2.resizable(width=False, height=False)
         pop2.title("Load Game")
 
-        btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
+        btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy)
+        btn3.place(relx=0.75, rely=0.9)
 
-    def welcome_window(self, controller):
+    def welcome_window(self):
 
         canvas = self.welcome_screen_canvas
 
-        # Do we want controller here?
-
         new_game_btn = Button(canvas, text="New Game", command = self.create_new_game_window)
         load_game_btn = Button(canvas, text="Load Game", command = self.load_existing_game_window)
-        quit_game_btn = Button(canvas, text="Quit Game", command = lambda: controller.window_destroy())
+        quit_game_btn = Button(canvas, text="Quit Game", command = self.destruct)
 
         new_game_btn.place(relx=0.5,rely=0.5)
         load_game_btn.place(relx=0.5, rely=0.6)
         quit_game_btn.place(relx=0.5, rely=0.7)
 
-        global img
-        img = PhotoImage(file="app/view/welcome_bg.gif")
-        canvas.create_image(0, 0, anchor=NW, image=img)
+        # global img
+        # img = PhotoImage(file="app/view/welcome_bg.gif")
+        # canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
