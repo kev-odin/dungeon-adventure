@@ -3,6 +3,7 @@ from app.model.dungeon.adventurer import Adventurer
 from app.model.items.health_potion import HealthPotion
 from app.model.db.query_helper import QueryHelper
 
+
 class AdventurerTest(unittest.TestCase):
     def setUp(self, name="Bob", adv_class="Warrior") -> None:
         self.__qh = QueryHelper()

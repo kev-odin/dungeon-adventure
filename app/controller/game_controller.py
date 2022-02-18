@@ -12,7 +12,7 @@ from app.model.dungeon.dungeon_builder import DungeonBuilder
 # I should go read your code, ahaha.
 
 
-class GameController():
+class GameController:
     def __init__(self):
         self.__game = DungeonBuilder()
 

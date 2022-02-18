@@ -1,9 +1,10 @@
 from app.model.items.health_potion import HealthPotion
 from app.model.db.query_helper import QueryHelper
+from app.model.dungeon.dungeon_character import DungeonCharacter
 import random
 
 
-class Adventurer:
+class Adventurer(DungeonCharacter):
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
@@ -15,9 +16,8 @@ class Adventurer:
         :param name: str name of the adventurer provided by user, defaults to None
         :param adv_class: str - defaults to Warrior
         """
-        self.__adv_dict = adv_dict
+        super().__init__(adv_dict)
 
-        # TODO refactor below into a bag class potentially
         self.__health_pots = 0
         self.__vision_pots = 0
         self.__pillars_collected = {
@@ -91,30 +91,7 @@ class Adventurer:
             else:
                 print("You should not see this message.")
 
-    def damage_adventurer(self, pit_damage):
-        """ Helper method to damage adventurer based on the pit damage
-        provided by the room. To be used by the main method.
-
-        Inheritance pillar power reduces pit damage by half.
-
-        :param: int - damage values that will decrement current health
-        :return: pit_damage inflicted on the adventurer
-        :rtype: int
-        """
-        if isinstance(pit_damage, int):
-
-            if self.pillars_collected["I"]:
-                pit_damage = pit_damage // 2
-
-            new_health = self.current_hitpoints - pit_damage
-            if new_health <= 0:
-                self.current_hitpoints = 0
-            else:
-                self.current_hitpoints = new_health
-            
-            return pit_damage
-
-    def heal_adventurer(self, heal_pot : HealthPotion):
+    def heal_adventurer(self, heal_pot: HealthPotion):
         """ Helper method to heal adventurer based on the health potion.
         To be used by the main method. Adventurer has to be alive to use potion.
 
@@ -174,6 +151,18 @@ class Adventurer:
 
         return False
 
+    def take_damage(self, damage):
+        """
+        Adventurer takes damage, most likely from combat.
+        Inheritance pillar power reduces pit damage by half.
+        :param damage:
+        :return:
+        """
+        if self.pillars_collected["I"]:
+            damage = damage // 2
+
+        return super().take_damage(damage)
+
     def _readable_pillars(self):
         """ Helper method for converting pillars collection to a player readable string.
         This took longer than I care to admit...
@@ -220,61 +209,6 @@ class Adventurer:
         player_stats += f"{self.vision_pots}\n"
         player_stats += f"{self.pillars_collected}\n"
         return player_stats
-
-    @property
-    def name(self):
-        """Getter for name property
-
-        :return: name of adventurer
-        :rtype: str
-        """
-        return self.__adv_dict["name"]
-
-    @name.setter
-    def name(self, value):
-        """Setter for the name property
-
-        :param value: name provided by user
-        :type value: str
-        """
-        if isinstance(value, str):
-            self.__adv_dict["name"] = value
-
-    @property
-    def max_hitpoints(self):
-        """Getter for hitpoints property
-
-        :return: health remaining of adventurer
-        :rtype: int
-        """
-        return self.__adv_dict["max_hp"]
-
-    @max_hitpoints.setter
-    def max_hitpoints(self, value):
-        """Setter for the hitpoints property
-
-        :param value: damage incurred from pits
-        :type value: int
-        """
-        if isinstance(value, int):
-            self.__adv_dict["max_hp"] = value
-
-    @property
-    def current_hitpoints(self):
-        """Getter for the current hitpoints property, to be used by main
-
-        :return: value of the current hitpoints for adventurer
-        :rtype: int
-        """
-        return self.__adv_dict["current_hp"]
-
-    @current_hitpoints.setter
-    def current_hitpoints(self, value):
-        if isinstance(value, int):
-            if value >= 0:
-                self.__adv_dict["current_hp"] = value
-            else:
-                raise ValueError("Cannot set current hitpoints to a negative value.")
 
     @property
     def health_pots(self):
@@ -332,24 +266,16 @@ class Adventurer:
 
     @property
     def adv_class(self):
-        return self.__adv_dict["adv_class"]
-
-    @property
-    def attack_speed(self):
-        return self.__adv_dict["attack_speed"]
-
-    @property
-    def hit_chance(self):
-        return self.__adv_dict["hit_chance"]
-
-    @property
-    def dmg(self):
-        return random.randint(self.__adv_dict["min_dmg"], self.__adv_dict["max_dmg"])
-
-    @property
-    def block_chance(self):
-        return self.__adv_dict["block_chance"]
+        return self.__char_dict["adv_class"]
 
     @property
     def special(self):
-        return self.__adv_dict["special"]
+        return self.__char_dict["special"]
+
+    @property
+    def block_chance(self):
+        return self.__char_dict["block_chance"]
+
+    def use_special(self):  # TODO finish special implementation
+        skills = ("Heal", "Crushing Blow", "Sneak Attack")
+

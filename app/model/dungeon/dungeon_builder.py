@@ -104,6 +104,9 @@ class DungeonBuilder:
             new_room = Room(pit=random.randint(1, self.__settings["max_pit_dmg"]), contents="X")
         return new_room
 
+    def __build_monster(self):
+        pass
+
     def __build_dungeon_path(self, row: int, col: int):
         """
         Initial call should be entrance location.  Verifies the dungeon can be traversed from entrance to exit and adds
@@ -249,3 +252,4 @@ class DungeonBuilder:
             return self.__complete_map
         else:
             raise RuntimeError("Must build a dungeon before accessing the map for a dungeon.")
+
