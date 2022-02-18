@@ -1,5 +1,5 @@
 from app.model.dungeon.dungeon_builder import DungeonBuilder
-from app.view.DungeonCrawler import DungeonCrawler
+from app.view.dungeon_crawler import DungeonCrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
@@ -17,7 +17,6 @@ from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 # Onclick listeners will usually listen for an event then pull the data in those fields in the view out.
 # Hope this helps!  I'm not familiar enough with TKinter to go into too many specific examples!
 # I should go read your code, ahaha.
-
 
 class GameController:
     def __init__(self, model, view):
