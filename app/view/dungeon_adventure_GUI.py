@@ -121,7 +121,7 @@ class dungeon_adventure_GUI:
         display_selected_hero(clicked.get()) # display the default hero type description.
 
         btn = Button(pop1, text="Confirm Hero", command=pop1.destroy).place(relx=0.75,rely=0.9) # here the pop1.destroy should be replaced by a function to send info the controller
-
+                                                # need to be switched to Kevin's window(DC)
     def load_existing_game_window(self):
         global pop2  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         pop2 = Toplevel(self.root)
@@ -135,18 +135,20 @@ class dungeon_adventure_GUI:
         pop2.title("Load Game")
 
         btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
+                                                # need to be switched to Kevin's window(DC)
 
     def welcome_window(self):
 
         canvas = self.welcome_screen_canvas
 
         new_game_btn = Button(canvas, text="New Game", command=self.create_new_game_window).place(relx=0.5,rely=0.5)
+        # new_game_btn = Button(canvas, text="New Game", command=self.create_new_game_window).grid(column=0, row=0)
         load_game_btn = Button(canvas, text="Load Game", command=self.load_existing_game_window).place(relx=0.5, rely=0.6)
         quit_game_btn = Button(canvas, text="Quit Game", command=self.root.destroy).place(relx=0.5, rely=0.7)
 
-        global img # to make it accessible to other functions, otherwise tkinter won't work in our way
-        img = PhotoImage(file="welcome_bg.gif")
-        canvas.create_image(0, 0, anchor=NW, image=img)
+        # global img # to make it accessible to other functions, otherwise tkinter won't work in our way
+        # img = PhotoImage(file="welcome_bg.gif")
+        # canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
 
 if __name__ == "__main__":
