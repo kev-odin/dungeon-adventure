@@ -9,7 +9,7 @@ class dungeon_adventure_GUI:
         self.root.resizable(width=False, height=False) # fixed size
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
         self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="black") # canvas within that frame
-        self.welcome_window(controller)
+        self.welcome_window()
         self.welcome_screen_frame.pack()
 
         self.settings = {
