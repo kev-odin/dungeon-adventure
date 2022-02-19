@@ -1,10 +1,10 @@
 from app.model.items.health_potion import HealthPotion
-from app.model.db.query_helper import QueryHelper
-from app.model.dungeon.dungeon_character import DungeonCharacter
-import random
+from app.model.characters.dungeon_character import DungeonCharacter
+from abc import abstractmethod
+from abc import ABC
 
 
-class Adventurer(DungeonCharacter):
+class Adventurer(DungeonCharacter, ABC):
     """Adventurer that traverses through the maze. Picks up potions, falls into pits, and
     must complete the maze with all OOP pillars (APIE) collected to win.
     """
@@ -21,10 +21,10 @@ class Adventurer(DungeonCharacter):
         self.__health_pots = 0
         self.__vision_pots = 0
         self.__pillars_collected = {
-            "A" : False,
-            "P" : False,
-            "I" : False,
-            "E" : False
+            "A": False,
+            "P": False,
+            "I": False,
+            "E": False
         }
 
     def is_alive(self):
@@ -276,6 +276,7 @@ class Adventurer(DungeonCharacter):
     def block_chance(self):
         return self.__char_dict["block_chance"]
 
+    @abstractmethod
     def use_special(self):  # TODO finish special implementation
         skills = ("Heal", "Crushing Blow", "Sneak Attack")
 

@@ -8,7 +8,7 @@ Also builds map and adventurer.  All your needs met in one place!
 from app.model.dungeon.dungeon import Dungeon
 from app.model.dungeon.room import Room
 from app.model.dungeon.map import Map
-from app.model.dungeon.adventurer import Adventurer
+from app.model.characters import Adventurer
 from app.model.db.query_helper import QueryHelper
 import random
 

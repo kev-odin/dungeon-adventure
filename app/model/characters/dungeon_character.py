@@ -1,8 +1,8 @@
+from abc import ABC
 import random
-from abc import abstractmethod
 
 
-class DungeonCharacter:
+class DungeonCharacter(ABC):
     def __init__(self, char_dict: dict):
         self.__char_dict = char_dict
 
@@ -91,8 +91,8 @@ class DungeonCharacter:
 
     def attack(self):
         """
-        Checks if character hits.  If they do, returns the damage dealt.
-        :return:
+        Checks if character hits.  If they do, returns damage between min and max dmg, else returns 0.
+        :return: int representing damage dealt, 0 for a miss.
         """
         if random.randint(0, 100) <= (self.hit_chance * 100):
             return random.randint(self.__char_dict["min_dmg"], self.__char_dict["max_dmg"])
