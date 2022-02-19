@@ -11,6 +11,8 @@ class Priestess(Adventurer, HealAble):
     def use_special(self):
         """
         Priestess heals self.
-        :return:
+        :return: int heal_amount
         """
-        self.heal(self.__char_dict)
+        heal_amount = self.__heal(self.__char_dict)
+        self.current_hitpoints += heal_amount
+        return heal_amount

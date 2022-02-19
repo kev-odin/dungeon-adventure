@@ -277,6 +277,6 @@ class Adventurer(DungeonCharacter, ABC):
         return self.__char_dict["block_chance"]
 
     @abstractmethod
-    def use_special(self):  # TODO finish special implementation
-        skills = ("Heal", "Crushing Blow", "Sneak Attack")
+    def use_special(self):
+        pass
 

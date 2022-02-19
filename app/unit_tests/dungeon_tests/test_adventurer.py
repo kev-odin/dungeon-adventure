@@ -1,5 +1,11 @@
+"""
+WARNING: Only works when adventurer is not current set to have abstract method use_special
+Otherwise the abstract class says nope.
+"""
+
+
 import unittest
-from app.model.characters import Adventurer
+from app.model.characters.adventurer import Adventurer
 from app.model.items.health_potion import HealthPotion
 from app.model.db.query_helper import QueryHelper
 

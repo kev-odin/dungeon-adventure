@@ -89,12 +89,22 @@ class DungeonCharacter(ABC):
     def hit_chance(self):
         return self.__char_dict["hit_chance"]
 
-    def attack(self):
+    def attack(self, hit_chance=None, min_dmg=None, max_dmg=None):
         """
         Checks if character hits.  If they do, returns damage between min and max dmg, else returns 0.
+        :param hit_chance: float representing percent change of hit succeeding, 1 for will definitely hit.
+        :param min_dmg: int representing minimum damage that will be dealt.  Defaults to dictionary value if None.
+        :param max_dmg: int representing maximum damage that can be dealt.  Defaults to dictionary value if None.
         :return: int representing damage dealt, 0 for a miss.
         """
-        if random.randint(0, 100) <= (self.hit_chance * 100):
-            return random.randint(self.__char_dict["min_dmg"], self.__char_dict["max_dmg"])
+        if hit_chance is None:
+            hit_chance = self.hit_chance
+        if min_dmg is None:
+            min_dmg = self.__char_dict["min_dmg"]
+        if max_dmg is None:
+            max_dmg = self.__char_dict["max_dmg"]
+
+        if random.randint(0, 100) <= (hit_chance * 100):
+            return random.randint(min_dmg, max_dmg)
         else:
             return 0
