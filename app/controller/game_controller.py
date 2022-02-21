@@ -23,11 +23,22 @@ class GameController:
         self.__view = view                              # View
 
     def game_setup(self):
+        """Builds tKinter frames for the user.
+        """
         self.__view.setup(self)
         self.__view.start_main_loop()
 
+    def game_start(self):
+        """Switches over to the DungeonCrawler view after the dungeon has been created.
+        """
+        self.window_destroy()
+        adv = self.__model.adventurer
+        dc = DungeonCrawler()
+        self.__view = dc
+        self.game_setup()
+
     def window_destroy(self):
-        print(f"Destroyed by Controller! {self}")
+        print(f"DEBUG-Destroyed by Controller! {self}")
         self.__view.destruct()
     
     def user_settings(self):
@@ -40,8 +51,8 @@ class GameController:
         entry = self.user_settings()
         self.create_adventurer(entry["name"], entry["class_name"])
         self.create_dungeon(entry["difficulty"])
-        # DEBUG
-        print(f"Dungeon created successfully.")
+        print(f"DEBUG-SDungeon created successfully.")
+        self.game_start()
 
     def create_adventurer(self, name: str, class_name: str):
         try:
@@ -56,20 +67,21 @@ class GameController:
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
     def adventurer(self):
+        print("Hey I have been called.")
         return self.__model.adventurer.name
 
     def still_playing(self):
         return self.__model.adventurer.is_alive()
 
-    def show_adventurer(self):
-        self.__model.adventurer_info(self.adventurer())
+    def adventurer_hp(self):
+        return self.__model.adventurer.current_hitpoints
 
 if __name__ == "__main__":
     db = DungeonBuilder()
     gv = dungeon_adventure_GUI()
     gc = GameController(db, gv)
     gc.game_setup()
-    x = 0
+    test = "Hi"
 
     # dc = DungeonCrawler()
     # gc = GameController(db, dc)
