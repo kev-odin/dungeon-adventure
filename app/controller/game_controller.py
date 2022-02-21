@@ -48,9 +48,9 @@ class GameController:
         Controller passes the settings to the model.
         """
         entry = self.user_settings()
+        self.create_dungeon(str(entry["difficulty"]).lower())
         self.create_adventurer(entry["name"], entry["class_name"])
-        self.create_dungeon(entry["difficulty"])
-        print(f"DEBUG-Dungeon created successfully.")
+        print(f"DEBUG - Dungeon created successfully. Passing off to DungeonCrawler")
         self.game_start()
 
     def create_adventurer(self, name: str, class_name: str):
@@ -71,10 +71,14 @@ class GameController:
 
     def still_playing(self):
         print("DEBUG - Pressing the Map Button")
+        print(self.adventurer_loc())
         return self.__model.adventurer.is_alive()
 
     def adventurer_hp(self):
         return self.__model.adventurer.current_hitpoints
+
+    def adventurer_loc(self):
+        return self.__model.map
 
 if __name__ == "__main__":
     db = DungeonBuilder()
