@@ -1,6 +1,7 @@
 # checkout Kevin shared site https://www.pythontutorial.net/tkinter/
 # checkout this site https://www.youtube.com/watch?v=tpwu5Zb64lQ
 from tkinter import *
+import tkinter as tk
 
 class dungeon_adventure_GUI:
 
@@ -81,15 +82,22 @@ class dungeon_adventure_GUI:
 
         btn2 = Button(pop1, text="Confirm New",command=lambda : self.get_adventurer_info(pop1)).place(relx=0.75,rely=0.9)
 
+
     def get_adventurer_info(self, pop1):
         for widget in pop1.winfo_children():  # Way to rewrite the label frame, looks for every child of frame
             widget.destroy()
 
         label3 = Label(pop1, text="Choose your hero's name:").pack()
-        hero_name = Entry(pop1).pack()
+
+        name = StringVar()
+        hero_name = Entry(pop1, textvariable = name)  # create a entry box to collect the player's name
+
+        def get_player_entered_name():
+            print(hero_name.get())
+            self.settings["name"] = hero_name.get()
+
 
         label4 = Label(pop1, text="Choose your hero type:").pack()
-
         hero_options = [
             "Warrior",
             "Priest",
@@ -126,7 +134,7 @@ class dungeon_adventure_GUI:
         hero_frame.pack() # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
         display_selected_hero(clicked.get()) # display the default hero type description.
 
-        btn = Button(pop1, text="Start Game", command = pop1.destroy) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn = Button(pop1, text="Start Game", command = get_player_entered_name) # here the pop1.destroy should be replaced by a function to send info the controller
         btn.place(relx=0.75,rely=0.9)
 
     def load_existing_game_window(self):
@@ -152,6 +160,6 @@ class dungeon_adventure_GUI:
         quit_game_btn.place(relx=0.5, rely=0.7)
 
         # global img
-        # img = PhotoImage(file="app/view/welcome_bg.gif")
+        # img = ImageTk.PhotoImage(file="app/view/welcome_bg.gif")
         # canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
