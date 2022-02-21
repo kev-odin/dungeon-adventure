@@ -9,17 +9,23 @@ class dungeon_adventure_GUI:
         self.root.resizable(width=False, height=False) # fixed size
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
         self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="black") # canvas within that frame
-        self.welcome_window(controller)
+        self.welcome_window()
         self.welcome_screen_frame.pack()
 
         self.settings = {
-            "name": None,
+            "name": "Uncle Bob",                   # DUMMY VALUE TEST: PURPOSE
             "difficulty" : None,
-            "class" : None
+            "class_name" : None
         }
 
     def start_main_loop(self):
         self.root.mainloop()
+
+    def destruct(self):
+        self.root.destroy()
+
+    def send_settings(self):
+        return self.settings
 
     def create_new_game_window(self):
         global game_difficulty  # global variable, look for details in def display_selected()
@@ -77,7 +83,7 @@ class dungeon_adventure_GUI:
 
     def get_adventurer_info(self, pop1):
         for widget in pop1.winfo_children():  # Way to rewrite the label frame, looks for every child of frame
-            widget.destroy()  # delete
+            widget.destroy()
 
         label3 = Label(pop1, text="Choose your hero's name:").pack()
         hero_name = Entry(pop1).pack()
@@ -94,6 +100,7 @@ class dungeon_adventure_GUI:
             "Priest": "This is the Priest description.",
             "Thief": "This is the Thief description."
         }
+
         clicked = StringVar()
         clicked.set(hero_options[0])  # set the default greyed out level
 
@@ -101,11 +108,11 @@ class dungeon_adventure_GUI:
 
         def display_selected_hero(selected):
             for widget in hero_frame.winfo_children(): # Way to rewrite the label frame, looks for every child of frame
-                widget.destroy() # delete
+                widget.destroy()
             selected = clicked.get()
             hero_type = selected
-            self.settings["name"] = hero_name
-            self.settings["class"] = hero_type      # store the class in a variable
+            # self.settings["name"] = hero_name       # Kevin - Setting NOT stored in dictionary to send to controller
+            self.settings["class_name"] = hero_type      # Kevin - Setting stored in dictionary to send to controller
 
             label_frame2 = LabelFrame(hero_frame, text=selected)
             label_frame2.pack()
@@ -119,29 +126,32 @@ class dungeon_adventure_GUI:
         hero_frame.pack() # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
         display_selected_hero(clicked.get()) # display the default hero type description.
 
-        btn = Button(pop1, text="Confirm", command=pop1.destroy).place(relx=0.75,rely=0.9) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn = Button(pop1, text="Start Game", command = pop1.destroy) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn.place(relx=0.75,rely=0.9)
 
     def load_existing_game_window(self):
-        global pop2  # to make it accessiable to other functions, otherwise tkinter won't work in our way
+        global pop2 
         pop2 = Toplevel(self.root)
         pop2.geometry("750x450")
         pop2.resizable(width=False, height=False)
         pop2.title("Load Game")
 
-        btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
+        btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy)
+        btn3.place(relx=0.75, rely=0.9)
 
-    def welcome_window(self, controller):
+    def welcome_window(self):
 
         canvas = self.welcome_screen_canvas
 
-        new_game_btn = Button(canvas, text="New Game", command = self.create_new_game_window).place(relx=0.5,rely=0.5)
-        load_game_btn = Button(canvas, text="Load Game", command = self.load_existing_game_window).place(relx=0.5, rely=0.6)
-        quit_game_btn = Button(canvas, text="Quit Game", command = self.root.destroy).place(relx=0.5, rely=0.7)
+        new_game_btn = Button(canvas, text="New Game", command = self.create_new_game_window)
+        load_game_btn = Button(canvas, text="Load Game", command = self.load_existing_game_window)
+        quit_game_btn = Button(canvas, text="Quit Game", command = self.destruct)
 
-        global img # to make it accessible to other functions, otherwise tkinter won't work in our way
-        img = PhotoImage(file="app/view/welcome_bg.gif")
-        canvas.create_image(0, 0, anchor=NW, image=img)
+        new_game_btn.place(relx=0.5,rely=0.5)
+        load_game_btn.place(relx=0.5, rely=0.6)
+        quit_game_btn.place(relx=0.5, rely=0.7)
+
+        # global img
+        # img = PhotoImage(file="app/view/welcome_bg.gif")
+        # canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
-
-    def collect_settings(self):
-        pass
