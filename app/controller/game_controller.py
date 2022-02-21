@@ -69,6 +69,7 @@ if __name__ == "__main__":
     gv = dungeon_adventure_GUI()
     gc = GameController(db, gv)
     gc.game_setup()
+    x = 0
 
     # dc = DungeonCrawler()
     # gc = GameController(db, dc)
