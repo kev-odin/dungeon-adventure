@@ -32,7 +32,6 @@ class GameController:
         """Switches over to the DungeonCrawler view after the dungeon has been created.
         """
         self.window_destroy()
-        adv = self.__model.adventurer
         dc = DungeonCrawler()
         self.__view = dc
         self.game_setup()
@@ -51,7 +50,7 @@ class GameController:
         entry = self.user_settings()
         self.create_adventurer(entry["name"], entry["class_name"])
         self.create_dungeon(entry["difficulty"])
-        print(f"DEBUG-SDungeon created successfully.")
+        print(f"DEBUG-Dungeon created successfully.")
         self.game_start()
 
     def create_adventurer(self, name: str, class_name: str):
@@ -67,10 +66,11 @@ class GameController:
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
     def adventurer(self):
-        print("Hey I have been called.")
+        print("DEBUG - Pressing the Bag Button")
         return self.__model.adventurer.name
 
     def still_playing(self):
+        print("DEBUG - Pressing the Map Button")
         return self.__model.adventurer.is_alive()
 
     def adventurer_hp(self):
