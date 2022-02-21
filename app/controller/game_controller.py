@@ -33,6 +33,16 @@ class GameController:
     def user_settings(self):
         return self.__view.send_settings()
 
+    def user_settings_to_model(self):
+        """Function that grabs user settings from the view and pass to controller.
+        Controller passes the settings to the model.
+        """
+        entry = self.user_settings()
+        self.create_adventurer(entry["name"], entry["class_name"])
+        self.create_dungeon(entry["difficulty"])
+        # DEBUG
+        print(f"Dungeon created successfully")
+
     def create_adventurer(self, name: str, class_name: str):  # Or however you want to pass this.
         try:
             self.__model.build_adventurer(name, class_name)  # If not like this, translate it to look like this
@@ -55,16 +65,14 @@ class GameController:
         return self.__model.adventurer.is_alive()
 
     def show_adventurer(self):
-        self.__dungeon_view.adventurer_info(self.adventurer())
+        self.__model.adventurer_info(self.adventurer())
 
 if __name__ == "__main__":
     db = DungeonBuilder()
     gv = dungeon_adventure_GUI()
     gc = GameController(db, gv)
     gc.game_setup()
-    test = gc.user_settings()
-    uncle_bob = gc.create_adventurer(test["name"], test["class_name"])
-    test_dungeon = gc.create_dungeon(str(test["difficulty"]).lower())
-    dc = DungeonCrawler()
-    gc = GameController(db, dc)
-    gc.game_setup()
+
+    # dc = DungeonCrawler()
+    # gc = GameController(db, dc)
+    # gc.game_setup()
