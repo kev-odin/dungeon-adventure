@@ -13,9 +13,9 @@ class dungeon_adventure_GUI:
         self.welcome_screen_frame.pack()
 
         self.settings = {
-            "name": None,
+            "name": "Uncle Bob",                   # DUMMY VALUE TEST: PURPOSE
             "difficulty" : None,
-            "class" : None
+            "class_name" : None
         }
 
     def start_main_loop(self):
@@ -111,8 +111,8 @@ class dungeon_adventure_GUI:
                 widget.destroy()
             selected = clicked.get()
             hero_type = selected
-            self.settings["name"] = hero_name       # Kevin - Setting NOT stored in dictionary to send to controller
-            self.settings["class"] = hero_type      # Kevin - Setting stored in dictionary to send to controller
+            # self.settings["name"] = hero_name       # Kevin - Setting NOT stored in dictionary to send to controller
+            self.settings["class_name"] = hero_type      # Kevin - Setting stored in dictionary to send to controller
 
             label_frame2 = LabelFrame(hero_frame, text=selected)
             label_frame2.pack()
@@ -126,7 +126,7 @@ class dungeon_adventure_GUI:
         hero_frame.pack() # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
         display_selected_hero(clicked.get()) # display the default hero type description.
 
-        btn = Button(pop1, text="Confirm", command = pop1.destroy) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn = Button(pop1, text="Start Game", command = pop1.destroy) # here the pop1.destroy should be replaced by a function to send info the controller
         btn.place(relx=0.75,rely=0.9)
 
     def load_existing_game_window(self):
