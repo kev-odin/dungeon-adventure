@@ -41,27 +41,24 @@ class GameController:
         self.create_adventurer(entry["name"], entry["class_name"])
         self.create_dungeon(entry["difficulty"])
         # DEBUG
-        print(f"Dungeon created successfully")
+        print(f"Dungeon created successfully.")
 
-    def create_adventurer(self, name: str, class_name: str):  # Or however you want to pass this.
+    def create_adventurer(self, name: str, class_name: str):
         try:
-            self.__model.build_adventurer(name, class_name)  # If not like this, translate it to look like this
+            self.__model.build_adventurer(name, class_name)
         except ValueError:
-            # How you want to display the error to the view / player.  Suggest dropdowns for things that aren't
-            # flexible.
             return f"An error occurred.  Please verify {class_name} and {name} are valid options."
 
     def create_dungeon(self, difficulty: str):
         try:
-            self.__model.build_dungeon(difficulty)  # If not like this, translate it to look like this
+            self.__model.build_dungeon(difficulty)
         except ValueError:
-            # How you want to display the error to the view / player.
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
     def adventurer(self):
         return self.__model.adventurer.name
 
-    def still_playing(self):  # Whatever that is, this will probably be a check after the user tries to do something
+    def still_playing(self):
         return self.__model.adventurer.is_alive()
 
     def show_adventurer(self):
