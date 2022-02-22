@@ -8,7 +8,7 @@ class dungeon_adventure_GUI:
         self.root = Tk()  # create the root window
         self.root.resizable(width=False, height=False) # fixed size
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
-        self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="black") # canvas within that frame
+        self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="white") # canvas within that frame
         self.welcome_window(controller)
         self.welcome_screen_frame.pack()
 
@@ -89,7 +89,9 @@ class dungeon_adventure_GUI:
             widget.destroy()
 
         label3 = Label(pop1, text="Choose your hero's name:").pack()
-        hero_name = Entry(pop1).pack()
+        name = StringVar()
+        hero_name = Entry(pop1, textvariable=name)
+        hero_name.pack()
 
         label4 = Label(pop1, text="Choose your hero type:").pack()
 
@@ -108,6 +110,10 @@ class dungeon_adventure_GUI:
         clicked.set(hero_options[0])  # set the default greyed out level
 
         hero_frame = Frame(pop1)
+
+        def get_player_entered_name(): # we need this function because Entry widget requires storing the name in a functions.
+                                        # we tried to just use .get(), but it seems that did not work. this is a work around.
+            self.settings["name"] = hero_name.get()
 
         def display_selected_hero(selected):
             for widget in hero_frame.winfo_children(): # Way to rewrite the label frame, looks for every child of frame
@@ -129,7 +135,8 @@ class dungeon_adventure_GUI:
         hero_frame.pack()                       # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
         display_selected_hero(clicked.get())    # display the default hero type description.
 
-        btn = Button(pop1, text="Start Game", command = lambda: self.send_to_controller(controller)) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn = Button(pop1, text="Start Game", command = lambda: [get_player_entered_name(), self.send_to_controller(controller)])
+                                                                # bind multiple command in one click
         btn.place(relx=0.75,rely=0.9)
 
     def load_existing_game_window(self):
@@ -156,5 +163,6 @@ class dungeon_adventure_GUI:
 
         # global img
         # img = PhotoImage(file="app/view/welcome_bg.gif")
+        # # img = PhotoImage(file="/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/welcome_bg.gif")
         # canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
