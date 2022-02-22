@@ -23,48 +23,70 @@ class GameController:
         self.__view = view                              # View
 
     def game_setup(self):
+        """Builds tKinter frames for the user.
+        """
         self.__view.setup(self)
         self.__view.start_main_loop()
 
+    def game_start(self):
+        """Switches over to the DungeonCrawler view after the dungeon has been created.
+        """
+        self.window_destroy()
+        dc = DungeonCrawler()
+        self.__view = dc
+        self.game_setup()
+
     def window_destroy(self):
-        print(f"Destroyed by Controller! {self}")
+        print(f"DEBUG-Destroyed by Controller! {self}")
         self.__view.destruct()
     
     def user_settings(self):
         return self.__view.send_settings()
 
-    def create_adventurer(self, name: str, class_name: str):  # Or however you want to pass this.
+    def user_settings_to_model(self):
+        """Function that grabs user settings from the view and pass to controller.
+        Controller passes the settings to the model.
+        """
+        entry = self.user_settings()
+        self.create_dungeon(str(entry["difficulty"]).lower())
+        self.create_adventurer(entry["name"], entry["class_name"])
+        print(f"DEBUG - Dungeon created successfully. Passing off to DungeonCrawler")
+        self.game_start()
+
+    def create_adventurer(self, name: str, class_name: str):
         try:
-            self.__model.build_adventurer(name, class_name)  # If not like this, translate it to look like this
+            self.__model.build_adventurer(name, class_name)
         except ValueError:
-            # How you want to display the error to the view / player.  Suggest dropdowns for things that aren't
-            # flexible.
             return f"An error occurred.  Please verify {class_name} and {name} are valid options."
 
     def create_dungeon(self, difficulty: str):
         try:
-            self.__model.build_dungeon(difficulty)  # If not like this, translate it to look like this
+            self.__model.build_dungeon(difficulty)
         except ValueError:
-            # How you want to display the error to the view / player.
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
     def adventurer(self):
+        print("DEBUG - Pressing the Bag Button")
         return self.__model.adventurer.name
 
-    def still_playing(self):  # Whatever that is, this will probably be a check after the user tries to do something
+    def still_playing(self):
+        print("DEBUG - Pressing the Map Button")
+        print(self.adventurer_loc())
         return self.__model.adventurer.is_alive()
 
-    def show_adventurer(self):
-        self.__dungeon_view.adventurer_info(self.adventurer())
+    def adventurer_hp(self):
+        return self.__model.adventurer.current_hitpoints
+
+    def adventurer_loc(self):
+        return self.__model.map
 
 if __name__ == "__main__":
     db = DungeonBuilder()
     gv = dungeon_adventure_GUI()
     gc = GameController(db, gv)
     gc.game_setup()
-    test = gc.user_settings()
-    uncle_bob = gc.create_adventurer(test["name"], test["class_name"])
-    test_dungeon = gc.create_dungeon(str(test["difficulty"]).lower())
-    dc = DungeonCrawler()
-    gc = GameController(db, dc)
-    gc.game_setup()
+    test = "Hi"
+
+    # dc = DungeonCrawler()
+    # gc = GameController(db, dc)
+    # gc.game_setup()

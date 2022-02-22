@@ -78,7 +78,7 @@ class DungeonCrawler(BaseFrame):
         """
         canvas = self.dungeon_crawl_canvas
         bag = Button(canvas, text= "Bag", command = lambda: controller.adventurer())
-        map = Button(canvas, text= "Map")
+        map = Button(canvas, text= "Map", command = lambda: controller.still_playing())
         
         bag.grid(row=3, column=1)
         map.grid(row=3, column=2)
@@ -112,10 +112,10 @@ class DungeonCrawler(BaseFrame):
     def adventurer_info(self, controller):
         canvas = self.dungeon_crawl_canvas
         # canvas.place(relx = 0.5, rely = 0.8)
-        name = Label(canvas, text = f"Name: ", bg = 'White')
+        name = Label(canvas, text = f"Name: {controller.adventurer()}", bg = 'White')
         name.grid(row = 0, column = 0)
 
-        health = Label(canvas, text = f"Health Points: ", bg = 'Green')
+        health = Label(canvas, text = f"Health Points: {controller.adventurer_hp()}", bg = 'Green')
         health.grid(row = 1, column = 0)
 
         canvas.pack()

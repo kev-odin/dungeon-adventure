@@ -9,7 +9,7 @@ class dungeon_adventure_GUI:
         self.root.resizable(width=False, height=False) # fixed size
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
         self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="black") # canvas within that frame
-        self.welcome_window()
+        self.welcome_window(controller)
         self.welcome_screen_frame.pack()
 
         self.settings = {
@@ -26,8 +26,11 @@ class dungeon_adventure_GUI:
 
     def send_settings(self):
         return self.settings
+    
+    def send_to_controller(self, controller):
+        controller.user_settings_to_model()
 
-    def create_new_game_window(self):
+    def create_new_game_window(self, controller):
         global game_difficulty  # global variable, look for details in def display_selected()
         global pop1  # to make it accessiable to other functions, otherwise tkinter won't work in our way
         pop1 = Toplevel(self.root)
@@ -79,25 +82,17 @@ class dungeon_adventure_GUI:
 
         display_selected(clicked.get())
 
-        btn2 = Button(pop1, text="Confirm New",command=lambda : self.get_adventurer_info(pop1)).place(relx=0.75,rely=0.9)
+        btn2 = Button(pop1, text="Confirm New",command=lambda : self.get_adventurer_info(pop1, controller)).place(relx=0.75,rely=0.9)
 
-
-    def get_adventurer_info(self, pop1):
+    def get_adventurer_info(self, pop1, controller):
         for widget in pop1.winfo_children():  # Way to rewrite the label frame, looks for every child of frame
             widget.destroy()
 
         label3 = Label(pop1, text="Choose your hero's name:").pack()
-
-        name = StringVar()
-        hero_name = Entry(pop1, textvariable = name)  # create a entry box to collect the player's name
-        hero_name.pack()
-
-        def get_player_entered_name_and_start():
-            self.settings["name"] = hero_name.get() # when start button is clicked, update the name in the dictionary
-            self.root.destroy()  #  then we get rid of this window to make space for the dungeon crawler window
-
+        hero_name = Entry(pop1).pack()
 
         label4 = Label(pop1, text="Choose your hero type:").pack()
+
         hero_options = [
             "Warrior",
             "Priest",
@@ -119,8 +114,8 @@ class dungeon_adventure_GUI:
                 widget.destroy()
             selected = clicked.get()
             hero_type = selected
-            # self.settings["name"] = hero_name       # Kevin - Setting NOT stored in dictionary to send to controller
-            self.settings["class_name"] = hero_type      # Kevin - Setting stored in dictionary to send to controller
+            # self.settings["name"] = hero_name             # Kevin - Setting NOT stored in dictionary to send to controller
+            self.settings["class_name"] = hero_type         # Kevin - Setting stored in dictionary to send to controller
 
             label_frame2 = LabelFrame(hero_frame, text=selected)
             label_frame2.pack()
@@ -131,10 +126,10 @@ class dungeon_adventure_GUI:
         option_menu2 = OptionMenu(pop1, clicked, *hero_options, command=display_selected_hero) # dropdown menu of hero types
         option_menu2.pack()
 
-        hero_frame.pack() # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
-        display_selected_hero(clicked.get()) # display the default hero type description.
+        hero_frame.pack()                       # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
+        display_selected_hero(clicked.get())    # display the default hero type description.
 
-        btn = Button(pop1, text="Start Game", command = get_player_entered_name_and_start) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn = Button(pop1, text="Start Game", command = lambda: self.send_to_controller(controller)) # here the pop1.destroy should be replaced by a function to send info the controller
         btn.place(relx=0.75,rely=0.9)
 
     def load_existing_game_window(self):
@@ -147,11 +142,11 @@ class dungeon_adventure_GUI:
         btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy)
         btn3.place(relx=0.75, rely=0.9)
 
-    def welcome_window(self):
+    def welcome_window(self, controller):
 
         canvas = self.welcome_screen_canvas
 
-        new_game_btn = Button(canvas, text="New Game", command = self.create_new_game_window)
+        new_game_btn = Button(canvas, text="New Game", command = lambda: self.create_new_game_window(controller))
         load_game_btn = Button(canvas, text="Load Game", command = self.load_existing_game_window)
         quit_game_btn = Button(canvas, text="Quit Game", command = self.destruct)
 
@@ -160,6 +155,6 @@ class dungeon_adventure_GUI:
         quit_game_btn.place(relx=0.5, rely=0.7)
 
         # global img
-        # img = ImageTk.PhotoImage(file="app/view/welcome_bg.gif")
+        # img = PhotoImage(file="app/view/welcome_bg.gif")
         # canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()
