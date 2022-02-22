@@ -1,7 +1,6 @@
 # checkout Kevin shared site https://www.pythontutorial.net/tkinter/
 # checkout this site https://www.youtube.com/watch?v=tpwu5Zb64lQ
 from tkinter import *
-import tkinter as tk
 
 class dungeon_adventure_GUI:
 
@@ -91,10 +90,11 @@ class dungeon_adventure_GUI:
 
         name = StringVar()
         hero_name = Entry(pop1, textvariable = name)  # create a entry box to collect the player's name
+        hero_name.pack()
 
-        def get_player_entered_name():
-            print(hero_name.get())
-            self.settings["name"] = hero_name.get()
+        def get_player_entered_name_and_start():
+            self.settings["name"] = hero_name.get() # when start button is clicked, update the name in the dictionary
+            self.root.destroy()  #  then we get rid of this window to make space for the dungeon crawler window
 
 
         label4 = Label(pop1, text="Choose your hero type:").pack()
@@ -134,7 +134,7 @@ class dungeon_adventure_GUI:
         hero_frame.pack() # we create the frame previously at line hero_frame = Frame(pop1), now we need pack()
         display_selected_hero(clicked.get()) # display the default hero type description.
 
-        btn = Button(pop1, text="Start Game", command = get_player_entered_name) # here the pop1.destroy should be replaced by a function to send info the controller
+        btn = Button(pop1, text="Start Game", command = get_player_entered_name_and_start) # here the pop1.destroy should be replaced by a function to send info the controller
         btn.place(relx=0.75,rely=0.9)
 
     def load_existing_game_window(self):
