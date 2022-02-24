@@ -69,13 +69,24 @@ class GameController:
         self.__view.set_adventurer_info(hero_name, hero_hp, hero_max_hp)
 
     def update_dungeon_display(self):
+        print("DEBUG - Retrieving the hero position")
+
         adv_telemetry = self.__model.map
         self.__view.set_dungeon_display(adv_telemetry)
 
     def update_adv_bag(self):
         print("DEBUG - Pressing the Bag Button")
         pillars = self.__model.adventurer.pillars_collected
-        self.__view.set_bag_display(pillars)
+        health_pots = self.__model.adventurer.health_pots
+        vision_pots = self.__model.adventurer.vision_pots
+
+        bag = {
+            "pillars": pillars,
+            "health": health_pots,
+            "vision": vision_pots
+        }
+
+        self.__view.set_bag_display(bag)
 
     def update_adv_map(self):
         print("DEBUG - Pressing the Map Button")

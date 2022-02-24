@@ -9,6 +9,12 @@ class BaseFrame(tk.Frame):
         self.root.geometry("800x600")
         self.basic_menu_bar()
 
+    def destruct(self):
+        self.root.destroy()
+
+    def start_main_loop(self):
+        self.root.mainloop()
+
     def basic_menu_bar(self):
         menubar = Menu()
 
@@ -40,7 +46,6 @@ class BaseFrame(tk.Frame):
 
 class DungeonCrawler(BaseFrame):
     def setup(self, controller):
-        # super().__init__()
         self.dungeon_crawl_frame = Frame(self.root)
         self.dungeon_crawl_canvas = Canvas(self.dungeon_crawl_frame, width=800, height=600, bg = "grey")
         self.adventurer_canvas = Canvas(self.dungeon_crawl_frame, width = 400, height = 600, bg = "black")
@@ -50,15 +55,8 @@ class DungeonCrawler(BaseFrame):
 
         controller.update_dungeon_display()
         controller.update_adv_info()
-        controller.update_adv_bag()
 
         self.dungeon_crawl_frame.pack()
-
-    def destruct(self):
-        self.root.destroy()
-
-    def start_main_loop(self):
-        self.root.mainloop()
 
     def update_display(self, controller):
         canvas = self.root
@@ -71,7 +69,7 @@ class DungeonCrawler(BaseFrame):
         """Display base actions such as map and bag inventory
         """
         canvas = self.dungeon_crawl_canvas
-        bag = Button(canvas, text= "Bag", command = lambda: controller.still_playing())
+        bag = Button(canvas, text= "Bag", command = lambda: controller.update_adv_bag())
         map = Button(canvas, text= "Map", command = lambda: controller.still_playing())
         
         bag.grid(row=3, column=1, sticky="nswe")
@@ -122,12 +120,11 @@ class DungeonCrawler(BaseFrame):
         dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
         text.place(relx = 0.5, rely = 0.5, anchor = N)
 
-    def set_bag_display(self, bag_contents):
-        global bag  # to make it accessiable to other functions, otherwise tkinter won't work in our way
+    def set_bag_display(self, bag):
         bag = Toplevel(self.root)
         bag.title("Adventurer Inventory")
         bag.geometry("400x400")
-
+        print(bag)
         close_bag = Button(bag, text="Close Bag", command = self.destruct)
         close_bag.place(relx=0.4, rely=0.9)
 
@@ -143,9 +140,6 @@ class DungeonBrawler(BaseFrame):
         self.combat.pack(side=BOTTOM, fill = Y)
         
         self.dungeon_brawl_frame.pack()
-    
-    def start_main_loop(self):
-        self.root.mainloop()
 
 if __name__ == "__main__":
     test = DungeonBrawler()
