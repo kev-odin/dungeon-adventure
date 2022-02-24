@@ -140,6 +140,24 @@ class DungeonBrawler(BaseFrame):
         self.combat.pack(side=BOTTOM, fill = Y)
         
         self.dungeon_brawl_frame.pack()
+    
+    def set_monster(self):
+        pass
+
+    def set_hero(self):
+        pass
+
+    def set_combat(self):
+        pass
+
+    def update_monster(self, controller):
+        pass
+
+    def update_hero(self, controller):
+        pass
+
+    def update_combat(self, controller):
+        pass
 
 if __name__ == "__main__":
     test = DungeonBrawler()
