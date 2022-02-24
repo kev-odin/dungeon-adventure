@@ -1,6 +1,5 @@
 from tkinter import *
 import tkinter as tk
-from turtle import title
 
 class BaseFrame(tk.Frame):
     def __init__(self):
@@ -135,11 +134,15 @@ class DungeonCrawler(BaseFrame):
 class DungeonBrawler(BaseFrame):
     def setup(self):
         self.dungeon_brawl_frame = Frame(self.root)
-        self.dungeon_brawl_canvas = Canvas(self.dungeon_brawl_frame, width=800, height=400, bg = "grey")
-        self.adventurer_frame = Canvas(self.dungeon_brawl_frame, width = 400, height = 200, bg = "black")
-        self.monster_frame = Canvas(self.dungeon_brawl_frame, width = 400, height = 200, bg = "black")
-        self.combat = LabelFrame(self.dungeon_brawl_frame, text = "Combat Log")
-        self.dungeon_brawl_canvas.pack()
+        self.adventurer_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
+        self.monster_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
+        self.combat = Frame(self.dungeon_brawl_frame, width = 800, height = 200, bg = "blue")
+        
+        self.adventurer_frame.pack(side=LEFT, fill=X)
+        self.monster_frame.pack(side=RIGHT, fill=X)
+        self.combat.pack(side=BOTTOM, fill = Y)
+        
+        self.dungeon_brawl_frame.pack()
     
     def start_main_loop(self):
         self.root.mainloop()
