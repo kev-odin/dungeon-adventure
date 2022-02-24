@@ -40,7 +40,9 @@ class BaseFrame(tk.Frame):
         pop2.geometry("750x450")
         pop2.resizable(width=False, height=False)
         pop2.title("Load Game")
+        # "A--B--C--D"
 
+        # open up
         btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
         btn3.pack(self.root)
 
@@ -116,6 +118,7 @@ class DungeonCrawler(BaseFrame):
         
         dungeon = LabelFrame(canvas, width = 400, height = 400, bg = "White")
         text = Label(dungeon, text = "Place Maze Here...", bg = "White")
+
 
         dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
         text.place(relx = 0.5, rely = 0.5, anchor = N)
