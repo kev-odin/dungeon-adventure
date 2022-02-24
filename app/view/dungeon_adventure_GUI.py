@@ -13,7 +13,7 @@ class dungeon_adventure_GUI:
         self.welcome_screen_frame.pack()
 
         self.settings = {
-            "name": "Uncle Bob",                   # DUMMY VALUE TEST: PURPOSE
+            "name"       : None,
             "difficulty" : None,
             "class_name" : None
         }
@@ -28,7 +28,7 @@ class dungeon_adventure_GUI:
         return self.settings
     
     def send_to_controller(self, controller):
-        controller.user_settings_to_model()
+        controller.set_model()
 
     def create_new_game_window(self, controller):
         global game_difficulty  # global variable, look for details in def display_selected()

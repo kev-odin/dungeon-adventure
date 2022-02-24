@@ -22,7 +22,7 @@ class GameController:
         self.__model = model                            # Model
         self.__view = view                              # View
 
-    def game_setup(self):
+    def frame_setup(self):
         """Builds tKinter frames for the user.
         """
         self.__view.setup(self)
@@ -34,20 +34,17 @@ class GameController:
         self.window_destroy()
         dc = DungeonCrawler()
         self.__view = dc
-        self.game_setup()
+        self.frame_setup()
 
     def window_destroy(self):
-        print(f"DEBUG-Destroyed by Controller! {self}")
+        print(f"DEBUG - Destroyed by Controller! {self}")
         self.__view.destruct()
-    
-    def user_settings(self):
-        return self.__view.send_settings()
 
-    def user_settings_to_model(self):
+    def set_model(self):
         """Function that grabs user settings from the view and pass to controller.
         Controller passes the settings to the model.
         """
-        entry = self.user_settings()
+        entry = self.__view.send_settings()
         self.create_dungeon(str(entry["difficulty"]).lower())
         self.create_adventurer(entry["name"], entry["class_name"])
         print(f"DEBUG - Dungeon created successfully. Passing off to DungeonCrawler")
@@ -65,27 +62,33 @@ class GameController:
         except ValueError:
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
-    def adventurer(self):
+    def update_adv_info(self):
+        hero_name = self.__model.adventurer.name
+        hero_hp = self.__model.adventurer.current_hitpoints
+        hero_max_hp = self.__model.adventurer.max_hitpoints
+        self.__view.set_adventurer_info(hero_name, hero_hp, hero_max_hp)
+
+    def update_dungeon_display(self):
+        adv_telemetry = self.__model.map
+        self.__view.set_dungeon_display(adv_telemetry)
+
+    def update_adv_bag(self):
         print("DEBUG - Pressing the Bag Button")
-        return self.__model.adventurer.name
+        pillars = self.__model.adventurer.pillars_collected
+        self.__view.set_bag_display(pillars)
 
-    def still_playing(self):
+    def update_adv_map(self):
         print("DEBUG - Pressing the Map Button")
-        print(self.adventurer_loc())
+        
+    def still_playing(self):
+        print(self.__model.adventurer.is_alive())
         return self.__model.adventurer.is_alive()
-
-    def adventurer_hp(self):
-        return self.__model.adventurer.current_hitpoints
-
-    def adventurer_loc(self):
-        return self.__model.map
 
 if __name__ == "__main__":
     db = DungeonBuilder()
     gv = dungeon_adventure_GUI()
     gc = GameController(db, gv)
-    gc.game_setup()
-    test = "Hi"
+    gc.frame_setup()
 
     # dc = DungeonCrawler()
     # gc = GameController(db, dc)
