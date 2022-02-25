@@ -10,7 +10,7 @@ class BaseFrame(tk.Frame):
         self.basic_menu_bar()
 
     def destruct(self):
-        self.root.destroy()
+        self.destroy()
 
     def start_main_loop(self):
         self.root.mainloop()
@@ -72,7 +72,7 @@ class DungeonCrawler(BaseFrame):
         """
         canvas = self.dungeon_crawl_canvas
         bag = Button(canvas, text= "Bag", command = lambda: controller.update_adv_bag())
-        map = Button(canvas, text= "Map", command = lambda: controller.still_playing())
+        map = Button(canvas, text= "Map", command = lambda: controller.update_adv_map()) #
         
         bag.grid(row=3, column=1, sticky="nswe")
         map.grid(row=3, column=2, sticky="nswe")
@@ -120,26 +120,21 @@ class DungeonCrawler(BaseFrame):
         # text = Label(dungeon, text = "Place Maze Here...", bg = "White")
 
         for i in range(9):
-            t = 'b'+str(i)
-            print(t)
-            if (t == 'b4'):
-                print("we reached b4")
-                t = Button(dungeon)
-                t.img = PhotoImage(file='/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/priest.gif')
-                t.img2 = t.img.subsample(10, 10)
-                t.config(height=100, width=100, image=t.img2)
-                t.grid(row=int(i/3), column=int(i%3))
-                t.grid(sticky = "NWSE")
+            b = 'b'+str(i)
+            if (b == 'b4'):
+                b = Button(dungeon)
+                b.img = PhotoImage(file='/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/image assets/priest.gif')
+                # b.ima = PhotoImage()
+                b.img2 = b.img.subsample(10, 10)
+                b.config(height=100, width=100, image=b.img2)
+                b.grid(row=int(i/3), column=int(i%3))
+                b.grid(sticky = "NWSE")
             else:
-                t = Button(dungeon)
-                t.img = PhotoImage()
-                t.config(height=100, width=100, image=t.img, compound=CENTER)
-                t.grid(row=int(i / 3), column=int(i % 3))
-                t.grid(sticky="NWSE")
-
-
-
-
+                b = Button(dungeon)
+                b.img = PhotoImage()
+                b.config(height=100, width=100, image=b.img, compound=CENTER)
+                b.grid(row=int(i / 3), column=int(i % 3))
+                b.grid(sticky="NWSE")
 
         # b1 = Button(dungeon)
         # b1.img = PhotoImage()
@@ -179,8 +174,16 @@ class DungeonCrawler(BaseFrame):
         bag.title("Adventurer Inventory")
         bag.geometry("400x400")
         print(bag)
-        close_bag = Button(bag, text="Close Bag", command = self.destruct)
+        close_bag = Button(bag, text="Close Bag", command = bag.destroy)
+        # close_bag = Button(bag, text="Close Bag", command = bag.destruct())
         close_bag.place(relx=0.4, rely=0.9)
+
+    def set_map_display(self, map):
+        map = Toplevel(self.root)
+        map.title("Dungeon complete map")
+        map.geometry("600x600")
+        close_map = Button(map, text="Close Map", command=map.destroy)
+        close_map.place(relx=0.4, rely=0.9)
 
 class DungeonBrawler(BaseFrame):
     def setup(self):
@@ -199,3 +202,7 @@ if __name__ == "__main__":
     test = DungeonBrawler()
     test.setup()
     test.start_main_loop()
+
+    test2 = DungeonCrawler()
+    test2.set_dungeon_display()
+

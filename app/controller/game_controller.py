@@ -90,6 +90,11 @@ class GameController:
 
     def update_adv_map(self):
         print("DEBUG - Pressing the Map Button")
+
+        map = self.__model.map
+
+
+        self.__view.set_map_display(map)
         
     def still_playing(self):
         print(self.__model.adventurer.is_alive())
