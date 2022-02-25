@@ -116,12 +116,58 @@ class DungeonCrawler(BaseFrame):
         """
         canvas = self.root
         
-        dungeon = LabelFrame(canvas, width = 400, height = 400, bg = "White")
-        text = Label(dungeon, text = "Place Maze Here...", bg = "White")
+        dungeon = LabelFrame(canvas, width = 300, height = 300, bg = "White")
+        # text = Label(dungeon, text = "Place Maze Here...", bg = "White")
 
+        for i in range(9):
+            t = 'b'+str(i)
+            print(t)
+            if (t == 'b4'):
+                print("we reached b4")
+
+            t = Button(dungeon)
+            t.img = PhotoImage()
+            t.config(height=100, width=100, image=t.img, compound=CENTER)
+            t.grid(row=int(i/3), column=int(i%3))
+            t.grid(sticky = "NWSE")
+
+
+
+
+
+
+        # b1 = Button(dungeon)
+        # b1.img = PhotoImage()
+        # b1.config(height=100, width=100, image=b1.img, compound=CENTER)
+        # b1.grid(row=0, column=0)
+        #
+        # b2 = Button(dungeon)
+        # b2.img = PhotoImage()
+        # b2.config(height=100, width=100, image=b2.img, compound=CENTER)
+        # b2.grid(row=0, column=1)
+        #
+        # b3 = Button(dungeon)
+        # b3.img = PhotoImage()
+        # b3.config(height=100, width=100, image=b3.img, compound=CENTER)
+        # b3.grid(row=0, column=2)
+        #
+        # b4 = Button(dungeon)
+        # b4.img = PhotoImage()
+        # b4.config(height=100, width=100, image=b4.img, compound=CENTER)
+        # b4.grid(row=1, column=0)
+        #
+        # b5 = Button(dungeon)
+        # b5.img = PhotoImage()
+        # b5.config(height=100, width=100, image=b5.img, compound=CENTER)
+        # b5.grid(row=1, column=1)
+        #
+        # b6 = Button(dungeon)
+        # b6.img = PhotoImage()
+        # b6.config(height=100, width=100, image=b6.img, compound=CENTER)
+        # b6.grid(row=1, column=2)
 
         dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
-        text.place(relx = 0.5, rely = 0.5, anchor = N)
+        # text.place(relx = 0.5, rely = 0.5, anchor = N)
 
     def set_bag_display(self, bag):
         bag = Toplevel(self.root)
