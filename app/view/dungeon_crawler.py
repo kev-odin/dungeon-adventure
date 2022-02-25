@@ -97,10 +97,10 @@ class DungeonCrawler(BaseFrame):
     def dungeon_navigation(self, controller):
         canvas = self.dungeon_crawl_canvas
 
-        travel_north = Button(canvas, text="North", command= lambda: controller.update_view())
-        travel_south = Button(canvas, text="South", command= lambda: controller.update_view())
-        travel_west = Button(canvas, text="West", command= lambda: controller.update_view())
-        travel_east = Button(canvas, text="East", command= lambda: controller.update_view())
+        travel_north = Button(canvas, text="North", command= lambda: controller.set_move("n"))
+        travel_south = Button(canvas, text="South", command= lambda: controller.set_move("s"))
+        travel_west = Button(canvas, text="West", command= lambda: controller.set_move("w"))
+        travel_east = Button(canvas, text="East", command= lambda: controller.set_move("e"))
 
         travel_north.grid(row=2, column=1)
         travel_south.grid(row=2, column=2)
@@ -120,12 +120,15 @@ class DungeonCrawler(BaseFrame):
         dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
         text.place(relx = 0.5, rely = 0.5, anchor = N)
 
-    def set_bag_display(self, bag):
+    def set_bag_display(self, bag_stuff):
         bag = Toplevel(self.root)
-        bag.title("Adventurer Inventory")
         bag.geometry("400x400")
-        print(bag)
-        close_bag = Button(bag, text="Close Bag", command = self.destruct)
+        bag.resizable(width = False, height = False)
+        bag.title("Adventurer Inventory")
+
+        
+        print(bag_stuff)
+        close_bag = Button(bag, text="Close Bag", command = bag.destroy)
         close_bag.place(relx=0.4, rely=0.9)
 
 class DungeonBrawler(BaseFrame):
