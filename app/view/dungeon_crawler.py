@@ -40,9 +40,7 @@ class BaseFrame(tk.Frame):
         pop2.geometry("750x450")
         pop2.resizable(width=False, height=False)
         pop2.title("Load Game")
-        # "A--B--C--D"
 
-        # open up
         btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
         btn3.pack(self.root)
 
@@ -99,10 +97,10 @@ class DungeonCrawler(BaseFrame):
     def dungeon_navigation(self, controller):
         canvas = self.dungeon_crawl_canvas
 
-        travel_north = Button(canvas, text="North", command= lambda: controller.update_view())
-        travel_south = Button(canvas, text="South", command= lambda: controller.update_view())
-        travel_west = Button(canvas, text="West", command= lambda: controller.update_view())
-        travel_east = Button(canvas, text="East", command= lambda: controller.update_view())
+        travel_north = Button(canvas, text="North", command= lambda: controller.set_move("n"))
+        travel_south = Button(canvas, text="South", command= lambda: controller.set_move("s"))
+        travel_west = Button(canvas, text="West", command= lambda: controller.set_move("w"))
+        travel_east = Button(canvas, text="East", command= lambda: controller.set_move("e"))
 
         travel_north.grid(row=2, column=1)
         travel_south.grid(row=2, column=2)
@@ -169,13 +167,15 @@ class DungeonCrawler(BaseFrame):
         dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
         # text.place(relx = 0.5, rely = 0.5, anchor = N)
 
-    def set_bag_display(self, bag):
+    def set_bag_display(self, bag_stuff):
         bag = Toplevel(self.root)
-        bag.title("Adventurer Inventory")
         bag.geometry("400x400")
-        print(bag)
+        bag.resizable(width = False, height = False)
+        bag.title("Adventurer Inventory")
+
+
+        print(bag_stuff)
         close_bag = Button(bag, text="Close Bag", command = bag.destroy)
-        # close_bag = Button(bag, text="Close Bag", command = bag.destruct())
         close_bag.place(relx=0.4, rely=0.9)
 
     def set_map_display(self, map):
@@ -197,6 +197,24 @@ class DungeonBrawler(BaseFrame):
         self.combat.pack(side=BOTTOM, fill = Y)
         
         self.dungeon_brawl_frame.pack()
+
+    def set_monster(self):
+        pass
+
+    def set_hero(self):
+        pass
+
+    def set_combat(self):
+        pass
+
+    def update_monster(self, controller):
+        pass
+
+    def update_hero(self, controller):
+        pass
+
+    def update_combat(self, controller):
+        pass
 
 if __name__ == "__main__":
     test = DungeonBrawler()

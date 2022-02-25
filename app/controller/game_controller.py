@@ -45,10 +45,24 @@ class GameController:
         Controller passes the settings to the model.
         """
         entry = self.__view.send_settings()
-        self.create_dungeon(str(entry["difficulty"]).lower())
-        self.create_adventurer(entry["name"], entry["class_name"])
+        dungeon = self.create_dungeon(str(entry["difficulty"]).lower())
+        adv = self.create_adventurer(entry["name"], entry["class_name"])
         print(f"DEBUG - Dungeon created successfully. Passing off to DungeonCrawler")
+        model = (dungeon, adv)
+        x= 0
         self.game_start()
+
+    def set_move(self, move):
+        """Function that updates moves from the view (NSWE) and passes those instructions to the
+        model
+        """
+        move_dict = {"n": "north", "w": "west", "s": "south", "e": "east"}
+        try:
+            print(f"DEBUG - Moving Adventurer {move_dict[move]}")
+            self.__model.move_adventurer(move_dict[move])
+        except KeyError:
+            return f"An error occured. Please verify the {move} is a valid option."
+
 
     def create_adventurer(self, name: str, class_name: str):
         try:
