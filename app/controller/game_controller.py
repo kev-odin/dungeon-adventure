@@ -74,13 +74,30 @@ class GameController:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
             moving = self.__model["dungeon"].get_visible_dungeon_string()
+            
             print(f"{moving}")
             self.set_bag(new_room)
         except KeyError:
             return f"An error occured. Please verify the {move} is a valid option."
 
     def set_bag(self, room):
-        print(room)
+        
+        if room.contents in ("A", "P", "I", "E"):
+            pillar_dict = {
+                "A": "Abstraction is found!!  It grants double health potion collection.",
+                "P": "Polymorphism is found!!  It grants double vision potion collection.",
+                "I": "Inheritance is found!! It slows your fall, reducing pit damage by half.",
+                "E": "Encapsulation is found!! It increases health potion potency."
+                }
+            
+            pillar_str = self.__model["dungeon"].collect_pillars()
+
+            if pillar_str:
+                self.__model["hero"].add_pillar(pillar_str)
+
+        if room.contents in ("H", "V", "M"):
+            collected_pots = self.__model["dungeon"].collect_potions()
+            self.__model["hero"].add_potions(collected_pots)
 
     def create_adventurer(self, name: str, class_name: str):
         try:
