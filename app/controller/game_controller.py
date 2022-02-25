@@ -3,6 +3,12 @@ from app.view.dungeon_crawler import DungeonCrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
+# TODO: Update adventurer bag when entering a room
+# TODO: Update view with room contents
+# TODO: Room Dungeon Canvas
+# TODO: Dungeon Map Canvas
+# TODO: DungeonBrawler
+
 # Controller methods are accessed by the view because we are passing the reference to Controller.
 
 # From here everything you need from the dungeon and adventurer can be accessed via dungeon builder.
@@ -66,10 +72,15 @@ class GameController:
         move_dict = {"n": "north", "w": "west", "s": "south", "e": "east"}
         try:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
-            self.__model["dungeon"].move_adventurer(move_dict[move])
+            new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
+            moving = self.__model["dungeon"].get_visible_dungeon_string()
+            print(f"{moving}")
+            self.set_bag(new_room)
         except KeyError:
             return f"An error occured. Please verify the {move} is a valid option."
 
+    def set_bag(self, room):
+        print(room)
 
     def create_adventurer(self, name: str, class_name: str):
         try:
