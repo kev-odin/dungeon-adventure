@@ -124,13 +124,18 @@ class DungeonCrawler(BaseFrame):
             print(t)
             if (t == 'b4'):
                 print("we reached b4")
-
-            t = Button(dungeon)
-            t.img = PhotoImage()
-            t.config(height=100, width=100, image=t.img, compound=CENTER)
-            t.grid(row=int(i/3), column=int(i%3))
-            t.grid(sticky = "NWSE")
-
+                t = Button(dungeon)
+                t.img = PhotoImage(file='/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/priest.gif')
+                t.img2 = t.img.subsample(10, 10)
+                t.config(height=100, width=100, image=t.img2)
+                t.grid(row=int(i/3), column=int(i%3))
+                t.grid(sticky = "NWSE")
+            else:
+                t = Button(dungeon)
+                t.img = PhotoImage()
+                t.config(height=100, width=100, image=t.img, compound=CENTER)
+                t.grid(row=int(i / 3), column=int(i % 3))
+                t.grid(sticky="NWSE")
 
 
 
