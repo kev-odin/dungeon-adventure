@@ -46,10 +46,17 @@ class GameController:
         """
         entry = self.__view.send_settings()
         dungeon = self.create_dungeon(str(entry["difficulty"]).lower())
-        adv = self.create_adventurer(entry["name"], entry["class_name"])
+        hero = self.create_adventurer(entry["name"], entry["class_name"])
+        dungeon_map = self.__model.map
+
         print(f"DEBUG - Dungeon created successfully. Passing off to DungeonCrawler")
-        model = (dungeon, adv)
-        x= 0
+        
+        self.__model = {
+            "dungeon"   : dungeon,
+            "map"       : dungeon_map,
+            "hero"      : hero
+        }
+        
         self.game_start()
 
     def set_move(self, move):
@@ -59,40 +66,40 @@ class GameController:
         move_dict = {"n": "north", "w": "west", "s": "south", "e": "east"}
         try:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
-            self.__model.move_adventurer(move_dict[move])
+            self.__model["dungeon"].move_adventurer(move_dict[move])
         except KeyError:
             return f"An error occured. Please verify the {move} is a valid option."
 
 
     def create_adventurer(self, name: str, class_name: str):
         try:
-            self.__model.build_adventurer(name, class_name)
+           return self.__model.build_adventurer(name, class_name)
         except ValueError:
             return f"An error occurred.  Please verify {class_name} and {name} are valid options."
 
     def create_dungeon(self, difficulty: str):
         try:
-            self.__model.build_dungeon(difficulty)
+            return self.__model.build_dungeon(difficulty)
         except ValueError:
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
     def update_adv_info(self):
-        hero_name = self.__model.adventurer.name
-        hero_hp = self.__model.adventurer.current_hitpoints
-        hero_max_hp = self.__model.adventurer.max_hitpoints
+        hero_name = self.__model["hero"].name
+        hero_hp = self.__model["hero"].current_hitpoints
+        hero_max_hp = self.__model["hero"].max_hitpoints
         self.__view.set_adventurer_info(hero_name, hero_hp, hero_max_hp)
 
     def update_dungeon_display(self):
         print("DEBUG - Retrieving the hero position")
 
-        adv_telemetry = self.__model.map
+        adv_telemetry = self.__model["dungeon"]
         self.__view.set_dungeon_display(adv_telemetry)
 
     def update_adv_bag(self):
         print("DEBUG - Pressing the Bag Button")
-        pillars = self.__model.adventurer.pillars_collected
-        health_pots = self.__model.adventurer.health_pots
-        vision_pots = self.__model.adventurer.vision_pots
+        pillars = self.__model["hero"].pillars_collected
+        health_pots = self.__model["hero"].health_pots
+        vision_pots = self.__model["hero"].vision_pots
 
         bag = {
             "pillars": pillars,
