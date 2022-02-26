@@ -97,7 +97,7 @@ class DungeonCharacter(ABC):
         :param max_dmg: int representing maximum damage that can be dealt.  Defaults to dictionary value if None.
         :return: int representing damage dealt, 0 for a miss.
         """
-        if hit_chance is None:
+        if hit_chance is None:  # Implemented this way for overriding with Warrior skill.
             hit_chance = self.hit_chance
         if min_dmg is None:
             min_dmg = self.__char_dict["min_dmg"]

@@ -13,10 +13,10 @@ class Adventurer(DungeonCharacter, ABC):
         """Adventurer object that maintains the inventory collection of potions,
         pillars collected, and current hitpoints.
 
-        :param name: str name of the adventurer provided by user, defaults to None
-        :param adv_class: str - defaults to Warrior
+        :param adv_dict: dict of adventurer data
         """
         super().__init__(adv_dict)
+        self.__char_dict = adv_dict
 
         self.__health_pots = 0
         self.__vision_pots = 0
@@ -26,6 +26,53 @@ class Adventurer(DungeonCharacter, ABC):
             "I": False,
             "E": False
         }
+
+    def _readable_pillars(self):
+        """ Helper method for converting pillars collection to a player readable string.
+        This took longer than I care to admit...
+        :return: string
+        """
+
+        pillar_str = []
+        status_str = []
+        readable = "| "
+
+        for pillar in self.pillars_collected:
+            if pillar == "A":
+                pillar_str.append("Abstraction")
+            elif pillar == "P":
+                pillar_str.append("Polymorphism")
+            elif pillar == "I":
+                pillar_str.append("Inheritance")
+            else:
+                pillar_str.append("Encapsulation")
+
+        for status in self.pillars_collected.values():
+            if status is True:
+                status_str.append("Collected")
+            else:
+                status_str.append("Not collected")
+
+        for pillar, status in zip(pillar_str, status_str):
+            readable += pillar + ": " + status + " | "
+
+        return readable
+
+    def __str__(self):
+        player_stats = f"Name: {self.name}\n"
+        player_stats += f"HP: {self.current_hitpoints} / {self.max_hitpoints}\n"
+        player_stats += f"Health potions: {self.health_pots}\n"
+        player_stats += f"Vision potions: {self.vision_pots}\n"
+        player_stats += f"Object Oriented Pillars Collected\n{self._readable_pillars()}\n"
+        return player_stats
+
+    def __repr__(self):
+        player_stats = f"{self.name}\n"
+        player_stats += f"{self.current_hitpoints} / {self.max_hitpoints}\n"
+        player_stats += f"{self.health_pots}\n"
+        player_stats += f"{self.vision_pots}\n"
+        player_stats += f"{self.pillars_collected}\n"
+        return player_stats
 
     def is_alive(self):
         """Helper method to determine that the adventurer is alive during the dungeon adventure
@@ -111,7 +158,7 @@ class Adventurer(DungeonCharacter, ABC):
             if self.has_all_pillars():
                 self.max_hitpoints += heal
 
-            if self.pillars_collected["E"]:     # Non adjusted health intentional, otherwise too strong.
+            if self.pillars_collected["E"]:  # Non adjusted health intentional, otherwise too strong.
                 heal *= 2
 
             old_health = self.current_hitpoints
@@ -123,7 +170,7 @@ class Adventurer(DungeonCharacter, ABC):
                 self.current_hitpoints = new_health
 
             actual_heal = self.current_hitpoints - old_health
-            
+
             return heal, actual_heal
 
         else:
@@ -162,53 +209,6 @@ class Adventurer(DungeonCharacter, ABC):
             damage = damage // 2
 
         return super().take_damage(damage)
-
-    def _readable_pillars(self):
-        """ Helper method for converting pillars collection to a player readable string.
-        This took longer than I care to admit...
-        :return: string
-        """
-
-        pillar_str = []
-        status_str = []
-        readable = "| "
-
-        for pillar in self.pillars_collected:
-            if pillar == "A":
-                pillar_str.append("Abstraction")
-            elif pillar == "P":
-                pillar_str.append("Polymorphism")
-            elif pillar == "I":
-                pillar_str.append("Inheritance")
-            else:
-                pillar_str.append("Encapsulation")
-
-        for status in self.pillars_collected.values():
-            if status is True:
-                status_str.append("Collected")
-            else:
-                status_str.append("Not collected")
-
-        for pillar, status in zip(pillar_str, status_str):
-            readable += pillar + ": " + status + " | "
-
-        return readable
-
-    def __str__(self):
-        player_stats = f"Name: {self.name}\n"
-        player_stats += f"HP: {self.current_hitpoints} / {self.max_hitpoints}\n"
-        player_stats += f"Health potions: {self.health_pots}\n"
-        player_stats += f"Vision potions: {self.vision_pots}\n"
-        player_stats += f"Object Oriented Pillars Collected\n{self._readable_pillars()}\n"
-        return player_stats
-
-    def __repr__(self):
-        player_stats = f"{self.name}\n"
-        player_stats += f"{self.current_hitpoints} / {self.max_hitpoints}\n"
-        player_stats += f"{self.health_pots}\n"
-        player_stats += f"{self.vision_pots}\n"
-        player_stats += f"{self.pillars_collected}\n"
-        return player_stats
 
     @property
     def health_pots(self):
@@ -279,4 +279,3 @@ class Adventurer(DungeonCharacter, ABC):
     @abstractmethod
     def use_special(self):
         pass
-

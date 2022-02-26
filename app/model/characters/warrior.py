@@ -6,4 +6,4 @@ class Warrior(Adventurer):
         super().__init__(adv_dict)
 
     def use_special(self):
-        self.attack(0.4, 75, 175)  # Hardcoded isn't my favorite, but making a separate table didn't feel right.
+        return self.attack(0.4, 75, 175)  # Hardcoded isn't my favorite, but making a separate table didn't feel right.
