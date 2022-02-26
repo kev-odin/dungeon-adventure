@@ -37,7 +37,7 @@ class TestQueryHelper(TestCase):
         sql_select_query = """SELECT * FROM monsters where name = ?"""
         values, keys = self.qh._select_query(sql_select_query, "Ogre")
         self.assertEqual([('Ogre', 200, 2, 0.6, 30, 60, 0.1, 30, 60)], values, "Check values displayed properly.")
-        self.assertEqual(['name', 'hp', 'attack_speed', 'hit_chance', 'min_dmg', 'max_dmg', 'heal_chance', 'min_heal',
+        self.assertEqual(['name', 'max_hp', 'attack_speed', 'hit_chance', 'min_dmg', 'max_dmg', 'heal_chance', 'min_heal',
                           'max_heal'], keys, "Verify keys loaded properly in query values.")
 
     def test__build_dictionary(self):

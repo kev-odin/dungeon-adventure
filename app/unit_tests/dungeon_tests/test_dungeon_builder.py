@@ -2,7 +2,7 @@ import unittest
 from app.model.dungeon.dungeon_builder import DungeonBuilder
 from app.model.dungeon.room import Room
 from app.model.dungeon.dungeon import Dungeon
-from app.model.characters import Adventurer
+from app.model.characters.adventurer import Adventurer
 from app.model.db.query_helper import QueryHelper
 
 
@@ -20,64 +20,64 @@ class TestDungeonBuilder(unittest.TestCase):
         return actual
 
     def test_init_medium(self):
-        difficulty = "medium"
+        difficulty = "Medium"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
         self.assertDictEqual(expected, actual, f"Check init for {difficulty}")
 
     def test_init_medium_size(self):
         db = DungeonBuilder()
-        dungeon = db.build_dungeon("medium")
+        dungeon = db.build_dungeon("Medium")
         self.assertEqual(8, dungeon.total_rows, f"Total rows in medium dungeon should be 8 {dungeon.total_rows}")
         self.assertEqual(8, dungeon.total_columns, f"Total rows in medium dungeon should be 8 {dungeon.total_columns}")
 
     def test_init_easy(self):
-        difficulty = "easy"
+        difficulty = "Easy"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
         self.assertDictEqual(expected, actual, f"Check init for {difficulty}")
 
     def test_init_easy_size(self):
         db = DungeonBuilder()
-        dungeon = db.build_dungeon("easy")
+        dungeon = db.build_dungeon("Easy")
         self.assertEqual(5, dungeon.total_rows, f"Total rows in easy dungeon should be 5 {dungeon.total_rows}")
         self.assertEqual(5, dungeon.total_columns, f"Total rows in easy dungeon should be 5 {dungeon.total_columns}")
 
     def test_init_hard(self):
-        difficulty = "hard"
+        difficulty = "Hard"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
         self.assertDictEqual(expected, actual, f"Check init for {difficulty}")
 
     def test_init_hard_size(self):
         db = DungeonBuilder()
-        dungeon = db.build_dungeon("hard")
+        dungeon = db.build_dungeon("Hard")
         self.assertEqual(10, dungeon.total_rows, f"Total rows in hard dungeon should be 10 {dungeon.total_rows}")
         self.assertEqual(10, dungeon.total_columns, f"Total rows in hard dungeon should be 10 {dungeon.total_columns}")
 
     def test_init_inhumane(self):
-        difficulty = "inhumane"
+        difficulty = "Inhumane"
         expected = self.init_diff_expected(difficulty)
         actual = self.get_builder_diff_params(difficulty)
         self.assertDictEqual(expected, actual, f"Check init for {difficulty}")
 
     def test_init_inhumane_size(self):
         db = DungeonBuilder()
-        dungeon = db.build_dungeon("inhumane")
+        dungeon = db.build_dungeon("Inhumane")
         self.assertEqual(20, dungeon.total_rows, f"Total rows in inhumane dungeon should be 20 {dungeon.total_rows}")
         self.assertEqual(20, dungeon.total_columns, f"Total rows in inhumane dungeon should be 20 {dungeon.total_columns}")
 
     def test_build_a_room(self):
-        db = DungeonBuilder("easy", varied=False)
+        db = DungeonBuilder("Easy", varied=False)
         room1 = db._DungeonBuilder__build_room()
         room2 = db._DungeonBuilder__build_room()
         self.assertEqual(room1, room2, "Rooms expected to be equal when not varied.")
 
     def test__reset(self):
         db = DungeonBuilder()
-        db.build_dungeon("hard")
-        db._DungeonBuilder__reset("medium")
-        self.assertEqual("medium", db._DungeonBuilder__settings["difficulty"], "Should be reset to medium.")
+        db.build_dungeon("Hard")
+        db._DungeonBuilder__reset("Medium")
+        self.assertEqual("Medium", db._DungeonBuilder__settings["difficulty"], "Should be reset to medium.")
 
     def test__set(self):
         db = DungeonBuilder()
@@ -104,7 +104,7 @@ class TestDungeonBuilder(unittest.TestCase):
         self.assertEqual(5, len(dungeon), "Rows should be 5")
 
     def test__build_dungeon_path(self):
-        db = DungeonBuilder("hard", varied=False)
+        db = DungeonBuilder("Hard", varied=False)
         db._DungeonBuilder__build_2d_room_maze()
         ent_row, ent_col = (1, 1)
         exit_row, exit_col = (0, 1)
@@ -172,3 +172,14 @@ class TestDungeonBuilder(unittest.TestCase):
         adventurer = db.build_adventurer("Bob", "Priestess")
         is_a_adventurerer = isinstance(adventurer, Adventurer)
         self.assertTrue(is_a_adventurerer, "Expected adventurer to be type adventurer")
+
+    def test_build_monster_ogre(self):
+        db = DungeonBuilder()
+        monster = db._build_monster(True)
+        self.assertEqual("Ogre", monster.name, "Builds an ogre out of dungeon builder.")
+
+    def test_build_monster_not_ogre(self):
+        db = DungeonBuilder()
+        monster = db._build_monster(False)
+        check = monster.name == "Skeleton" or monster.name == "Gremlin"
+        self.assertTrue(check, "Verify monster created is skeleton or Gremlin if not pillar room.")

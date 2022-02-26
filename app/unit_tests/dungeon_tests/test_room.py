@@ -1,8 +1,13 @@
 import unittest
 from app.model.dungeon.room import Room
+from app.model.dungeon.dungeon_builder import DungeonBuilder
 
 
 class TestRoom(unittest.TestCase):
+    def setUp(self) -> None:
+        db = DungeonBuilder()
+        self._ogre = db._build_monster(True)
+
     def test_init_default_str(self):
         test = Room()
         expected = f"*  *  *\n*     *\n*  *  *\n"
@@ -127,14 +132,14 @@ class TestRoom(unittest.TestCase):
             self.assertEqual(True, True)
 
     def test_entrance_setter_changed_contents(self):
-        test = Room(pit=10, contents="X")
+        test = Room(monster=10, contents="X")
         test.entrance = True
         self.assertEqual("i", test.contents, "Contents should have been updated to 'i'")
 
     def test_entrance_setter_cleared_room(self):
-        test = Room(pit=10, contents="X")
+        test = Room(monster=self._ogre, contents="X")
         test.entrance = True
-        self.assertEqual(0, test.pit_damage, "Pit should have been wiped out to 0")
+        self.assertEqual(None, test.monster, "Monster should be None")
 
     def test_exit_setter_valid(self):
         test = Room()
@@ -151,35 +156,35 @@ class TestRoom(unittest.TestCase):
             self.assertEqual(True, True)
 
     def test_exit_setter_changed_contents(self):
-        test = Room(pit=20, contents="X")
+        test = Room(monster=20, contents="X")
         test.exit = True
         self.assertEqual("O", test.contents, "Contents once set exit should be 'O'")
 
-    def test_exit_setter_cleared_pit(self):
-        test = Room(pit=20, contents="X")
+    def test_exit_setter_cleared_monster(self):
+        test = Room(monster=self._ogre, contents="X")
         test.exit = True
-        self.assertEqual(0, test.pit_damage, "Contents once set exit should be 'O'")
+        self.assertEqual(None, test.monster, "Contents once set exit should be 'O'")
 
     def test_partial_init_string(self):
-        test = Room(health_potion=2, pit=10, contents="M")
+        test = Room(health_potion=2, monster=10, contents="M")
         self.assertEqual("*  *  *\n*  M  *\n*  *  *\n", test.__str__(), "Check string for multiples and north doors")
 
     def test_partial_init_hp(self):
-        test = Room(health_potion=2, pit=10, contents="M")
+        test = Room(health_potion=2, monster=10, contents="M")
         self.assertEqual(2, test.health_potion, "Check init for partial variables with health potions")
 
     def test_partial_init_pit_damage(self):
-        test = Room(health_potion=2, pit=10, contents="M")
-        self.assertEqual(10, test.pit_damage, "Check init for partial variables.  Pit should do 10 damage")
+        test = Room(health_potion=2, monster=self._ogre, contents="M")
+        self.assertEqual(self._ogre, test.monster, "Check init for partial variables. Monster should exist.")
 
     def test_init_then_set_north_door(self):
-        test = Room(health_potion=2, pit=10, contents="M")
+        test = Room(health_potion=2, monster=10, contents="M")
         test.north_door = True
         self.assertEqual(True, test.north_door, "Check init for partial variables.  north door should be True.")
 
-    def test_pit_damage_getter(self):
-        test = Room(health_potion=2, pit=10, contents="M")
-        self.assertEqual(10, test.pit_damage, "Check init for partial variables.  north door should be True.")
+    def test_monster_getter(self):
+        test = Room(health_potion=2, monster=self._ogre, contents="M")
+        self.assertEqual(self._ogre, test.monster, "Check monster getter")
 
     def test_set_doors(self):
         test = Room()
@@ -201,7 +206,7 @@ class TestRoom(unittest.TestCase):
         self.assertEqual("*  -  *\n|     |\n*  -  *\n", test.__str__(), "Check string for opening doors")
 
     def test_partial_init_potions(self):
-        test = Room(vision_potion=2, health_potion=1, contents="M")
+        test = Room(health_potion=1, vision_potion=2, contents="M")
         self.assertEqual(False, test.get_door("north"), "Check door inits or getters north")  # Juuuust in case.
         self.assertEqual(False, test.get_door("south"), "Check door inits or getters south")
         self.assertEqual(False, test.get_door("east"), "Check door inits or getters east")
@@ -210,25 +215,11 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(1, test.health_potion, "Check init for health potions")
 
     def test_partial_init_potions_multiple_string(self):
-        test = Room(vision_potion=2, health_potion=1, contents="M")
+        test = Room(health_potion=1, vision_potion=2, contents="M")
         self.assertEqual("*  *  *\n*  M  *\n*  *  *\n", test.__str__(), "Check string for multiple potions")
 
-    def test_init_pit_to_string(self):
-        try:
-            test = Room(pit="2", contents="X")
-            self.assertEqual(True, False, "Type error expected in pit validation")
-        except TypeError:
-            self.assertEqual(True, True)
-
-    def test_init_pit_to_float(self):
-        try:
-            test = Room(pit=2.0, contents="X")
-            self.assertEqual(True, False, "Type error expected in pit validation")
-        except TypeError:
-            self.assertEqual(True, True)
-
     def test_init_pit_string(self):
-        test = Room(pit=10, contents="X")
+        test = Room(monster=self._ogre, contents="X")
         self.assertEqual("*  *  *\n*  X  *\n*  *  *\n", test.__str__(), "Check string for pit")
 
     def test_hp_string(self):
@@ -269,22 +260,22 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(" ", test.contents, "Room contents should be clear after removing potion.")
 
     def test_remove_hp_potion_still_pit(self):
-        test = Room(pit=10, health_potion=1)
+        test = Room(health_potion=1, monster=10)
         test.health_potion = 0
         self.assertEqual("X", test.contents, "Room should have a pit still.")
 
     def test_remove_vision_potion_still_pit(self):
-        test = Room(pit=10, vision_potion=1)
+        test = Room(vision_potion=1, monster=10)
         test.vision_potion = 0
         self.assertEqual("X", test.contents, "Room should have a pit still.")
 
     def test_remove_vision_potion_still_hp_and_pit(self):
-        test = Room(pit=10, vision_potion=1, health_potion=1)
+        test = Room(health_potion=1, vision_potion=1, monster=10)
         test.vision_potion = 0
         self.assertEqual("M", test.contents, "Should still have multiple - HP potion and pit, after removing vision")
 
     def test_remove_hp_potion_still_vision_and_pit(self):
-        test = Room(pit=10, vision_potion=1, health_potion=1)
+        test = Room(health_potion=1, vision_potion=1, monster=10)
         test.health_potion = 0
         self.assertEqual("M", test.contents, "Should still have multiple - HP potion and pit, after removing vision")
 

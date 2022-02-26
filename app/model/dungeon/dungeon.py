@@ -156,13 +156,13 @@ class Dungeon(Iterable):
         return self.__adventurer_loc
 
     @property
-    def pit_damage(self):
+    def monster(self):
         """
         Gets pit damage adventurer should receive in their current room.
         :return: int of damage
         """
         room = self.get_room(self.__adventurer_loc)
-        return room.pit_damage
+        return room.monster
 
     def move_adventurer(self, direction: str):
         """

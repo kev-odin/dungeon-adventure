@@ -5,31 +5,31 @@ to modify this.
 
 Contents key:
         " ": empty
-        "A", "P", "I", "E": one of the pillars
+        "A", "P", "I", "E": one of the pillars and an Ogre
         "i": in, entrance
         "O": out, exit
         "*": Impassable
         "H": HP potion
         "V": Vision potion
-        "X": Pit
-        "M": Multiple potions or a potion + a pit.
+        "X": Monster
+        "M": Multiple potions or a potion + a monster.
 """
+
+from app.model.characters.monster import Monster
 
 
 class Room:
-    def __init__(self, health_potion=0, vision_potion=0, pit=0, contents=" "):
+    def __init__(self, health_potion=0, vision_potion=0, monster=None, contents=" "):
         """
         Creates a room with passed in parameters.  Defaults provided, so only values need to be provided if not the
-        default.  Ex. new_room = Room(vision_potion=1, pit=10, north_door=True) should be valid.
+        default.  Ex. new_room = Room(vision_potion=1, monster = Monster, north_door=True) should be valid.
         :param health_potion: integer value 0 or higher representing potions to be found in room
         :param vision_potion: integer value 0 or higher representing potions to be found in room
-        :param pit: integer value 0 or higher representing damage dealt upon entry
+        :param monster: Monster object or None, combat begins upon entry
         """
-        if self.__is_valid_creation_data(health_potion, vision_potion, pit, contents):
-            self.__health_potion = health_potion
-            self.__vision_potion = vision_potion
+        if self.__is_valid_creation_data(health_potion, vision_potion, monster, contents):
+            self.__obj_dict = {"health": health_potion, "vision": vision_potion, "monster": monster}
             self.__doors = {"north": False, "east": False, "south": False, "west": False}
-            self.__pit = pit
             self.__contents = contents
         else:
             raise Exception("Value or TypeErrors should have been raised and they weren't.  Sound the alarm!")
@@ -101,15 +101,15 @@ class Room:
             except ValueError:
                 print(f'{ValueError} Contents must be " ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"')
 
-    def __is_valid_creation_data(self, health_potion: int, vision_potion: int, pit: int, contents: str) -> bool:
+    def __is_valid_creation_data(self, health_potion: int, vision_potion: int, monster, contents: str) -> bool:
         """
         Validates all data passed in to create a room is valid for safe creation.
         :param health_potion: int
         :return: True if all data is valid, raises an error in helper functions if not
         """
-        data = (health_potion, vision_potion, pit)
+        data = (health_potion, vision_potion)
         valid_nums = False
-        for index in range(0, 3):
+        for index in range(0, len(data)):
             valid_nums = self.__is_number_gt_eq_0(data[index])  # Will error and not finish if not True
         valid_contents = self.__is_valid_contents(contents)
         return valid_nums and valid_contents
@@ -119,13 +119,15 @@ class Room:
         Checks and updated the contents of the current room after a change has been made to potions.
         :return: Returns True if changed through this method.  Returns False if not so potions can be updated.
         """
-        if bool(self.__vision_potion) + bool(self.__health_potion) + bool(self.__pit) >= 2:
+        if self.__contents in {"A", "P", "I", "E"}:
+            return False
+        elif bool(self.__obj_dict["vision"]) + bool(self.__obj_dict["health"]) + bool(self.__obj_dict["monster"]) >= 2:
             self.__contents = "M"
             return True
-        elif self.__pit and (not self.__vision_potion and not self.__health_potion):
+        elif self.__obj_dict["monster"] and (not self.__obj_dict["vision"] and not self.__obj_dict["health"]):
             self.__contents = "X"
             return True
-        elif not self.__pit and not self.__vision_potion and not self.__health_potion:
+        elif not self.__obj_dict["monster"] and not self.__obj_dict["vision"] and not self.__obj_dict["health"]:
             self.__contents = " "
             return True
         else:
@@ -165,13 +167,13 @@ class Room:
 
     def clear_room(self):
         """
-        Clears all settings in a room back to nothing.  Not visited, not impassable, no potions, not pits.
+        Clears all settings in a room back to nothing.  Not visited, not impassable, no potions, not monsters.
         :return:
         """
-        self.__health_potion = 0
-        self.__vision_potion = 0
+        self.__obj_dict["health"] = 0
+        self.__obj_dict["vision"] = 0
         self.__contents = " "
-        self.__pit = 0
+        self.__obj_dict["monster"] = None
 
     @property
     def exit(self):
@@ -219,7 +221,7 @@ class Room:
         Returns current quantity of health_potions in the room as int
         :return: int of current number of health_potions.
         """
-        return self.__health_potion
+        return self.__obj_dict["health"]
 
     @health_potion.setter
     def health_potion(self, num_pots):
@@ -228,7 +230,7 @@ class Room:
         :param num_pots: integer >= 0
         """
         if self.__is_number_gt_eq_0(num_pots):
-            self.__health_potion = num_pots
+            self.__obj_dict["health"] = num_pots
             updated = self.__update_room_contents()
             if not updated:
                 self.__contents = "H"
@@ -240,7 +242,7 @@ class Room:
         Getter for current number of vision potions in a room.
         :return: int for current quantity of vision_potions
         """
-        return self.__vision_potion
+        return self.__obj_dict["vision"]
 
     @vision_potion.setter
     def vision_potion(self, num_pots):
@@ -249,18 +251,10 @@ class Room:
         :param num_pots: integer >= 0
         """
         if self.__is_number_gt_eq_0(num_pots):
-            self.__vision_potion = num_pots
+            self.__obj_dict["vision"] = num_pots
             updated = self.__update_room_contents()
             if not updated:
                 self.__contents = "V"
-
-    @property
-    def pit_damage(self):
-        """
-        Returns int representing damage the pit will do when someone enters the room.  0 no damage.
-        :return: int
-        """
-        return self.__pit
 
     def get_door(self, direction):
         """
@@ -313,6 +307,19 @@ class Room:
         """
         if self.__is_valid_contents(data):
             self.__contents = data
+
+    @property
+    def monster(self):
+        """
+        Returns monster in the room.
+        :return: Monster, None if no Monster
+        """
+        return self.__obj_dict["monster"]
+
+    @monster.setter
+    def monster(self, monster_obj: Monster):
+        self.__obj_dict["monster"] = monster_obj
+        self.__update_room_contents()
 
     @property
     def visited(self):
