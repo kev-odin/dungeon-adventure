@@ -10,7 +10,7 @@ from app.model.dungeon.dungeon_builder import DungeonBuilder
 
 class TestDungeon(unittest.TestCase):
     @staticmethod
-    def init_dungeon(difficulty="easy"):
+    def init_dungeon(difficulty="Easy"):
         db = DungeonBuilder(difficulty)
         built = db.build_dungeon(difficulty)
         return built
@@ -137,7 +137,7 @@ class TestDungeon(unittest.TestCase):
     def test_all_types_in_larger_dungeon(self):
         expected_list = [" ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"]
         found = []
-        test = self.init_dungeon("hard")
+        test = self.init_dungeon("Hard")
         for expected in expected_list:
             found.append(f"{test}".count(expected))
         self.assertEqual(len(expected_list), len(found), "Expected to find at least one of each in larger dungeon.")
@@ -266,7 +266,7 @@ class TestDungeon(unittest.TestCase):
         self.assertEqual(True, found_exit, "Should be possible to move adventurer to exit eventually!")
 
     def test_get_visible_string_dungeon(self):
-        dungeon = self.init_dungeon("easy")
+        dungeon = self.init_dungeon("Easy")
         bool_list = self.create_2d_bool_list(dungeon)
         string = dungeon.get_visible_dungeon_string(bool_list)
         actual = False

@@ -8,28 +8,30 @@ Also builds map and adventurer.  All your needs met in one place!
 from app.model.dungeon.dungeon import Dungeon
 from app.model.dungeon.room import Room
 from app.model.dungeon.map import Map
-from app.model.dungeon.adventurer import Adventurer
+from app.model.characters.priestess import Priestess
+from app.model.characters.warrior import Warrior
+from app.model.characters.thief import Thief
 from app.model.db.query_helper import QueryHelper
 import random
 
 
 class DungeonBuilder:
-    def __init__(self, difficulty="easy", varied=True):  # This seems like bad practice to have variables unnecessarily.
+    def __init__(self, difficulty="Easy", varied=True):  # This seems like bad practice to have variables unnecessarily.
         self.__reset(difficulty, varied)
 
-    def __reset(self, difficulty="easy", varied=True):
+    def __reset(self, difficulty="Easy", varied=True):
         """
         Clears dungeon builder to prep it for building another dungeon.  Resets prior to build and on init.
-        :param difficulty: string, "easy", "medium", "hard", "inhumane" are defaults.
+        :param difficulty: string, "Easy", "Medium", "Hard", "Inhumane" are defaults.
         :param varied: bool, True for rooms being randomly generated contents, false for not.
         :return:
         """
-        diff_options = {"easy", "medium", "hard", "inhumane"}
+        diff_options = {"Easy", "Medium", "Hard", "Inhumane"}
         if difficulty in diff_options:
             self.__qh = QueryHelper()
             self.__settings = self.__qh.query(difficulty)
         else:
-            raise ValueError("difficulty must be easy, medium, hard, or inhumane")
+            raise ValueError("difficulty must be Easy, Medium, Hard, or Inhumane")
         self.__complete_dungeon = self.__complete_map = self.__complete_adventurer = None
         self.__varied = varied
         self.__adventurer_dict = None
@@ -55,7 +57,18 @@ class DungeonBuilder:
         self.__complete_map.set_visited_room(self.__entrance[0], self.__entrance[1])
 
     def __set_adventurer(self):
-        self.__complete_adventurer = Adventurer(self.__adventurer_dict)
+        """
+        Based on class of adventurerer, sets self.__complete_adventurerer to match the completed class object.
+        """
+        adv_class = self.__adventurer_dict["adv_class"]
+        if adv_class == "Warrior":
+            self.__complete_adventurer = Warrior(self.__adventurer_dict)
+        elif adv_class == "Priestess":
+            self.__adventurer_dict["max_heal"] = self.__adventurer_dict["max_hp"]
+            self.__adventurer_dict["min_heal"] = self.__adventurer_dict["max_hp"] // 4
+            self.__complete_adventurer = Priestess(self.__adventurer_dict)
+        elif adv_class == "Thief":
+            self.__complete_adventurer = Thief(self.__adventurer_dict)
 
     def __get_rand_coords(self):
         return random.randint(0, self.__settings["row"] - 1), random.randint(0, self.__settings["col"] - 1)
@@ -103,6 +116,9 @@ class DungeonBuilder:
         else:  # intrigue <= pit_trigger: A room of pit.
             new_room = Room(pit=random.randint(1, self.__settings["max_pit_dmg"]), contents="X")
         return new_room
+
+    def __build_monster(self):
+        pass
 
     def __build_dungeon_path(self, row: int, col: int):
         """
@@ -176,7 +192,7 @@ class DungeonBuilder:
         else:
             raise ValueError("Coordinates must be a tuple of ints x and y within the range of the dungeon.")
 
-    def build_dungeon(self, difficulty="easy", varied=True):
+    def build_dungeon(self, difficulty="Easy", varied=True):
         """
         Main logic for building a dungeon.  Returns the dungeon after it is built.  Defaults to 5x5 easy dungeon.
         :param difficulty: str, "easu", "medium", "hard" or "inhumane".  Defaults to easy for test dungeons.
@@ -236,7 +252,7 @@ class DungeonBuilder:
         if self.__complete_adventurer:
             return self.__complete_adventurer
         else:
-            raise RuntimeError("Must build a dungeon before accessing the map for a dungeon.")
+            raise RuntimeError("Must build an adventurerer before accessing them..")
 
     @property
     def map(self):

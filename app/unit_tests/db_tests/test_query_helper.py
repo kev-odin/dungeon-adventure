@@ -31,7 +31,7 @@ class TestQueryHelper(TestCase):
     def test__select_query_dng_diff(self):
         sql_select_query = """SELECT difficulty FROM dng_diff"""
         diff_options = self.qh._select_query(sql_select_query)
-        self.assertEqual(([('easy',), ('medium',), ('hard',), ('inhumane',)], []), diff_options)
+        self.assertEqual(([('Easy',), ('Medium',), ('Hard',), ('Inhumane',)], []), diff_options)
 
     def test__select_query_value(self):
         sql_select_query = """SELECT * FROM monsters where name = ?"""
