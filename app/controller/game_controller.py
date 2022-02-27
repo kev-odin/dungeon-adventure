@@ -1,5 +1,5 @@
 from app.model.dungeon.dungeon_builder import DungeonBuilder
-from app.view.dungeon_crawler import DungeonCrawler
+from app.view.dungeon_crawler import DungeonCrawler, DungeonBrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
@@ -25,11 +25,19 @@ from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
 class GameController:
     def __init__(self, model, view):
+        """Controller for Dungeon Adventure. Main purpose to pass data from view to set changes
+        to the model. And update changes from the model to the view.
+
+        :param model: Initial model is DungeonBuilder which will later change to Dungeon, Map, and Adventurer
+        :type model: Python Dictionary
+        :param view: Views include Initial Dungeon set-up, DungeonCrawler - traversal, DungeonBrawler - combat
+        :type view: Single view from any of the previous parameters
+        """
         self.__model = model                            # Model
         self.__view = view                              # View
 
     def frame_setup(self):
-        """Builds tKinter frames for the user.
+        """Builds tKinter frames for the user based on the current view.
         """
         self.__view.setup(self)
         self.__view.start_main_loop()
@@ -38,17 +46,21 @@ class GameController:
         """Switches over to the DungeonCrawler view after the dungeon has been created.
         """
         self.window_destroy()
-        dc = DungeonCrawler()
-        self.__view = dc
+        crawl = DungeonCrawler()
+        brawl = DungeonBrawler()
+        self.__view = crawl
         self.frame_setup()
 
     def window_destroy(self):
+        """Specific call from controller to close the current view to user.
+        """
         print(f"DEBUG - Destroyed by Controller! {self}")
         self.__view.destruct()
 
     def set_model(self):
         """Function that grabs user settings from the view and pass to controller.
-        Controller passes the settings to the model.
+        Controller passes the settings to the model. Creates the model model dictionary for
+        organization.
         """
         entry = self.__view.send_settings()
         dungeon = self.create_dungeon(str(entry["difficulty"]).lower())
@@ -73,14 +85,23 @@ class GameController:
         try:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
-            moving = self.__model["dungeon"].get_visible_dungeon_string()
-            
+            moving = self.__model["dungeon"].get_visible_dungeon_string() # Just for easy debug
+
             print(f"{moving}")
             self.set_bag(new_room)
         except KeyError:
             return f"An error occured. Please verify the {move} is a valid option."
 
+    def scan_room(self, room):
+        pass
+
     def set_bag(self, room):
+        """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
+        Model is updated when changes occur.
+
+        :param room: rooms can contain an entrance/exit, potions, pillars, or monsters
+        :type room: room
+        """
         
         if room.contents in ("A", "P", "I", "E"):
             pillar_dict = {
@@ -112,18 +133,24 @@ class GameController:
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
     def update_adv_info(self):
+        """Update the DungeonCrawler frame with hero information from the model.
+        """
         hero_name = self.__model["hero"].name
         hero_hp = self.__model["hero"].current_hitpoints
         hero_max_hp = self.__model["hero"].max_hitpoints
         self.__view.set_adventurer_info(hero_name, hero_hp, hero_max_hp)
 
     def update_dungeon_display(self):
+        """Update the DungeonCrawler frame with map information from the model.
+        """
         print("DEBUG - Retrieving the hero position")
 
         adv_telemetry = self.__model["dungeon"]
         self.__view.set_dungeon_display(adv_telemetry)
 
     def update_adv_bag(self):
+        """Update the DungeonCrawler frame with hero inventory information from the model.
+        """
         print("DEBUG - Pressing the Bag Button")
         pillars = self.__model["hero"].pillars_collected
         health_pots = self.__model["hero"].health_pots
@@ -138,10 +165,12 @@ class GameController:
         self.__view.set_bag_display(bag)
 
     def update_adv_map(self):
+        """Update the DungeonCrawler frame with map information from the model.
+        """
         print("DEBUG - Pressing the Map Button")
         
     def still_playing(self):
-        print(self.__model.adventurer.is_alive())
+        print(f"The hero is alive: {self.__model.adventurer.is_alive()}")
         return self.__model.adventurer.is_alive()
 
 if __name__ == "__main__":
@@ -149,7 +178,3 @@ if __name__ == "__main__":
     gv = dungeon_adventure_GUI()
     gc = GameController(db, gv)
     gc.frame_setup()
-
-    # dc = DungeonCrawler()
-    # gc = GameController(db, dc)
-    # gc.game_setup()
