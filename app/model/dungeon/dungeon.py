@@ -41,7 +41,7 @@ class Dungeon(Iterable):
                 self.__entrance = self.__exit = self.__adventurer_loc = None
         else:
             pillars = ["A", "P", "I", "E"]
-            diff_index = {"easy": 0, "medium": 1, "hard": 2, "inhumane": 3}
+            diff_index = {"Easy": 0, "Medium": 1, "Hard": 2, "Inhumane": 3}
             self.__diff_index = diff_index[difficulty]
             self.__row_count = (5, 8, 10, 20)[self.__diff_index]
             self.__col_count = (5, 8, 10, 20)[self.__diff_index]
