@@ -63,7 +63,7 @@ class GameController:
         organization.
         """
         entry = self.__view.send_settings()
-        dungeon = self.create_dungeon(str(entry["difficulty"]).lower())
+        dungeon = self.create_dungeon(entry["difficulty"])
         hero = self.create_adventurer(entry["name"], entry["class_name"])
         dungeon_map = self.__model.map
 
