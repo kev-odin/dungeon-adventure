@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+from turtle import width
 
 class BaseFrame(tk.Frame):
     def __init__(self):
@@ -35,20 +36,19 @@ class BaseFrame(tk.Frame):
         self.root.config(menu = menubar)
 
     def load_existing_game_window(self):
-        global pop2
-        pop2 = Toplevel(self.root)
-        pop2.geometry("750x450")
-        pop2.resizable(width=False, height=False)
-        pop2.title("Load Game")
+        pop = Toplevel(self.root)
+        pop.geometry("750x450")
+        pop.resizable(width=False, height=False)
+        pop.title("Load Game")
 
-        btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy).place(relx=0.75, rely=0.9)
+        btn3 = Button(pop, text="Confirm Load", command = pop.destroy).place(relx=0.75, rely=0.9)
         btn3.pack(self.root)
 
 class DungeonCrawler(BaseFrame):
     def setup(self, controller):
-        self.dungeon_crawl_frame = Frame(self.root)
-        self.dungeon_crawl_canvas = Canvas(self.dungeon_crawl_frame, width=800, height=600, bg = "grey")
-        self.adventurer_canvas = Canvas(self.dungeon_crawl_frame, width = 400, height = 600, bg = "black")
+        self.dungeon_crawl_frame = Frame(self.root, highlightbackground="Blue", highlightthickness=2)
+        self.dungeon_crawl_canvas = Canvas(self.dungeon_crawl_frame, width=800, height=600)
+        self.adventurer_canvas = Canvas(self.dungeon_crawl_frame, width=400, height=600)
 
         self.adventurer_action(controller)
         self.dungeon_navigation(controller)
@@ -126,10 +126,35 @@ class DungeonCrawler(BaseFrame):
         bag.resizable(width = False, height = False)
         bag.title("Adventurer Inventory")
 
-        
-        print(bag_stuff)
+        if bag_stuff["pillars"]:
+            pillar_frame = LabelFrame(bag, text = "Pillars Collected")
+            
+            for pillar, status in bag_stuff["pillars"].items():
+                pillar_lbl = Label(pillar_frame, text=f"{pillar, status}")
+                pillar_lbl.pack()
+            
+            pillar_frame.pack(side=TOP)
+
+        if bag_stuff["health"] or bag_stuff["vision"]:
+            potion_frame = LabelFrame(bag, text = "Potions")
+            potion_frame.pack(side=TOP)
+
+            if bag_stuff["health"]:
+                health_str = f"Health Potion Count: " + str(bag_stuff["health"])
+                health_count = Label(potion_frame, text = f"{health_str}", padx = 10)
+                use_health = Button(potion_frame, text="Use Health Potion", command = bag.destroy)
+                health_count.grid(row=0, column=0)
+                use_health.grid(row=0, column=1)
+
+            if bag_stuff["vision"]:
+                vision_str = f"Vision Potion Count: " + str(bag_stuff["vision"])
+                vision_count = Label(potion_frame, text = f"{vision_str}", padx = 10)
+                use_vision = Button(potion_frame, text="Use Vision Potion", command = bag.destroy)
+                vision_count.grid(row=1, column=0)
+                use_vision.grid(row=1, column=1)
+
         close_bag = Button(bag, text="Close Bag", command = bag.destroy)
-        close_bag.place(relx=0.4, rely=0.9)
+        close_bag.pack(side=BOTTOM, fill=X)
 
 class DungeonBrawler(BaseFrame):
     def setup(self):

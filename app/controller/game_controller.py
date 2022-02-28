@@ -47,7 +47,7 @@ class GameController:
         """
         self.window_destroy()
         crawl = DungeonCrawler()
-        brawl = DungeonBrawler()
+        # brawl = DungeonBrawler()
         self.__view = crawl
         self.frame_setup()
 
@@ -79,7 +79,7 @@ class GameController:
 
     def set_move(self, move):
         """Function that updates moves from the view (NSWE) and passes those instructions to the
-        model
+        model. When a monster is encountered, then the DungeonBrawler view will be activated
         """
         move_dict = {"n": "north", "w": "west", "s": "south", "e": "east"}
         try:
@@ -88,12 +88,22 @@ class GameController:
             moving = self.__model["dungeon"].get_visible_dungeon_string() # Just for easy debug
 
             print(f"{moving}")
-            self.set_bag(new_room)
+
+            # if new_room.monster:
+            #     hero = self.__model["hero"]
+            #     monster = self.__model["dungeon"].monster
+            #     self.update_combat(hero, monster)
+
+            if new_room.contents:
+                self.set_bag(new_room)
+
         except KeyError:
             return f"An error occured. Please verify the {move} is a valid option."
 
-    def scan_room(self, room):
-        pass
+    def update_combat(self, hero = None, monster = None):
+        brawl = DungeonBrawler()
+        self.__view = brawl
+        self.__view.setup()
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
@@ -161,17 +171,16 @@ class GameController:
             "health": health_pots,
             "vision": vision_pots
         }
-
+        print(bag)
         self.__view.set_bag_display(bag)
 
     def update_adv_map(self):
-        """Update the DungeonCrawler frame with map information from the model.
+        """Update the frame with map information from the model.
         """
         print("DEBUG - Pressing the Map Button")
         
     def still_playing(self):
-        print(f"The hero is alive: {self.__model.adventurer.is_alive()}")
-        return self.__model.adventurer.is_alive()
+        return self.__model["hero"].is_alive()
 
 if __name__ == "__main__":
     db = DungeonBuilder()
