@@ -164,15 +164,14 @@ class GameController:
 
         self.__view.set_bag_display(bag)
 
-    def update_adv_map(self):
-        """Update the DungeonCrawler frame with map information from the model.
+    def update_adv_map(self,):
+        """Update the map information from the model.
         """
         print("DEBUG - Pressing the Map Button")
+        map = self.__model["map"]  # follow Kevin's example of update_adv_info and update_adv_bag, we get the pillar from the model and send it back to the view
+        dungeon = self.__model["dungeon"]  # and then view is going to use this info to prepare the display
 
-        map = self.__model.map
-
-
-        self.__view.set_map_display(map)
+        self.__view.set_map_display(map,dungeon)
         
     def still_playing(self):
         print(f"The hero is alive: {self.__model.adventurer.is_alive()}")

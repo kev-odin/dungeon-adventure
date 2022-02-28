@@ -134,35 +134,9 @@ class DungeonCrawler(BaseFrame):
                 b.grid(row=int(i / 3), column=int(i % 3))
                 b.grid(sticky="NWSE")
 
-        # b1 = Button(dungeon)
-        # b1.img = PhotoImage()
-        # b1.config(height=100, width=100, image=b1.img, compound=CENTER)
-        # b1.grid(row=0, column=0)
-        #
-        # b2 = Button(dungeon)
-        # b2.img = PhotoImage()
-        # b2.config(height=100, width=100, image=b2.img, compound=CENTER)
-        # b2.grid(row=0, column=1)
-        #
-        # b3 = Button(dungeon)
-        # b3.img = PhotoImage()
-        # b3.config(height=100, width=100, image=b3.img, compound=CENTER)
-        # b3.grid(row=0, column=2)
-        #
-        # b4 = Button(dungeon)
-        # b4.img = PhotoImage()
-        # b4.config(height=100, width=100, image=b4.img, compound=CENTER)
-        # b4.grid(row=1, column=0)
-        #
-        # b5 = Button(dungeon)
-        # b5.img = PhotoImage()
-        # b5.config(height=100, width=100, image=b5.img, compound=CENTER)
-        # b5.grid(row=1, column=1)
-        #
-        # b6 = Button(dungeon)
-        # b6.img = PhotoImage()
-        # b6.config(height=100, width=100, image=b6.img, compound=CENTER)
-        # b6.grid(row=1, column=2)
+
+        # use the adventurer_loc from the dungeon class to update the current dungeon display window
+
 
         dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
         # text.place(relx = 0.5, rely = 0.5, anchor = N)
@@ -178,12 +152,31 @@ class DungeonCrawler(BaseFrame):
         close_bag = Button(bag, text="Close Bag", command = bag.destroy)
         close_bag.place(relx=0.4, rely=0.9)
 
-    def set_map_display(self, map):
-        map = Toplevel(self.root)
-        map.title("Dungeon complete map")
-        map.geometry("600x600")
-        close_map = Button(map, text="Close Map", command=map.destroy)
-        close_map.place(relx=0.4, rely=0.9)
+    def set_map_display(self, map, dungeon):
+        map_window = Toplevel(self.root)
+        map_window.title("Dungeon complete map")
+        map_window.geometry("600x600")
+
+        print(map.get_rows()) # debug
+        print(map.get_cols()) # debug
+        print(dungeon.total_rows)
+        print(dungeon.total_columns)
+
+        print(dungeon.get_visible_dungeon_string())  # debug
+
+
+        for row in range(0, map.get_rows()):
+            for col in range(0, map.get_cols()):
+                b = Button(map_window)
+                b.img = PhotoImage()
+                b.config(height=50, width=50, image=b.img, compound=CENTER)
+                # b.grid(row=int(row / 3), column=int(col % 3))
+                b.grid(row=int(row), column=int(col))
+                # b.grid(sticky="NWSE")
+                b.grid(sticky="")
+
+        close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
+        close_map_window.place(relx=0.5, rely=0.9)
 
 class DungeonBrawler(BaseFrame):
     def setup(self):
