@@ -3,9 +3,9 @@ from app.view.dungeon_crawler import DungeonCrawler, DungeonBrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
-# TODO: Update adventurer bag when entering a room
-# TODO: Update view with room contents
-# TODO: Room Dungeon Canvas
+# TODO: Update adventurer bag when entering a room - Done
+# TODO: Update view with room contents - Done
+# TODO: Room Dungeon Canvas 
 # TODO: Dungeon Map Canvas
 # TODO: DungeonBrawler
 

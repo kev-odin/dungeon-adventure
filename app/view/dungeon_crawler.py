@@ -1,6 +1,8 @@
 from tkinter import *
 import tkinter as tk
-from turtle import width
+
+# TODO: Readable pillars in the bag view
+# TODO: Ability to use items in the bag view
 
 class BaseFrame(tk.Frame):
     def __init__(self):
@@ -126,17 +128,19 @@ class DungeonCrawler(BaseFrame):
         bag.resizable(width = False, height = False)
         bag.title("Adventurer Inventory")
 
+        close_bag = Button(bag, text="Close Bag", command = bag.destroy)
+        close_bag.pack(side=BOTTOM, fill=X)
+
         if bag_stuff["pillars"]:
             pillar_frame = LabelFrame(bag, text = "Pillars Collected")
-            
-            for pillar, status in bag_stuff["pillars"].items():
-                pillar_lbl = Label(pillar_frame, text=f"{pillar, status}")
-                pillar_lbl.pack()
-            
             pillar_frame.pack(side=TOP)
 
+            for pillar, status in bag_stuff["pillars"].items():
+                pillar_lbl = Label(pillar_frame, text=f"{pillar, status}")
+                pillar_lbl.pack()            
+
         if bag_stuff["health"] or bag_stuff["vision"]:
-            potion_frame = LabelFrame(bag, text = "Potions")
+            potion_frame = LabelFrame(bag, text = "Potions Collected")
             potion_frame.pack(side=TOP)
 
             if bag_stuff["health"]:
@@ -152,9 +156,6 @@ class DungeonCrawler(BaseFrame):
                 use_vision = Button(potion_frame, text="Use Vision Potion", command = bag.destroy)
                 vision_count.grid(row=1, column=0)
                 use_vision.grid(row=1, column=1)
-
-        close_bag = Button(bag, text="Close Bag", command = bag.destroy)
-        close_bag.pack(side=BOTTOM, fill=X)
 
 class DungeonBrawler(BaseFrame):
     def setup(self):
