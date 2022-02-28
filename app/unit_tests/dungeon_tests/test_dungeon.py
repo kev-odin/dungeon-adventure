@@ -204,9 +204,9 @@ class TestDungeon(unittest.TestCase):
         dungeon = self.init_dungeon()
         directions = self.leave_entrance(dungeon)
         room = dungeon.move_adventurer(directions)
-        damage = room.pit_damage
-        dun_damage = dungeon.pit_damage
-        self.assertEqual(damage, dun_damage, "Room's damage and dungeon's damage should return the same.")
+        monster = room.monster
+        dun_monster = dungeon.monster
+        self.assertEqual(monster, dun_monster, "Room's damage and dungeon's damage should return the same.")
 
     def test_room_has_no_potions_after_collection(self):
         dungeon = self.init_dungeon()

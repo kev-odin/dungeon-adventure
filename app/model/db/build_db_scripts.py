@@ -3,13 +3,13 @@ con = sqlite3.connect('app.db')
 cur = con.cursor()
 
 # cur.execute('''CREATE TABLE dng_diff
-#                 (difficulty text, impassable_chance real, hp_chance real, vp_chance real, many_chance real, monster_chance real, max_hp_pots int, max_vp int, max_pit_dmg int, row int, col int)''')
+#                 (difficulty text, impassable_chance real, hp_chance real, vp_chance real, many_chance real, monster_chance real, max_hp_pots int, max_vp int, row int, col int)''')
 #
-# cur.execute("INSERT INTO dng_diff VALUES ('easy', 0.05, 0.1, 0.05, 0.05, 0.1, 2, 2, 5, 5, 5)")
-# cur.execute("INSERT INTO dng_diff VALUES ('medium', 0.07, 0.1, 0.05, 0.1, 0.12, 2, 1, 10, 8, 8)")
-# cur.execute("INSERT INTO dng_diff VALUES ('hard', 0.08, 0.1, 0.05, 0.15, 0.15, 1, 1, 15, 10, 10)")
-# cur.execute("INSERT INTO dng_diff VALUES ('inhumane', 0.1, 0.01, 0.01, 0.3, 0.2, 1, 1, 20, 20, 20)")
-
+# cur.execute("INSERT INTO dng_diff VALUES ('Easy', 0.05, 0.1, 0.05, 0.05, 0.1, 2, 2, 5, 5)")
+# cur.execute("INSERT INTO dng_diff VALUES ('Medium', 0.07, 0.1, 0.05, 0.1, 0.12, 2, 1, 8, 8)")
+# cur.execute("INSERT INTO dng_diff VALUES ('Hard', 0.08, 0.1, 0.05, 0.15, 0.15, 1, 1, 10, 10)")
+# cur.execute("INSERT INTO dng_diff VALUES ('Inhumane', 0.1, 0.01, 0.01, 0.3, 0.2, 1, 1, 20, 20)")
+#
 
 # cur.execute('''CREATE TABLE classes
 #                (name text, hp int, attack_speed int, hit_chance float, min_dmg int, max_dmg int, block_chance float, special text)''')
