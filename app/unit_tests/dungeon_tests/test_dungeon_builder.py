@@ -2,7 +2,7 @@ import unittest
 from app.model.dungeon.dungeon_builder import DungeonBuilder
 from app.model.dungeon.room import Room
 from app.model.dungeon.dungeon import Dungeon
-from app.model.dungeon.adventurer import Adventurer
+from app.model.characters import Adventurer
 from app.model.db.query_helper import QueryHelper
 
 

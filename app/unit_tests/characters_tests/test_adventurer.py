@@ -1,7 +1,14 @@
+"""
+WARNING: Only works when adventurer is not current set to have abstract method use_special
+Otherwise the abstract class says nope.
+"""
+
+
 import unittest
-from app.model.dungeon.adventurer import Adventurer
+from app.model.characters.adventurer import Adventurer
 from app.model.items.health_potion import HealthPotion
 from app.model.db.query_helper import QueryHelper
+
 
 class AdventurerTest(unittest.TestCase):
     def setUp(self, name="Bob", adv_class="Warrior") -> None:
@@ -148,25 +155,25 @@ class AdventurerTest(unittest.TestCase):
     def test_hero_pit_damage_alive(self):
         mock_pit = 25
         self.__hero.current_hitpoints = 26
-        self.__hero.damage_adventurer(mock_pit)
+        self.__hero.take_damage(mock_pit)
         self.assertEqual(1, self.__hero.current_hitpoints, "1 health point should be left")
 
     def test_hero_pit_damage_dead(self):
         mock_pit = 25
         self.__hero.current_hitpoints = 25
-        self.__hero.damage_adventurer(mock_pit)
+        self.__hero.take_damage(mock_pit)
         self.assertEqual(0, self.__hero.current_hitpoints, "0 health points should be left")
 
     def test_hero_pit_damage_dead_boolean(self):
         mock_pit = 25
         self.__hero.current_hitpoints = 25
-        self.__hero.damage_adventurer(mock_pit)
+        self.__hero.take_damage(mock_pit)
         self.assertFalse(self.__hero.is_alive(), "Boolean should evaluate to False")
 
     def test_hero_pit_damage_greater_than_current(self):
         mock_pit = 30
         self.__hero.current_hitpoints = 25
-        self.__hero.damage_adventurer(mock_pit)
+        self.__hero.take_damage(mock_pit)
         self.assertEqual(0, self.__hero.current_hitpoints, "0 health points should be left")
 
     def test_hero_potion_has_health_potion(self):
@@ -249,7 +256,7 @@ class AdventurerTest(unittest.TestCase):
         hero.add_pillar("I")
         mock_pit_damage = 100
         expected = 50
-        hero.damage_adventurer(mock_pit_damage)
+        hero.take_damage(mock_pit_damage)
         self.assertEqual(expected, hero.current_hitpoints)
 
     def test_hero_pillar_e_active(self):

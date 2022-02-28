@@ -1,4 +1,4 @@
-from app.model.dungeon.adventurer import Adventurer
+from app.model.characters import Adventurer
 from app.model.dungeon.dungeon_builder import DungeonBuilder
 from app.model.items.potion_factory import PotionFactory
 
