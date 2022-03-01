@@ -86,8 +86,8 @@ class GameController:
         try:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
+            print(f"{new_room}")
             moving = self.__model["dungeon"].get_visible_dungeon_string() # Just for easy debug
-
             print(f"{moving}")
 
             if new_room.monster:
@@ -114,15 +114,7 @@ class GameController:
         :param room: rooms can contain an entrance/exit, potions, pillars, or monsters
         :type room: room
         """
-        
         if room.contents in ("A", "P", "I", "E"):
-            pillar_dict = {
-                "A": "Abstraction is found!!  It grants double health potion collection.",
-                "P": "Polymorphism is found!!  It grants double vision potion collection.",
-                "I": "Inheritance is found!! It slows your fall, reducing pit damage by half.",
-                "E": "Encapsulation is found!! It increases health potion potency."
-                }
-            
             pillar_str = self.__model["dungeon"].collect_pillars()
 
             if pillar_str:
@@ -133,6 +125,11 @@ class GameController:
             self.__model["hero"].add_potions(collected_pots)
 
     def set_potion(self, potion: str):
+        """Function to use health/vision potion in hero inventory.
+
+        :param potion: _description_
+        :type potion: str
+        """
         if potion == "health" and self.__model["hero"].has_health_potion():
             heal = PotionFactory().create_potion("health")
             self.__model["hero"].heal_adventurer(heal)
@@ -182,8 +179,8 @@ class GameController:
             "health": health_pots,
             "vision": vision_pots
         }
-        print(bag)
-        self.__view.set_bag_display(bag, self)
+        print(f"DEBUG - {bag}")
+        self.__view.set_bag_display(bag)
 
     def update_adv_map(self):
         """Update the frame with map information from the model.

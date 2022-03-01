@@ -1,9 +1,9 @@
 from tkinter import *
 import tkinter as tk
 
-# TODO: Readable pillars in the bag view
-# TODO: Ability to use items in the bag view
-# TODO: Item number not updating after use
+# TODO: Readable pillars in the bag view - Done
+# TODO: Ability to use items in the bag view - Bug
+# TODO: Item number not updating after use - Bug
 
 class BaseFrame(tk.Frame):
     def __init__(self):
@@ -11,6 +11,7 @@ class BaseFrame(tk.Frame):
         self.root.resizable(height = False, width = False)
         self.root.title("Dungeon Adventure 2.0 - The Spoony Bard Returns")
         self.root.geometry("800x600")
+        self.controller = None
         self.basic_menu_bar()
 
     def destruct(self):
@@ -52,12 +53,13 @@ class DungeonCrawler(BaseFrame):
         self.dungeon_crawl_frame = Frame(self.root, highlightbackground="Blue", highlightthickness=2)
         self.dungeon_crawl_canvas = Canvas(self.dungeon_crawl_frame, width=800, height=600)
         self.adventurer_canvas = Canvas(self.dungeon_crawl_frame, width=400, height=600)
+        self.controller = controller
 
-        self.adventurer_action(controller)
-        self.dungeon_navigation(controller)
+        self.adventurer_action()
+        self.dungeon_navigation()
 
-        controller.update_dungeon_display()
-        controller.update_adv_info()
+        self.controller.update_dungeon_display()
+        self.controller.update_adv_info()
 
         self.dungeon_crawl_frame.pack()
 
@@ -68,12 +70,12 @@ class DungeonCrawler(BaseFrame):
         text = Label(dungeon, text = f"{controller}", bg = "White")
         text.place(relx = 0.5, rely = 0.5, anchor = N)
 
-    def adventurer_action(self, controller):
+    def adventurer_action(self):
         """Display base actions such as map and bag inventory
         """
         canvas = self.dungeon_crawl_canvas
-        bag = Button(canvas, text= "Bag", command = lambda: controller.update_adv_bag())
-        map = Button(canvas, text= "Map", command = lambda: controller.still_playing())
+        bag = Button(canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
+        map = Button(canvas, text= "Map", command= lambda: self.controller.still_playing())
         
         bag.grid(row=3, column=1, sticky="nswe")
         map.grid(row=3, column=2, sticky="nswe")
@@ -97,13 +99,13 @@ class DungeonCrawler(BaseFrame):
 
         canvas.pack()
 
-    def dungeon_navigation(self, controller):
+    def dungeon_navigation(self):
         canvas = self.dungeon_crawl_canvas
 
-        travel_north = Button(canvas, text="North", command= lambda: controller.set_move("n"))
-        travel_south = Button(canvas, text="South", command= lambda: controller.set_move("s"))
-        travel_west = Button(canvas, text="West", command= lambda: controller.set_move("w"))
-        travel_east = Button(canvas, text="East", command= lambda: controller.set_move("e"))
+        travel_north = Button(canvas, text="North", command= lambda: self.controller.set_move("n"))
+        travel_south = Button(canvas, text="South", command= lambda: self.controller.set_move("s"))
+        travel_west = Button(canvas, text="West", command= lambda: self.controller.set_move("w"))
+        travel_east = Button(canvas, text="East", command= lambda: self.controller.set_move("e"))
 
         travel_north.grid(row=2, column=1)
         travel_south.grid(row=2, column=2)
@@ -117,44 +119,66 @@ class DungeonCrawler(BaseFrame):
         """
         canvas = self.root
         
-        dungeon = LabelFrame(canvas, width = 400, height = 400, bg = "White")
-        text = Label(dungeon, text = "Place Maze Here...", bg = "White")
+        dungeon = LabelFrame(canvas, width= 400, height= 400, bg= "White")
+        text = Label(dungeon, text= "Place Maze Here...", bg= "White")
 
-        dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
-        text.place(relx = 0.5, rely = 0.5, anchor = N)
+        dungeon.place(relx= 0.5, rely= 0.25, anchor= N)
+        text.place(relx= 0.5, rely= 0.5, anchor= N)
 
-    def set_bag_display(self, bag_stuff, controller):
+    def set_bag_display(self, bag_stuff):
+        """Display the current hero bag to player
+
+        :param bag_stuff: _description_
+        :type bag_stuff: dictionary {pillars : {str : bool}, "health" : int, "vision" : int}
+        """
+
+        def update_counter(label, curr_count, potion_type):
+            curr_count -= 1
+            label["text"] = f"{potion_type} Potion Count: {curr_count}"
+
         bag = Toplevel(self.root)
         bag.geometry("400x400")
-        bag.resizable(width = False, height = False)
+        bag.resizable(width= False, height= False)
         bag.title("Adventurer Inventory")
 
-        close_bag = Button(bag, text="Close Bag", command = bag.destroy)
+        close_bag = Button(bag, text= "Close Bag", command= bag.destroy)
         close_bag.pack(side=BOTTOM, fill=X)
 
         if bag_stuff["pillars"]:
             pillar_frame = LabelFrame(bag, text = "Pillars Collected")
             pillar_frame.pack(side=TOP)
 
+            pillar_description = {
+                "A": ("Abstraction", "Grants double health potion collection."),
+                "P": ("Polymorphism", "Grants double vision potion collection."),
+                "I": ("Inheritance", "Grants reduced damage."),
+                "E": ("Encapsulation", "Grants improved potion potency.")
+            }
+
             for pillar, status in bag_stuff["pillars"].items():
-                pillar_lbl = Label(pillar_frame, text=f"{pillar, status}")
-                pillar_lbl.pack()            
+                if status:
+                    pillar_str = pillar_description[pillar][0]
+                    pillar_pwr = pillar_description[pillar][1]
+                    pillar_lbl = Label(pillar_frame, text= f"{pillar_str, pillar_pwr}")
+                    pillar_lbl.pack()
 
         if bag_stuff["health"] or bag_stuff["vision"]:
             potion_frame = LabelFrame(bag, text = "Potions Collected")
             potion_frame.pack(side=TOP)
 
             if bag_stuff["health"]:
-                health_str = f"Health Potion Count: " + str(bag_stuff["health"])
-                health_count = Label(potion_frame, text = f"{health_str}", padx = 10)
-                use_health = Button(potion_frame, text="Use Health Potion", command = lambda: controller.set_potion("health"))
+                health_int = bag_stuff["health"]
+                health_count = Label(potion_frame, text = f"Health Potion Count: {health_int}", padx = 10)
+                use_health = Button(potion_frame, text="Use Health Potion", command = lambda: [self.controller.set_potion("health"), update_counter(health_count, health_int, "Health")])
+                
                 health_count.grid(row=0, column=0)
                 use_health.grid(row=0, column=1)
 
             if bag_stuff["vision"]:
-                vision_str = f"Vision Potion Count: " + str(bag_stuff["vision"])
-                vision_count = Label(potion_frame, text = f"{vision_str}", padx = 10)
-                use_vision = Button(potion_frame, text="Use Vision Potion", command = lambda: controller.set_potion("vision"))
+                vision_int = bag_stuff["vision"]
+                vision_count = Label(potion_frame, text = f"Vision Potion Count: {vision_int}", padx = 10)
+                use_vision = Button(potion_frame, text="Use Vision Potion", command = lambda: [self.controller.set_potion("vision"), update_counter(vision_count, vision_int, "Vision")])
+                
                 vision_count.grid(row=1, column=0)
                 use_vision.grid(row=1, column=1)
 
