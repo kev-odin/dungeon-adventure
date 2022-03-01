@@ -210,6 +210,13 @@ class DungeonCrawler(BaseFrame):
                         if try_door == 'west': # west door is working!!
                             map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j), box_height * (i + 3 / 4), width=3, fill='white')
 
+                        if try_door == 'north':  # west door is working!!
+                            map_canvas.create_line(box_width * (j+1/4), box_height * (i), box_width * (j+3/4),
+                                                   box_height * (i), width=3, fill='white')
+                        if try_door == 'south':  # west door is working!!
+                            map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
+                                                   box_height * (i + 1), width=3, fill='white')
+
                 # map_canvas.create_line(box_width * (0 + 1), box_height * (0 + 1 / 4), box_width * (0 + 1),
                 #                        box_height * (0 + 3 / 4), width=3, fill='white')
                 # map_canvas.create_line(box_width * (1 + 1), box_height * (0 + 1 / 4), box_width * (1 + 1),
