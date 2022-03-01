@@ -11,7 +11,9 @@ from app.model.dungeon.map import Map
 from app.model.characters.priestess import Priestess
 from app.model.characters.warrior import Warrior
 from app.model.characters.thief import Thief
+from app.model.characters.monster import Monster
 from app.model.db.query_helper import QueryHelper
+
 import random
 
 
@@ -85,7 +87,6 @@ class DungeonBuilder:
                 new_room = self.__build_room()
                 self.__dungeon[row][col] = new_room
 
-    # TODO refactor to include monsters once implemented and remove pits
     def __build_room(self):
         """
         Creates a room with varied contents based on dungeon difficulty, or completely empty.
@@ -106,19 +107,31 @@ class DungeonBuilder:
         elif intrigue <= self.__settings["impassable_chance"]:  # Is it less than or equal to impassable chance?  Make no access room!
             new_room = Room(contents="*")
         elif intrigue <= many_trigger:  # A room of many things.
-            new_room = Room(health_potion=random.randint(1, self.__settings["max_hp"]),
+            new_room = Room(health_potion=random.randint(1, self.__settings["max_hp_pots"]),
                             vision_potion=random.randint(0, self.__settings["max_vp"]),
-                            pit=random.randint(1, self.__settings["max_pit_dmg"]), contents="M")
+                            monster=self._build_monster(), contents="M")
         elif intrigue <= hp_trigger:  # A room of health pots.
-            new_room = Room(health_potion=random.randint(1, self.__settings["max_hp"]), contents="H")
+            new_room = Room(health_potion=random.randint(1, self.__settings["max_hp_pots"]), contents="H")
         elif intrigue <= vision_trigger:  # A room of vision potion.
             new_room = Room(vision_potion=random.randint(1, self.__settings["max_vp"]), contents="V")
         else:  # intrigue <= pit_trigger: A room of pit.
-            new_room = Room(pit=random.randint(1, self.__settings["max_pit_dmg"]), contents="X")
+            new_room = Room(monster=self._build_monster(), contents="X")
         return new_room
 
-    def __build_monster(self):
-        pass
+    def _build_monster(self, pillar_room=False):
+        """
+        Builds a monster.  If pillar room, builds Ogre, otherwise random between Gremlin and Skeleton.
+        Method is for lazy testing only!
+        :param pillar_room: bool, True if currently a pillar room.
+        :return: Monster
+        """
+        if pillar_room:
+            choice = "Ogre"  # Hardcoded, not my favorite, but works!
+        else:
+            choice = random.choice(("Gremlin", "Skeleton"))
+        monster_dict = self.__qh.query(choice)
+        monster_dict["current_hp"] = monster_dict["max_hp"]
+        return Monster(monster_dict)
 
     def __build_dungeon_path(self, row: int, col: int):
         """
@@ -161,6 +174,7 @@ class DungeonBuilder:
             empty_rooms.remove(current)  # Suspicion is this isn't properly removing the room.
             room = self.__get_room(current)  # Uses coordinates to access room
             room.contents = pillars.pop()  # Sets the pillar to the current room.
+            room.monster = self._build_monster(True)
 
     def __is_traversable(self, row: int, col: int):
         """
