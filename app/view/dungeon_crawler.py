@@ -116,9 +116,10 @@ class DungeonCrawler(BaseFrame):
         """
         canvas = self.root
         adjacent_rooms = LabelFrame(canvas, width = 300, height = 300, bg = "White")
-        # text = Label(dungeon, text = "Place Maze Here...", bg = "White")
-        print(adv_telemetry.get_room(adv_telemetry.adventurer_loc)) # this get room will return a room(string)
-        print(adv_telemetry.get_room(adv_telemetry.adventurer_loc).string_top())
+        text = Label(adjacent_rooms, text = "Place Maze Here...", bg = "White")
+
+        # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc)) # this get room will return a room(string)
+        # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc).string_top())
 
         for i in range(9):
             b = 'b'+str(i)
@@ -137,7 +138,6 @@ class DungeonCrawler(BaseFrame):
                 b.config(height=100, width=100, image=b.img, compound=CENTER)
                 b.grid(row=int(i / 3), column=int(i % 3))
                 b.grid(sticky="NWSE")
-
 
         # use the adventurer_loc from the dungeon class to update the current dungeon display window
 
@@ -184,27 +184,48 @@ class DungeonCrawler(BaseFrame):
     def set_map_display(self, map, dungeon):
         map_window = Toplevel(self.root)
         map_window.title("Dungeon complete map")
+        map_window.geometry("400x400")  # window dimension same as canvas, will it be a problem when drawing?
+        canvas_width = "400"
+        canvas_height = "400"
+        map_canvas = Canvas(map_window, width=canvas_width, height=canvas_height)
+        # print(map.visited_array()) # we can use this to display or cover the rooms
+        rows = map.get_rows()
+        box_width = int(canvas_width)/rows
+        cols = map.get_cols()
+        box_height = int(canvas_height)/cols
 
-        map_window.geometry("400x400")
 
-        # print(map.get_rows()) # debug
-        # print(map.get_cols()) # debug
-        # print(dungeon.total_rows)
-        # print(dungeon.total_columns)
+        for i in range(rows):
+            for j in range(cols):
+                map_canvas.create_rectangle((box_width)*j, i, box_width*(j+1), box_height*(i+1))
+
+        # map_canvas.create_rectangle(box_width * 0, 0, box_width * 1, box_height)
+        # map_canvas.create_rectangle(box_width * 1, 0, box_width * 2, box_height)
+        # map_canvas.create_rectangle(box_width * 2, 0, box_width * 3, box_height)
+        # map_canvas.create_rectangle(box_width * 3, 0, box_width * 4, box_height)
+        # map_canvas.create_rectangle(box_width * 4, 0, box_width * 5, box_height)
+        #
+        # map_canvas.create_rectangle(box_width * 0, box_height * 1, box_width * 1, box_height * 2)
+        # map_canvas.create_rectangle(box_width * 1, box_height * 1, box_width * 2, box_height * 2)
+        # map_canvas.create_rectangle(box_width * 2, box_height * 1, box_width * 3, box_height * 2)
+        # map_canvas.create_rectangle(box_width * 3, box_height * 1, box_width * 4, box_height * 2)
+        # map_canvas.create_rectangle(box_width * 4, box_height * 1, box_width * 5, box_height * 2)
+
+
 
         print(dungeon.get_visible_dungeon_string())  # debug
 
+        # for row in range(0, map.get_rows()):
+        #     for col in range(0, map.get_cols()):
+        #         b = Button(map_window)
+        #         b.img = PhotoImage()
+        #         b.config(height=400/(map.get_cols()+1), width=400/(map.get_rows()+1), image=b.img, compound=CENTER)
+        #         # b.grid(row=int(row / 3), column=int(col % 3))
+        #         b.grid(row=int(row), column=int(col))
+        #         b.grid(sticky="NWSE")
 
-        for row in range(0, map.get_rows()):
-            for col in range(0, map.get_cols()):
-                b = Button(map_window)
-                b.img = PhotoImage()
-                b.config(height=400/(map.get_cols()+1), width=400/(map.get_rows()+1), image=b.img, compound=CENTER)
-                # b.grid(row=int(row / 3), column=int(col % 3))
-                b.grid(row=int(row), column=int(col))
-                b.grid(sticky="NWSE")
 
-
+        map_canvas.pack()
         close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
         close_map_window.place(relx=0.5, rely=0.9)
 

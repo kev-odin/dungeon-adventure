@@ -155,27 +155,6 @@ class GameController:
         """
         print("DEBUG - Retrieving the hero position")
         adv_telemetry = self.__model["dungeon"]
-
-        # print("DEBUG - adventurer location:")
-        # print(adv_telemetry.adventurer_loc) # debug
-        #
-        # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc))
-        #
-        # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc).string_top())
-        # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc).string_middle())
-        # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc).string_bottom())
-        #
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0]-1, adv_telemetry.adventurer_loc[1]-1)))
-
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0]-1, adv_telemetry.adventurer_loc[1])))
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0]-1, adv_telemetry.adventurer_loc[1]+1)))
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0], adv_telemetry.adventurer_loc[1]-1)))
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0], adv_telemetry.adventurer_loc[1])))
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0], adv_telemetry.adventurer_loc[1]+1)))
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0]+1, adv_telemetry.adventurer_loc[1] - 1)))
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0]+1, adv_telemetry.adventurer_loc[1])))
-        # print(adv_telemetry.get_room((adv_telemetry.adventurer_loc[0]+1, adv_telemetry.adventurer_loc[1] + 1)))
-
         self.__view.set_dungeon_display(adv_telemetry)
 
     def update_adv_bag(self):
@@ -201,7 +180,7 @@ class GameController:
         map = self.__model["map"]  # follow Kevin's example of update_adv_info and update_adv_bag, we get the pillar from the model and send it back to the view
         dungeon = self.__model["dungeon"]  # and then view is going to use this info to prepare the display
 
-        self.__view.set_map_display(map,dungeon)
+        self.__view.set_map_display(map, dungeon)
 
     def still_playing(self):
         return self.__model["hero"].is_alive()
