@@ -197,7 +197,16 @@ class DungeonCrawler(BaseFrame):
 
         for i in range(rows):
             for j in range(cols):
-                map_canvas.create_rectangle((box_width)*j, (box_height)*i, box_width*(j+1), box_height*(i+1))
+                map_canvas.create_rectangle((box_width)*j, (box_height)*i, box_width*(j+1), box_height*(i+1), width=3)
+                map_canvas.create_line(box_width * 1, box_height / 4, box_width * 1, box_height * 3 / 4, width=3, fill='white')
+
+                for try_door in ['north', 'east', 'west', 'south']:
+                    if dungeon.get_room([i,j]).get_door(try_door):
+                        print(try_door)
+                        print("door @ " + str(i) +" and "+ str(j))
+                        # map_canvas.create_oval(box_width * (j + 1), (box_height * (i + 1)) / 2, (box_width) / 2)
+
+
 
 
 
@@ -217,19 +226,9 @@ class DungeonCrawler(BaseFrame):
 
         print(dungeon.get_visible_dungeon_string())  # debug
 
-        # for row in range(0, map.get_rows()):
-        #     for col in range(0, map.get_cols()):
-        #         b = Button(map_window)
-        #         b.img = PhotoImage()
-        #         b.config(height=400/(map.get_cols()+1), width=400/(map.get_rows()+1), image=b.img, compound=CENTER)
-        #         # b.grid(row=int(row / 3), column=int(col % 3))
-        #         b.grid(row=int(row), column=int(col))
-        #         b.grid(sticky="NWSE")
-
-
         map_canvas.pack()
         close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
-        close_map_window.place(relx=0.5, rely=0.9)
+        close_map_window.place(relx=1.0, rely=1.0, anchor=SE)
 
 class DungeonBrawler(BaseFrame):
     def setup(self):
