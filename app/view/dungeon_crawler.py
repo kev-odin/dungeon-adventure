@@ -198,15 +198,23 @@ class DungeonCrawler(BaseFrame):
         for i in range(rows):
             for j in range(cols):
                 map_canvas.create_rectangle((box_width)*j, (box_height)*i, box_width*(j+1), box_height*(i+1), width=3)
-                map_canvas.create_line(box_width * 1, box_height / 4, box_width * 1, box_height * 3 / 4, width=3, fill='white')
 
+
+        for i in range(rows):
+            for j in range(cols):
                 for try_door in ['north', 'east', 'west', 'south']:
                     if dungeon.get_room([i,j]).get_door(try_door):
-                        print(try_door)
-                        print("door @ " + str(i) +" and "+ str(j))
-                        # map_canvas.create_oval(box_width * (j + 1), (box_height * (i + 1)) / 2, (box_width) / 2)
+                        if try_door == 'east': # east door is working!!
+                            map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1), box_height * (i + 3 / 4), width=3, fill='white')
 
-
+                # map_canvas.create_line(box_width * (0 + 1), box_height * (0 + 1 / 4), box_width * (0 + 1),
+                #                        box_height * (0 + 3 / 4), width=3, fill='white')
+                # map_canvas.create_line(box_width * (1 + 1), box_height * (0 + 1 / 4), box_width * (1 + 1),
+                #                        box_height * (0 + 3 / 4), width=3, fill='white')
+                # map_canvas.create_line(box_width * (1 + 1), box_height * (1 + 1 / 4), box_width * (1 + 1),
+                #                        box_height * (1 + 3 / 4), width=3, fill='white')
+                # map_canvas.create_line(box_width * (4 + 1), box_height * (4 + 1 / 4), box_width * (4 + 1),
+                #                        box_height * (4 + 3 / 4), width=3, fill='white')
 
 
 
