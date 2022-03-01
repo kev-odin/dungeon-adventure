@@ -1,6 +1,7 @@
 # checkout Kevin shared site https://www.pythontutorial.net/tkinter/
 # checkout this site https://www.youtube.com/watch?v=tpwu5Zb64lQ
 from tkinter import *
+import os.path
 
 class dungeon_adventure_GUI:
 
@@ -161,8 +162,11 @@ class dungeon_adventure_GUI:
         load_game_btn.place(relx=0.5, rely=0.6)
         quit_game_btn.place(relx=0.5, rely=0.7)
 
-        # global img
-        # img = PhotoImage(file="app/view/welcome_bg.gif")
-        # # img = PhotoImage(file="/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/welcome_bg.gif")
-        # canvas.create_image(0, 0, anchor=NW, image=img)
+        global img
+        # img = PhotoImage(file="app/view/welcome_bg.gif") # OS path
+        # path = "/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/image assets/welcome_bg.gif"
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(base_dir, "image assets/welcome_bg.gif")
+        img = PhotoImage(file=path)
+        canvas.create_image(0, 0, anchor=NW, image=img)
         canvas.pack()

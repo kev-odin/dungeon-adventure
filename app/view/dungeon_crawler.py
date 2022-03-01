@@ -125,9 +125,9 @@ class DungeonCrawler(BaseFrame):
             b = 'b'+str(i)
             if (b == 'b4'):
                 b = Button(adjacent_rooms)
-                # b.img = PhotoImage(file='/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/image assets/priest.gif')
-                b.img = PhotoImage()
-                # b.img2 = b.img.subsample(10, 10)
+                b.img = PhotoImage(file='/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/image assets/priest.gif')
+                # b.img = PhotoImage()
+                b.img = b.img.subsample(10, 10)
                 b.config(height=100, width=100, image=b.img)
                 # b.config(height=100, width=100, text="---")
                 b.grid(row=int(i/3), column=int(i%3))
@@ -206,6 +206,9 @@ class DungeonCrawler(BaseFrame):
                     if dungeon.get_room([i,j]).get_door(try_door):
                         if try_door == 'east': # east door is working!!
                             map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1), box_height * (i + 3 / 4), width=3, fill='white')
+
+                        if try_door == 'west': # west door is working!!
+                            map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j), box_height * (i + 3 / 4), width=3, fill='white')
 
                 # map_canvas.create_line(box_width * (0 + 1), box_height * (0 + 1 / 4), box_width * (0 + 1),
                 #                        box_height * (0 + 3 / 4), width=3, fill='white')
