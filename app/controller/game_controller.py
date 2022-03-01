@@ -1,4 +1,5 @@
 from app.model.dungeon.dungeon_builder import DungeonBuilder
+from app.model.items.potion_factory import PotionFactory
 from app.view.dungeon_crawler import DungeonCrawler, DungeonBrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
@@ -89,10 +90,10 @@ class GameController:
 
             print(f"{moving}")
 
-            # if new_room.monster:
-            #     hero = self.__model["hero"]
-            #     monster = self.__model["dungeon"].monster
-            #     self.update_combat(hero, monster)
+            if new_room.monster:
+                hero = self.__model["hero"]
+                monster = self.__model["dungeon"].monster
+                self.start_combat(hero, monster)
 
             if new_room.contents:
                 self.set_bag(new_room)
@@ -100,10 +101,11 @@ class GameController:
         except KeyError:
             return f"An error occured. Please verify the {move} is a valid option."
 
-    def update_combat(self, hero = None, monster = None):
-        brawl = DungeonBrawler()
-        self.__view = brawl
-        self.__view.setup()
+    def start_combat(self, hero = None, monster = None):
+        # brawl = DungeonBrawler()
+        # self.__view = brawl
+        # self.__view.setup()
+        print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
@@ -129,6 +131,15 @@ class GameController:
         if room.contents in ("H", "V", "M"):
             collected_pots = self.__model["dungeon"].collect_potions()
             self.__model["hero"].add_potions(collected_pots)
+
+    def set_potion(self, potion: str):
+        if potion == "health" and self.__model["hero"].has_health_potion():
+            heal = PotionFactory().create_potion("health")
+            self.__model["hero"].heal_adventurer(heal)
+            print("DEBUG - Should be using a health potion")
+        
+        if potion == "vision":
+            print(f"DEBUG - Not Implemented yet.")
 
     def create_adventurer(self, name: str, class_name: str):
         try:
@@ -172,7 +183,7 @@ class GameController:
             "vision": vision_pots
         }
         print(bag)
-        self.__view.set_bag_display(bag)
+        self.__view.set_bag_display(bag, self)
 
     def update_adv_map(self):
         """Update the frame with map information from the model.

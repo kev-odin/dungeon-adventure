@@ -3,6 +3,7 @@ import tkinter as tk
 
 # TODO: Readable pillars in the bag view
 # TODO: Ability to use items in the bag view
+# TODO: Item number not updating after use
 
 class BaseFrame(tk.Frame):
     def __init__(self):
@@ -122,7 +123,7 @@ class DungeonCrawler(BaseFrame):
         dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
         text.place(relx = 0.5, rely = 0.5, anchor = N)
 
-    def set_bag_display(self, bag_stuff):
+    def set_bag_display(self, bag_stuff, controller):
         bag = Toplevel(self.root)
         bag.geometry("400x400")
         bag.resizable(width = False, height = False)
@@ -146,14 +147,14 @@ class DungeonCrawler(BaseFrame):
             if bag_stuff["health"]:
                 health_str = f"Health Potion Count: " + str(bag_stuff["health"])
                 health_count = Label(potion_frame, text = f"{health_str}", padx = 10)
-                use_health = Button(potion_frame, text="Use Health Potion", command = bag.destroy)
+                use_health = Button(potion_frame, text="Use Health Potion", command = lambda: controller.set_potion("health"))
                 health_count.grid(row=0, column=0)
                 use_health.grid(row=0, column=1)
 
             if bag_stuff["vision"]:
                 vision_str = f"Vision Potion Count: " + str(bag_stuff["vision"])
                 vision_count = Label(potion_frame, text = f"{vision_str}", padx = 10)
-                use_vision = Button(potion_frame, text="Use Vision Potion", command = bag.destroy)
+                use_vision = Button(potion_frame, text="Use Vision Potion", command = lambda: controller.set_potion("vision"))
                 vision_count.grid(row=1, column=0)
                 use_vision.grid(row=1, column=1)
 
