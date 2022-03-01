@@ -197,7 +197,9 @@ class DungeonCrawler(BaseFrame):
 
         for i in range(rows):
             for j in range(cols):
-                map_canvas.create_rectangle((box_width)*j, i, box_width*(j+1), box_height*(i+1))
+                map_canvas.create_rectangle((box_width)*j, (box_height)*i, box_width*(j+1), box_height*(i+1))
+
+
 
         # map_canvas.create_rectangle(box_width * 0, 0, box_width * 1, box_height)
         # map_canvas.create_rectangle(box_width * 1, 0, box_width * 2, box_height)
