@@ -111,26 +111,28 @@ class DungeonCrawler(BaseFrame):
 
         canvas.pack()
 
-    def set_dungeon_display(self, local_rooms):
+    def set_dungeon_display(self, adv_telemetry):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
         """
         canvas = self.root
-        
-        dungeon = LabelFrame(canvas, width = 300, height = 300, bg = "White")
+        adjacent_rooms = LabelFrame(canvas, width = 300, height = 300, bg = "White")
         # text = Label(dungeon, text = "Place Maze Here...", bg = "White")
+        print(adv_telemetry.get_room(adv_telemetry.adventurer_loc)) # this get room will return a room(string)
+        print(adv_telemetry.get_room(adv_telemetry.adventurer_loc).string_top())
 
         for i in range(9):
             b = 'b'+str(i)
             if (b == 'b4'):
-                b = Button(dungeon)
-                b.img = PhotoImage(file='/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/image assets/priest.gif')
-                # b.ima = PhotoImage()
-                b.img2 = b.img.subsample(10, 10)
-                b.config(height=100, width=100, image=b.img2)
+                b = Button(adjacent_rooms)
+                # b.img = PhotoImage(file='/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/image assets/priest.gif')
+                b.img = PhotoImage()
+                # b.img2 = b.img.subsample(10, 10)
+                b.config(height=100, width=100, image=b.img)
+                # b.config(height=100, width=100, text="---")
                 b.grid(row=int(i/3), column=int(i%3))
                 b.grid(sticky = "NWSE")
             else:
-                b = Button(dungeon)
+                b = Button(adjacent_rooms)
                 b.img = PhotoImage()
                 b.config(height=100, width=100, image=b.img, compound=CENTER)
                 b.grid(row=int(i / 3), column=int(i % 3))
@@ -139,8 +141,7 @@ class DungeonCrawler(BaseFrame):
 
         # use the adventurer_loc from the dungeon class to update the current dungeon display window
 
-
-        dungeon.place(relx = 0.5, rely = 0.25, anchor = N)
+        adjacent_rooms.place(relx = 0.5, rely = 0.25, anchor = N)
         # text.place(relx = 0.5, rely = 0.5, anchor = N)
 
     def set_bag_display(self, bag_stuff):
