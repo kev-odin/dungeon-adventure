@@ -183,12 +183,13 @@ class DungeonCrawler(BaseFrame):
     def set_map_display(self, map, dungeon):
         map_window = Toplevel(self.root)
         map_window.title("Dungeon complete map")
-        map_window.geometry("600x600")
 
-        print(map.get_rows()) # debug
-        print(map.get_cols()) # debug
-        print(dungeon.total_rows)
-        print(dungeon.total_columns)
+        map_window.geometry("400x400")
+
+        # print(map.get_rows()) # debug
+        # print(map.get_cols()) # debug
+        # print(dungeon.total_rows)
+        # print(dungeon.total_columns)
 
         print(dungeon.get_visible_dungeon_string())  # debug
 
@@ -197,11 +198,11 @@ class DungeonCrawler(BaseFrame):
             for col in range(0, map.get_cols()):
                 b = Button(map_window)
                 b.img = PhotoImage()
-                b.config(height=50, width=50, image=b.img, compound=CENTER)
+                b.config(height=400/(map.get_cols()+1), width=400/(map.get_rows()+1), image=b.img, compound=CENTER)
                 # b.grid(row=int(row / 3), column=int(col % 3))
                 b.grid(row=int(row), column=int(col))
-                # b.grid(sticky="NWSE")
-                b.grid(sticky="")
+                b.grid(sticky="NWSE")
+
 
         close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
         close_map_window.place(relx=0.5, rely=0.9)
