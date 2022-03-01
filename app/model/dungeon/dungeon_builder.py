@@ -107,15 +107,15 @@ class DungeonBuilder:
         elif intrigue <= self.__settings["impassable_chance"]:  # Is it less than or equal to impassable chance?  Make no access room!
             new_room = Room(contents="*")
         elif intrigue <= many_trigger:  # A room of many things.
-            new_room = Room(health_potion=random.randint(1, self.__settings["max_hp"]),
+            new_room = Room(health_potion=random.randint(1, self.__settings["max_hp_pots"]),
                             vision_potion=random.randint(0, self.__settings["max_vp"]),
                             monster=self._build_monster(), contents="M")
         elif intrigue <= hp_trigger:  # A room of health pots.
-            new_room = Room(health_potion=random.randint(1, self.__settings["max_hp"]), contents="H")
+            new_room = Room(health_potion=random.randint(1, self.__settings["max_hp_pots"]), contents="H")
         elif intrigue <= vision_trigger:  # A room of vision potion.
             new_room = Room(vision_potion=random.randint(1, self.__settings["max_vp"]), contents="V")
         else:  # intrigue <= pit_trigger: A room of pit.
-            new_room = Room(monster=random.randint(1, self.__settings["max_pit_dmg"]), contents="X")
+            new_room = Room(monster=self._build_monster(), contents="X")
         return new_room
 
     def _build_monster(self, pillar_room=False):
