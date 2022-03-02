@@ -1,6 +1,9 @@
-import sqlite3
-con = sqlite3.connect('app.db')
-cur = con.cursor()
+"""
+Below are the scripts for building the python sql database.
+"""
+# import sqlite3
+# con = sqlite3.connect('app.db')
+# cur = con.cursor()
 
 # cur.execute('''CREATE TABLE dng_diff
 #                 (difficulty text, impassable_chance real, hp_chance real, vp_chance real, many_chance real, monster_chance real, max_hp_pots int, max_vp int, row int, col int)''')
@@ -30,6 +33,11 @@ cur = con.cursor()
 # cur.execute('''CREATE TABLE classes
 #                (name text, hp int, attack_speed int, hit_chance float, min_dmg int, max_dmg int, block_chance float, special text)''')
 
-con.commit()
+# con.commit()
 
-con.close()
+# cur.execute('''CREATE TABLE saves
+#                 (timestamp text, hero_name text, class text, difficulty text, current_hp int, max_hp int, dungeon text, adventurer text)''')
+#
+# con.commit()
+#
+# con.close()

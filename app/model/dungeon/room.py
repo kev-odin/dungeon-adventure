@@ -28,9 +28,9 @@ class Room:
         :param monster: Monster object or None, combat begins upon entry
         """
         if self.__is_valid_creation_data(health_potion, vision_potion, monster, contents):
-            self.__obj_dict = {"health": health_potion, "vision": vision_potion, "monster": monster}
-            self.__doors = {"north": False, "east": False, "south": False, "west": False}
-            self.__contents = contents
+            self.__room_dict = {"health": health_potion, "vision": vision_potion, "monster": monster,
+                               "north": False, "east": False, "south": False, "west": False,
+                                "contents": contents}
         else:
             raise Exception("Value or TypeErrors should have been raised and they weren't.  Sound the alarm!")
 
@@ -119,16 +119,16 @@ class Room:
         Checks and updated the contents of the current room after a change has been made to potions.
         :return: Returns True if changed through this method.  Returns False if not so potions can be updated.
         """
-        if self.__contents in {"A", "P", "I", "E"}:
+        if self.contents in {"A", "P", "I", "E"}:
             return False
-        elif bool(self.__obj_dict["vision"]) + bool(self.__obj_dict["health"]) + bool(self.__obj_dict["monster"]) >= 2:
-            self.__contents = "M"
+        elif bool(self.room_dict["vision"]) + bool(self.room_dict["health"]) + bool(self.room_dict["monster"]) >= 2:
+            self.contents = "M"
             return True
-        elif self.__obj_dict["monster"] and (not self.__obj_dict["vision"] and not self.__obj_dict["health"]):
-            self.__contents = "X"
+        elif self.room_dict["monster"] and (not self.room_dict["vision"] and not self.room_dict["health"]):
+            self.contents = "X"
             return True
-        elif not self.__obj_dict["monster"] and not self.__obj_dict["vision"] and not self.__obj_dict["health"]:
-            self.__contents = " "
+        elif not self.room_dict["monster"] and not self.room_dict["vision"] and not self.room_dict["health"]:
+            self.contents = " "
             return True
         else:
             return False
@@ -138,7 +138,7 @@ class Room:
         Creates top portion of the room's string including doors.
         :return: string representing top of room.
         """
-        return ("*  *  *", "*  -  *")[self.__doors["north"]]  # Appends *** if not north_door, *-* if north door
+        return ("*  *  *", "*  -  *")[self.room_dict["north"]]  # Appends *** if not north_door, *-* if north door
 
     def string_middle(self):
         """
@@ -146,9 +146,9 @@ class Room:
         :return: string representing middle and contents of room.
         """
         string = ""
-        string += ("*  ", "|  ")[self.__doors["west"]]  # Appends * if not west_door, | if west_door
-        string += self.__contents
-        string += ("  *", "  |")[self.__doors["east"]]  # Appends | if east_door and * if not east_door.
+        string += ("*  ", "|  ")[self.room_dict["west"]]  # Appends * if not west_door, | if west_door
+        string += self.contents
+        string += ("  *", "  |")[self.room_dict["east"]]  # Appends | if east_door and * if not east_door.
         return string
 
     def string_bottom(self):
@@ -156,24 +156,24 @@ class Room:
         Creates bottom of string including contents and doors south.
         :return: string representing bottom of room
         """
-        return ("*  *  *", "*  -  *")[self.__doors["south"]]
+        return ("*  *  *", "*  -  *")[self.room_dict["south"]]
 
     def can_enter(self):
         """
         Returns True if can enter.  Not impassable and not visited.
         :return: bool
         """
-        return self.__contents != "*" and not self.visited
+        return self.contents != "*" and not self.visited
 
     def clear_room(self):
         """
         Clears all settings in a room back to nothing.  Not visited, not impassable, no potions, not monsters.
         :return:
         """
-        self.__obj_dict["health"] = 0
-        self.__obj_dict["vision"] = 0
-        self.__contents = " "
-        self.__obj_dict["monster"] = None
+        self.room_dict["health"] = 0
+        self.room_dict["vision"] = 0
+        self.contents = " "
+        self.room_dict["monster"] = None
 
     @property
     def exit(self):
@@ -181,7 +181,7 @@ class Room:
         Returns if room is the exit.
         :return: bool True if it is, False if it isn't.
         """
-        return self.__contents == "O"
+        return self.contents == "O"
 
     @exit.setter
     def exit(self, is_exit: bool):
@@ -191,9 +191,9 @@ class Room:
         """
         if self.__is_boolean(is_exit) and is_exit:
             self.clear_room()
-            self.__contents = "O"
+            self.contents = "O"
         elif not is_exit:
-            self.__contents = " "
+            self.contents = " "
 
     @property
     def entrance(self):
@@ -201,7 +201,7 @@ class Room:
         Returns if current room is the entrance.
         :return: bool, True if it is the entrance, False if not
         """
-        return self.__contents == "i"
+        return self.contents == "i"
 
     @entrance.setter
     def entrance(self, is_entrance: bool):
@@ -211,9 +211,9 @@ class Room:
         """
         if self.__is_boolean(is_entrance) and is_entrance:
             self.clear_room()
-            self.__contents = "i"
+            self.contents = "i"
         elif not is_entrance:
-            self.__contents = " "
+            self.contents = " "
 
     @property
     def health_potion(self):
@@ -221,7 +221,7 @@ class Room:
         Returns current quantity of health_potions in the room as int
         :return: int of current number of health_potions.
         """
-        return self.__obj_dict["health"]
+        return self.__room_dict["health"]
 
     @health_potion.setter
     def health_potion(self, num_pots):
@@ -230,10 +230,10 @@ class Room:
         :param num_pots: integer >= 0
         """
         if self.__is_number_gt_eq_0(num_pots):
-            self.__obj_dict["health"] = num_pots
+            self.room_dict["health"] = num_pots
             updated = self.__update_room_contents()
             if not updated:
-                self.__contents = "H"
+                self.contents = "H"
 
 
     @property
@@ -242,7 +242,7 @@ class Room:
         Getter for current number of vision potions in a room.
         :return: int for current quantity of vision_potions
         """
-        return self.__obj_dict["vision"]
+        return self.room_dict["vision"]
 
     @vision_potion.setter
     def vision_potion(self, num_pots):
@@ -251,10 +251,10 @@ class Room:
         :param num_pots: integer >= 0
         """
         if self.__is_number_gt_eq_0(num_pots):
-            self.__obj_dict["vision"] = num_pots
+            self.room_dict["vision"] = num_pots
             updated = self.__update_room_contents()
             if not updated:
-                self.__contents = "V"
+                self.contents = "V"
 
     def get_door(self, direction):
         """
@@ -263,7 +263,7 @@ class Room:
         :return: bool, True for if there is a door, False for if there isn't
         """
         try:
-            return self.__doors[direction]
+            return self.__room_dict[direction]
         except KeyError:
             raise KeyError(f"{direction} is not a valid key!  Must be 'north', east', west', or 'south' as a string.")
 
@@ -278,8 +278,8 @@ class Room:
         """
         if self.__is_boolean(door_exists):
             try:
-                self.__doors[direction]  # Verifies is valid direction.  I'm sure there's a better way to do this.
-                self.__doors[direction] = door_exists
+                self.room_dict[direction]  # Verifies is valid direction.  I'm sure there's a better way to do this.
+                self.room_dict[direction] = door_exists
             except KeyError:
                 raise KeyError(f"{direction} is not a valid key!  Most be north, east, west, south as a string.")
 
@@ -289,7 +289,7 @@ class Room:
         Returns bool if room is empty or not.  True if it is, False if it isn't.
         :return: bool
         """
-        return self.__contents == " "
+        return self.contents == " "
 
     @property
     def contents(self):
@@ -297,7 +297,7 @@ class Room:
         Returns current contents of a room as a string.
         :return: str
         """
-        return self.__contents
+        return self.__room_dict["contents"]
 
     @contents.setter
     def contents(self, data: str):
@@ -306,7 +306,7 @@ class Room:
         :param data: str " ", "A", "P", "I", "E", "i", "O", "*", "H", "V", "X", "M"
         """
         if self.__is_valid_contents(data):
-            self.__contents = data
+            self.__room_dict["contents"] = data
 
     @property
     def monster(self):
@@ -314,11 +314,11 @@ class Room:
         Returns monster in the room.
         :return: Monster, None if no Monster
         """
-        return self.__obj_dict["monster"]
+        return self.room_dict["monster"]
 
     @monster.setter
     def monster(self, monster_obj: Monster):
-        self.__obj_dict["monster"] = monster_obj
+        self.room_dict["monster"] = monster_obj
         self.__update_room_contents()
 
     @property
@@ -327,4 +327,17 @@ class Room:
         Checks if any of the rooms were visited during creation of the dungeon / traversal.
         :return: bool, True if any doors exist
         """
-        return self.__doors["north"] or self.__doors["east"] or self.__doors["south"] or self.__doors["west"]
+        return self.room_dict["north"] or self.room_dict["east"] or self.room_dict["south"] or self.room_dict["west"]
+
+    @property
+    def room_dict(self):
+        return self.__room_dict
+
+    def json_dict(self):
+        """
+        :return: dictionary in json friendly format with objects within dict converted to json friendly dicts.
+        """
+        temp = self.room_dict.copy()
+        if self.monster:
+            temp["monster"] = self.monster.char_dict
+        return temp

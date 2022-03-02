@@ -48,7 +48,11 @@ class DungeonBuilder:
         Passes dungeon over to dungeon and all settings then stores it as a complete_dungeon.
         :return: None
         """
-        self.__complete_dungeon = Dungeon(self.__dungeon, self.__settings["difficulty"], self.__entrance, self.__exit)
+        dungeon_dict = {"dungeon": self.__dungeon, "difficulty": self.__settings["difficulty"],
+                        "rows": self.__settings["row"], "cols": self.__settings["col"],
+                        "pillars": self.__pillars, "entrance": self.__entrance, "exit": self.__exit,
+                        "adventurer_location": self.__entrance}
+        self.__complete_dungeon = Dungeon(dungeon_dict)
 
     def __set_map(self):
         """
@@ -174,7 +178,8 @@ class DungeonBuilder:
             empty_rooms.remove(current)  # Suspicion is this isn't properly removing the room.
             room = self.__get_room(current)  # Uses coordinates to access room
             room.contents = pillars.pop()  # Sets the pillar to the current room.
-            room.monster = self._build_monster(True)
+            boss = True
+            room.monster = self._build_monster(boss)
 
     def __is_traversable(self, row: int, col: int):
         """

@@ -1,3 +1,5 @@
+import random
+
 from app.model.items.health_potion import HealthPotion
 from app.model.characters.dungeon_character import DungeonCharacter
 from abc import abstractmethod
@@ -15,17 +17,15 @@ class Adventurer(DungeonCharacter, ABC):
 
         :param adv_dict: dict of adventurer data
         """
-        super().__init__(adv_dict)
-        self.__char_dict = adv_dict
-
-        self.__health_pots = 0
-        self.__vision_pots = 0
-        self.__pillars_collected = {
+        adv_dict["health_pots"] = 0
+        adv_dict["vision_pots"] = 0
+        adv_dict["pillars_collected"] = {
             "A": False,
             "P": False,
             "I": False,
             "E": False
         }
+        super().__init__(adv_dict)
 
     def _readable_pillars(self):
         """ Helper method for converting pillars collection to a player readable string.
@@ -198,14 +198,18 @@ class Adventurer(DungeonCharacter, ABC):
 
         return False
 
-    def take_damage(self, damage):
+    def take_damage(self, damage: int, always_hits=False):
         """
         Adventurer takes damage, most likely from combat.
         Inheritance pillar power reduces pit damage by half.
-        :param damage:
-        :return:
+        :param damage: int representing damage dealt to adventurer
+        :param always_hits: if True, cannot block.  If false, can block.
+        :return: int, 0 if they blocked the damage, damage if taken.
         """
-        if self.pillars_collected["I"]:
+        if not always_hits and self.block_chance <= random.random():
+            return 0
+
+        elif self.pillars_collected["I"]:
             damage = damage // 2
 
         return super().take_damage(damage)
@@ -217,7 +221,7 @@ class Adventurer(DungeonCharacter, ABC):
         :return: number of health potions for adventurer
         :rtype: int
         """
-        return self.__health_pots
+        return self.char_dict["health_pots"]
 
     @health_pots.setter
     def health_pots(self, value):
@@ -229,7 +233,7 @@ class Adventurer(DungeonCharacter, ABC):
         """
         if isinstance(value, int):
             if value >= 0:
-                self.__health_pots = value
+                self.char_dict["health_pots"] = value
             else:
                 raise ValueError("Cannot set health potions to a negative value.")
 
@@ -240,7 +244,7 @@ class Adventurer(DungeonCharacter, ABC):
         :return: number of vision potions for adventurer
         :rtype: int
         """
-        return self.__vision_pots
+        return self.char_dict["vision_pots"]
 
     @vision_pots.setter
     def vision_pots(self, value):
@@ -252,7 +256,7 @@ class Adventurer(DungeonCharacter, ABC):
         """
         if isinstance(value, int):
             if value >= 0:
-                self.__vision_pots = value
+                self.char_dict["vision_pots"] = value
             else:
                 raise ValueError("Cannot set vision potions to a negative value.")
 
@@ -262,19 +266,19 @@ class Adventurer(DungeonCharacter, ABC):
 
         :return: str of dictionary values {pillar : bool}
         """
-        return self.__pillars_collected
+        return self.char_dict["pillars_collected"]
 
     @property
     def adv_class(self):
-        return self.__char_dict["adv_class"]
+        return self.char_dict["adv_class"]
 
     @property
     def special(self):
-        return self.__char_dict["special"]
+        return self.char_dict["special"]
 
     @property
     def block_chance(self):
-        return self.__char_dict["block_chance"]
+        return self.char_dict["block_chance"]
 
     @abstractmethod
     def use_special(self):

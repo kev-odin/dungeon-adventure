@@ -27,7 +27,7 @@ class Dungeon(Iterable):
                 raise StopIteration()
             return current_room
 
-    def __init__(self, dungeon=[], difficulty="", ent=(0, 0), ex=(3, 3)):
+    def __init__(self, dungeon_dict: dict):
         """
         Welcome to the dungeon!  Allows for hardcoded difficulty to be adjusted in the event we want to add different
         difficulty settings as an extra credit feature (ex. increase pit chance and damage)
@@ -36,21 +36,15 @@ class Dungeon(Iterable):
         :param ent: tuple of ints indicating coordinates in matrix for entrance (row, column)
         :param ex: tuple of ints indicating coordinates in matrix for exit (row, column)
         """
-        if not dungeon:
-            self.__diff_index = self.__row_count = self.__col_count = self.__dungeon = self.__pillars = \
-                self.__entrance = self.__exit = self.__adventurer_loc = None
+        if not dungeon_dict:
+            self.__dungeon_dict = None
         else:
-            pillars = ["A", "P", "I", "E"]
-            diff_index = {"Easy": 0, "Medium": 1, "Hard": 2, "Inhumane": 3}
-            self.__diff_index = diff_index[difficulty]
-            self.__row_count = (5, 8, 10, 20)[self.__diff_index]
-            self.__col_count = (5, 8, 10, 20)[self.__diff_index]
-            self.__dungeon = dungeon  # Created from dungeon_builder
-            self.__pillars = pillars  # To be popped into rooms, currently hard-coded.
-            self.__entrance = ent  # Will be stored as a row, col tuple at maze building.
-            self.__exit = ex  # Will be stored as a row, col tuple when building maze.
-            self.__adventurer_loc = self.__entrance  # Adventurer starts at the entrance.
-
+            keys = {"dungeon", "difficulty", "rows", "cols", "pillars", "entrance", "exit",
+                        "adventurer_location"}
+            for key in keys:
+                if key not in dungeon_dict:
+                    assert KeyError(f"{key} is missing from dungeon dictionary.")
+            self.__dungeon_dict = dungeon_dict
 
     def __str__(self):
         """
@@ -66,7 +60,7 @@ class Dungeon(Iterable):
         Iterates through dungeon collection, visiting every portion of the dungeon.
         :return: DungeonIterator
         """
-        return self.DungeonIterator(self.__dungeon, self.__col_count)
+        return self.DungeonIterator(self.dungeon_dict["dungeon"], self.dungeon_dict["cols"])
 
     def __eq__(self, other):
         """
@@ -83,20 +77,20 @@ class Dungeon(Iterable):
         :param col: int
         :return: True if row and col are both within the grid, else false.
         """
-        return (0 <= row < self.__row_count) and (0 <= col < self.__col_count)
+        return (0 <= row < self.dungeon_dict["rows"]) and (0 <= col < self.dungeon_dict["cols"])
 
     def get_room(self, coordinates):
         """
         Given a row and column, returns the room at those coordinates
-        :param coordinates: list of int, 0 through __row_count-1, 0 through __col_count-1
+        :param coordinates: list of int, 0 through total_rows-1, 0 through total_columns-1
         :return: room at coordinates
         """
         row, col = coordinates[0], coordinates[1]
         if self.__is_valid_room(row, col):
-            return self.__dungeon[row][col]
+            return self.dungeon[row][col]
         else:
-            raise ValueError(f"Coordinates must be tuple of ints.  Max row: {self.__row_count}, "
-                             f"max col: {self.__col_count}.")
+            raise ValueError(f"Coordinates must be tuple of ints.  Max row: {self.total_rows}, "
+                             f"max col: {self.total_columns}.")
 
     @property
     def total_rows(self):
@@ -104,7 +98,7 @@ class Dungeon(Iterable):
         Returns total number of rows as an int.  Returns none if dungeon not built through dungeon builder.
         :return: int
         """
-        return self.__row_count
+        return self.dungeon_dict["rows"]
 
     @property
     def total_columns(self):
@@ -112,7 +106,7 @@ class Dungeon(Iterable):
         Returns total number of columns as an int.  Returns none if dungeon not built through dungeon builder.
         :return: int
         """
-        return self.__col_count
+        return self.dungeon_dict["cols"]
 
     @property
     def entrance(self):
@@ -121,7 +115,7 @@ class Dungeon(Iterable):
         dungeon builder.
         :return: tuple pair of ints
         """
-        return self.__entrance
+        return self.dungeon_dict["entrance"]
 
     @property
     def exit(self):
@@ -129,7 +123,7 @@ class Dungeon(Iterable):
         Gets coordinates of exit as tuple of ints.  Ex. (0, 0) Returns none if dungeon not built through dungeon builder
         :return: tuple pair of ints.
         """
-        return self.__exit
+        return self.dungeon_dict["exit"]
 
     @property
     def pillars(self):
@@ -137,7 +131,7 @@ class Dungeon(Iterable):
         Returns list of strings of all pillars within dungeon.
         :return: list of strings
         """
-        return self.__pillars
+        return self.dungeon_dict["pillars"]
 
     @property
     def dungeon(self):
@@ -145,7 +139,7 @@ class Dungeon(Iterable):
         Returns two dimensional python list representing the entire dungeon.  Each coordinate contains a room.
         :return: dungeon as two dimensional list.
         """
-        return self.__dungeon
+        return self.dungeon_dict["dungeon"]
 
     @property
     def adventurer_loc(self):
@@ -153,7 +147,11 @@ class Dungeon(Iterable):
         Getter for adventurer's current location as a tuple of ints, row, col (x, y).
         :return: tuple of ints
         """
-        return self.__adventurer_loc
+        return self.dungeon_dict["adventurer_location"]
+
+    @adventurer_loc.setter
+    def adventurer_loc(self, coords):
+        self.__dungeon_dict["adventurer_location"] = coords
 
     @property
     def monster(self):
@@ -161,7 +159,7 @@ class Dungeon(Iterable):
         Gets monster if one is in the room with adventurer.
         :return: Monster.  None if no monster in the room with adventurer.
         """
-        room = self.get_room(self.__adventurer_loc)
+        room = self.get_room(self.adventurer_loc)
         return room.monster
 
     def move_adventurer(self, direction: str):
@@ -170,15 +168,15 @@ class Dungeon(Iterable):
         :param direction: str either "north", "east", "west", or "south"
         :return:
         """
-        current_room = self.__dungeon[self.__adventurer_loc[0]][self.__adventurer_loc[1]]
+        current_room = self.dungeon[self.adventurer_loc[0]][self.adventurer_loc[1]]
         if current_room.get_door(direction):
             coord_dict = {"north": (-1, 0), "east": (0, 1), "south": (1, 0), "west": (0, -1)}
             adjust_coords = coord_dict[direction]
-            new_row, new_col = self.__adventurer_loc[0] + adjust_coords[0], self.__adventurer_loc[1] + adjust_coords[1]
+            new_row, new_col = self.adventurer_loc[0] + adjust_coords[0], self.adventurer_loc[1] + adjust_coords[1]
         else:
             raise ValueError("Value must be north, east, south, or west, and there must be a door in that direction.")
         if self.__is_valid_room(new_row, new_col):
-            self.__adventurer_loc = (new_row, new_col)
+            self.adventurer_loc = (new_row, new_col)
             new_room = self.get_room((new_row, new_col))
             return new_room
         else:
@@ -189,7 +187,7 @@ class Dungeon(Iterable):
         Collections all potions in adventurer's location.  Returns as tuple of ints, HP then vision.
         :return: tuple of ints, HP then vision.
         """
-        room = self.get_room(self.__adventurer_loc)
+        room = self.get_room(self.adventurer_loc)
         pots = (room.health_potion, room.vision_potion)
         if room.health_potion or room.vision_potion:
             room.health_potion = 0
@@ -201,9 +199,9 @@ class Dungeon(Iterable):
         Removes pillar from the room and returns it if a pillar exists in the room.
         :return: str pillar, else None
         """
-        room = self.get_room(self.__adventurer_loc)
+        room = self.get_room(self.adventurer_loc)
         pillar = None
-        if self.__pillars.count(room.contents) > 0:
+        if self.pillars.count(room.contents) > 0:
             pillar = room.contents
             room.contents = " "  # Since rooms with pillars are otherwise empty, no other updating necessary.
         return pillar
@@ -215,10 +213,10 @@ class Dungeon(Iterable):
         :return: String of visible rooms.  If bool_list is None, returns the whole dungeon.
         """
         string = string_top = string_middle = string_bottom = ""
-        for row in range(0, self.__row_count):
-            for col in range(0, self.__col_count):
+        for row in range(0, self.total_rows):
+            for col in range(0, self.total_columns):
                 if bool_list is None or bool_list[row][col]:  # If visible or no bool_list (for __str__ method)
-                    room = self.__dungeon[row][col]
+                    room = self.dungeon[row][col]
                     string_top += room.string_top()
                     room_middle_string = room.string_middle()
                     if (row, col) == self.adventurer_loc:  # replaces middle to @ if adv loc.
@@ -234,3 +232,21 @@ class Dungeon(Iterable):
             string += string_top + "\n" + string_middle + "\n" + string_bottom + "\n"  # New lines at the end of row.
             string_top = string_middle = string_bottom = ""  # Reset strings for building next row.
         return string
+
+    @property
+    def dungeon_dict(self):
+        return self.__dungeon_dict
+
+    @property
+    def json_dict(self):
+        temp = self.__dungeon_dict.copy()
+        room_array = []
+        for row in range(self.dungeon_dict["rows"]):
+            room_array.append([])
+            for col in range(self.dungeon_dict["cols"]):
+                room_array[row].append([])
+                current_room = self.get_room((row, col))
+                room_array[row][col] = current_room.json_dict()
+        temp["dungeon"] = room_array
+        return temp
+

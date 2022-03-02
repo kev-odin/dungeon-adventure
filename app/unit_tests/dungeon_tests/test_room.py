@@ -295,3 +295,17 @@ class TestRoom(unittest.TestCase):
             self.assertEqual(True, False, "Expected KeyError with invalid key")
         except KeyError:
             self.assertEqual(True, True)
+
+    def test_json_dict(self):
+        test = Room(monster=self._ogre, contents="X")
+        self.assertEqual({'health': 0, 'vision': 0, 'monster': {'attack_speed': 2,
+             'current_hp': 200,
+             'heal_chance': 0.1,
+             'hit_chance': 0.6,
+             'max_dmg': 60,
+             'max_heal': 60,
+             'max_hp': 200,
+             'min_dmg': 30,
+             'min_heal': 30,
+             'name': 'Ogre'}, 'north': False, 'east': False, 'south': False,
+                          'west': False, 'contents': 'X'}, test.json_dict(), "Verify dict converstion successful")
