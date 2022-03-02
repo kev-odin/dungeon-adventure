@@ -194,14 +194,15 @@ class DungeonCrawler(BaseFrame):
         cols = map.get_cols()
         box_height = int(canvas_height)/cols
 
-
+        # create the boxes of the dungeon, original dungeon missing the very top and left boarder. might be a tkinter thing.
         for i in range(rows):
             for j in range(cols):
-                map_canvas.create_rectangle((box_width)*j+2, (box_height)*i+2, box_width*(j+1), box_height*(i+1), width=3) # (box_width)*j+2 to make sure the left and top is also printed
+                # (box_width)*j+2 to make sure the very left and top boarder is also printed
+                map_canvas.create_rectangle(box_width * j + 2, box_height * i + 2, box_width * (j + 1), box_height * (i + 1), width=3)
                 # map_canvas.create_rectangle((box_width) * j, (box_height) * i, box_width * (j + 1),
                                             # box_height * (i + 1), width=3)
 
-
+        # Traverse through the 2d array and draw component of the room
         for i in range(rows):
             for j in range(cols):
 
@@ -209,10 +210,12 @@ class DungeonCrawler(BaseFrame):
                 for try_door in ['north', 'east', 'west', 'south']:
                     if dungeon.get_room([i,j]).get_door(try_door):
                         if try_door == 'east':
-                            map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1), box_height * (i + 3 / 4), width=10, fill='white')
+                            map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1),
+                                                   box_height * (i + 3 / 4), width=10, fill='white')
 
                         if try_door == 'west':
-                            map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j), box_height * (i + 3 / 4), width=10, fill='white')
+                            map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j),
+                                                   box_height * (i + 3 / 4), width=10, fill='white')
 
                         if try_door == 'north':
                             map_canvas.create_line(box_width * (j+1/4), box_height * (i), box_width * (j+3/4),
@@ -222,21 +225,76 @@ class DungeonCrawler(BaseFrame):
                                                    box_height * (i + 1), width=10, fill='white')
 
 
+                if dungeon.get_room([i, j]).contents == 'i':
+                    # "i", "O", "H", "V", "X", "M", "A", "P", "I", "E","*"
+                    map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
+                                           text="En",
+                                           fill="green", font=('Helvetica', '30', 'bold'))
+                elif dungeon.get_room([i, j]).contents == 'O':
+                    map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
+                                           text="Ex",
+                                           fill="green", font=('Helvetica', '30', 'bold'))
+                elif dungeon.get_room([i, j]).contents == 'H':
+                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                                           text="H",
+                                           fill="red", font=('Helvetica', '30', 'bold'))
+                elif dungeon.get_room([i, j]).contents == 'V':
+                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                                           text="V",
+                                           fill="blue", font=('Helvetica', '30', 'bold'))
+                elif dungeon.get_room([i, j]).contents == 'M':
+                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                                           text="M",
+                                           fill="yellow", font=('Helvetica', '30', 'bold'))
+                elif dungeon.get_room([i, j]).contents == 'A':
+                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                                           text="A",
+                                           fill="blue", font=('Helvetica', '30', 'bold'))
+                elif dungeon.get_room([i, j]).contents == 'P':
+                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                                           text="P",
+                                           fill="blue", font=('Helvetica', '30', 'bold'))
+                elif dungeon.get_room([i, j]).contents == 'I':
+                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                                           text="I",
+                                           fill="blue", font=('Helvetica', '30', 'bold'))
+                elif dungeon.get_room([i, j]).contents == 'E':
+                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                                           text="E",
+                                           fill="blue", font=('Helvetica', '30', 'bold'))
+
+
         # create purple dot to represent adventurer
         x_adventurer_loc = dungeon.adventurer_loc[0]
         y_adventurer_loc = dungeon.adventurer_loc[1]
-        map_canvas.create_oval(box_width * (y_adventurer_loc+1/4), box_height * (x_adventurer_loc+ 1/4), box_width * (y_adventurer_loc+3/4),box_height * (x_adventurer_loc+ 3/4), fill="purple")
+        map_canvas.create_oval(box_width * (y_adventurer_loc+1/4), box_height * (x_adventurer_loc+ 1/4),
+                               box_width * (y_adventurer_loc+3/4),box_height * (x_adventurer_loc+ 3/4), fill="purple")
 
-        # create text "En" to represent entrance, "Ex" to represent exit
-        x_entrance_loc = dungeon.entrance[0]
-        y_entrance_loc = dungeon.entrance[1]
-        map_canvas.create_text(box_width *(y_entrance_loc+1/4), box_height * (x_entrance_loc+ 1/4), text = "En", fill="green", font=('Helvetica','30','bold'))
+        # M stands for multiple items, H for health potion, V for vision potion
+        # if dungeon.get_room([i, j]).health_potion and dungeon.get_room([i, j]).vision_potion:
+        #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+        #                            text="M",
+        #                            fill="green", font=('Helvetica', '30', 'bold'))
+        # elif dungeon.get_room([i, j]).health_potion:
+        #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+        #                            text="H",
+        #                            fill="red", font=('Helvetica', '30', 'bold'))
+        # elif dungeon.get_room([i, j]).vision_potion:
+        #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+        #                            text="V",
+        #                            fill="blue", font=('Helvetica', '30', 'bold'))
 
-        x_exit_loc = dungeon.exit[0]
-        y_exit_loc = dungeon.exit[1]
-        map_canvas.create_text(box_width * (y_exit_loc + 1 / 4), box_height * (x_exit_loc + 1 / 4), text="Ex",
-                               fill="green", font=('Helvetica', '30', 'bold'))
 
+
+        # # create text "En" to represent entrance, "Ex" to represent exit
+        # x_entrance_loc = dungeon.entrance[0]
+        # y_entrance_loc = dungeon.entrance[1]
+        # map_canvas.create_text(box_width *(y_entrance_loc+1/4), box_height * (x_entrance_loc+ 1/4), text = "En",
+        #                        fill="green", font=('Helvetica','30','bold'))
+        # x_exit_loc = dungeon.exit[0]
+        # y_exit_loc = dungeon.exit[1]
+        # map_canvas.create_text(box_width * (y_exit_loc + 1 / 4), box_height * (x_exit_loc + 1 / 4), text="Ex",
+        #                        fill="green", font=('Helvetica', '30', 'bold'))
 
 
 
@@ -245,7 +303,7 @@ class DungeonCrawler(BaseFrame):
         # map_canvas.create_rectangle(box_width * 2, 0, box_width * 3, box_height)
         # map_canvas.create_rectangle(box_width * 3, 0, box_width * 4, box_height)
         # map_canvas.create_rectangle(box_width * 4, 0, box_width * 5, box_height)
-        #
+
         # map_canvas.create_rectangle(box_width * 0, box_height * 1, box_width * 1, box_height * 2)
         # map_canvas.create_rectangle(box_width * 1, box_height * 1, box_width * 2, box_height * 2)
         # map_canvas.create_rectangle(box_width * 2, box_height * 1, box_width * 3, box_height * 2)
@@ -253,9 +311,6 @@ class DungeonCrawler(BaseFrame):
         # map_canvas.create_rectangle(box_width * 4, box_height * 1, box_width * 5, box_height * 2)
 
 
-        print(dungeon.entrance)
-        print(dungeon.adventurer_loc)
-        print(dungeon.exit)
         print(dungeon.get_visible_dungeon_string())  # debug
 
         map_canvas.pack()
