@@ -185,35 +185,52 @@ class DungeonCrawler(BaseFrame):
 class DungeonBrawler(BaseFrame):
     def setup(self):
         self.dungeon_brawl_frame = Frame(self.root)
+        self.root.title("DungeonBrawler")
         left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
         right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
         combat_log = Frame(self.dungeon_brawl_frame, width = 400, height = 200, bg = "blue")
         combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
         
-        self.dungeon_brawl_frame.pack()
-        self.create_hero_frame(left_frame)
+        self.dungeon_brawl_frame.pack() 
+        # self.create_hero_frame(left_frame, "hello")
+        self.set_combat_action(combat_action)
+        self.set_combat_log(combat_log)
 
         left_frame.grid(row = 0, column= 0)
         right_frame.grid(row = 0, column= 1)
         combat_action.grid(row=1, column=0)
         combat_log.grid(row = 1, column= 1)
 
-
     def create_hero_frame(self, parent, hero = None):
         hero_frame = Frame(parent)
         hero_label = Label(hero_frame, text = f"{hero}", bg="white")
         hero_frame.pack(side = TOP)
-        hero_label.pack(side = TOP)
+        hero_label.grid(row = 0, column=0)
+        return hero_frame
 
     def set_monster(self, monster = None):
         monster_frame = Frame(self.right_frame)
         monster_label = Label(monster_frame, text = f"{monster}")
 
-    def set_combat_log(self):
-        pass
+    def set_combat_log(self, parent_frame, event = None):
+        canvas = parent_frame
+        text = Text(canvas, height=10)
+        text.grid(row=0, column=0, sticky='ew')
+        scrollbar = Scrollbar(canvas, orient='vertical', command= text.yview)
+        scrollbar.grid(row=0, column=0, sticky='ns')
 
-    def set_combat_action(self):
-        pass
+    def set_combat_action(self, parent_frame):
+        canvas = parent_frame
+
+        attack = Button(canvas, text="Attack", command= lambda: self.controller.set_move("n"))
+        special = Button(canvas, text="Special", command= lambda: self.controller.set_move("s"))
+        bag = Button(canvas, text="Bag", command= lambda: self.controller.set_move("w"))
+
+        attack.grid(row=0, column=1)
+        special.grid(row=0, column=2)
+        bag.grid(row=0, column=3)
+        
+        # return canvas
 
     def update_monster(self, controller):
         pass
