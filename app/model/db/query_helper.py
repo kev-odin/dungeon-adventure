@@ -98,9 +98,9 @@ class QueryHelper:
             if key not in save_data:
                 assert KeyError(f"Missing key {key} from save dictionary.")
         self._connect()
-        sql_insert = """INSERT INTO saves VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
+        sql_insert = """INSERT INTO saves VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
         self._cur.execute(sql_insert, (save_data["timestamp"], save_data["hero_name"], save_data["class"],
                                        save_data["difficulty"], save_data["current_hp"], save_data["max_hp"],
-                                       save_data["dungeon"], save_data["adventurer"]))
+                                       save_data["dungeon"], save_data["adventurer"], save_data["map"]))
         self._con.commit()
         self._disconnect()

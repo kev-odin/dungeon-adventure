@@ -56,10 +56,19 @@ class DungeonBuilder:
 
     def __set_map(self):
         """
-        Sets a map as part of the build dungeon routine.  Sets visited rooms to the entranc elocation.
+        Sets a map as part of the build dungeon routine.  Sets visited rooms to the entrance location.
+        Visited rooms are set to True (the entrance), unvisited set to False (all other locations).
         :return: None
         """
-        self.__complete_map = Map(self.__settings["row"], self.__settings["col"])
+        dungeon = self.__complete_dungeon.dungeon_dict
+        visited_array = []
+        for row in range(dungeon["rows"]):
+            visited_array.append([])
+            for col in range(dungeon["cols"]):
+                visited_array[row].append([])
+                visited_array[row][col] = False
+        map_dict = {"rows": dungeon["rows"], "cols": dungeon["cols"], "visited_array": visited_array}
+        self.__complete_map = Map(map_dict)
         self.__complete_map.set_visited_room(self.__entrance[0], self.__entrance[1])
 
     def __set_adventurer(self):

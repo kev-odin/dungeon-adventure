@@ -1,9 +1,9 @@
 """
 Below are the scripts for building the python sql database.
 """
-# import sqlite3
-# con = sqlite3.connect('app.db')
-# cur = con.cursor()
+import sqlite3
+con = sqlite3.connect('app.db')
+cur = con.cursor()
 
 # cur.execute('''CREATE TABLE dng_diff
 #                 (difficulty text, impassable_chance real, hp_chance real, vp_chance real, many_chance real, monster_chance real, max_hp_pots int, max_vp int, row int, col int)''')
@@ -35,9 +35,9 @@ Below are the scripts for building the python sql database.
 
 # con.commit()
 
-# cur.execute('''CREATE TABLE saves
-#                 (timestamp text, hero_name text, class text, difficulty text, current_hp int, max_hp int, dungeon text, adventurer text)''')
-#
-# con.commit()
-#
-# con.close()
+cur.execute('''CREATE TABLE saves
+                (timestamp text, hero_name text, class text, difficulty text, current_hp int, max_hp int, dungeon text, adventurer text, map text)''')
+
+con.commit()
+
+con.close()
