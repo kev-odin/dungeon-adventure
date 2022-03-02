@@ -97,17 +97,10 @@ class QueryHelper:
         for key in keys:
             if key not in save_data:
                 assert KeyError(f"Missing key {key} from save dictionary.")
-        # Uncertain how to pass dict values into SQL query, soooo passing as values instead.
-        time_stamp = save_data["timestamp"]
-        name = save_data["hero_name"]
-        hero_class = save_data["class"]
-        diff = save_data["difficulty"]
-        curr_hp = save_data["current_hp"]
-        hp_max = save_data["max_hp"]
-        dungeon_json = save_data["dungeon"]
-        adventurer_json = save_data["adventurer"]
         self._connect()
         sql_insert = """INSERT INTO saves VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
-        self._cur.execute(sql_insert, (time_stamp, name, hero_class, diff, curr_hp, hp_max, dungeon_json, adventurer_json))
+        self._cur.execute(sql_insert, (save_data["timestamp"], save_data["hero_name"], save_data["class"],
+                                       save_data["difficulty"], save_data["current_hp"], save_data["max_hp"],
+                                       save_data["dungeon"], save_data["adventurer"]))
         self._con.commit()
         self._disconnect()
