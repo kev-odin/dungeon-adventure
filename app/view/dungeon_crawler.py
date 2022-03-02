@@ -185,23 +185,34 @@ class DungeonCrawler(BaseFrame):
 class DungeonBrawler(BaseFrame):
     def setup(self):
         self.dungeon_brawl_frame = Frame(self.root)
-        self.adventurer_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
-        self.monster_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
-        self.combat = Frame(self.dungeon_brawl_frame, width = 800, height = 200, bg = "blue")
-        
-        self.adventurer_frame.pack(side=LEFT, fill=X)
-        self.monster_frame.pack(side=RIGHT, fill=X)
-        self.combat.pack(side=BOTTOM, fill = Y)
+        left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
+        right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
+        combat_log = Frame(self.dungeon_brawl_frame, width = 400, height = 200, bg = "blue")
+        combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
         
         self.dungeon_brawl_frame.pack()
-    
-    def set_monster(self):
+        self.create_hero_frame(left_frame)
+
+        left_frame.grid(row = 0, column= 0)
+        right_frame.grid(row = 0, column= 1)
+        combat_action.grid(row=1, column=0)
+        combat_log.grid(row = 1, column= 1)
+
+
+    def create_hero_frame(self, parent, hero = None):
+        hero_frame = Frame(parent)
+        hero_label = Label(hero_frame, text = f"{hero}", bg="white")
+        hero_frame.pack(side = TOP)
+        hero_label.pack(side = TOP)
+
+    def set_monster(self, monster = None):
+        monster_frame = Frame(self.right_frame)
+        monster_label = Label(monster_frame, text = f"{monster}")
+
+    def set_combat_log(self):
         pass
 
-    def set_hero(self):
-        pass
-
-    def set_combat(self):
+    def set_combat_action(self):
         pass
 
     def update_monster(self, controller):
@@ -210,7 +221,10 @@ class DungeonBrawler(BaseFrame):
     def update_hero(self, controller):
         pass
 
-    def update_combat(self, controller):
+    def update_combat_action(self, controller):
+        pass
+
+    def update_combat_log(self, controller):
         pass
 
 if __name__ == "__main__":
