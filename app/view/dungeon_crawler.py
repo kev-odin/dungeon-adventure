@@ -225,7 +225,18 @@ class DungeonCrawler(BaseFrame):
         # create purple dot to represent adventurer
         x_adventurer_loc = dungeon.adventurer_loc[0]
         y_adventurer_loc = dungeon.adventurer_loc[1]
-        map_canvas.create_oval(box_width * (y_adventurer_loc+1/4),box_height * (x_adventurer_loc+ 1/4), box_width * (y_adventurer_loc+3/4),box_height * (x_adventurer_loc+ 3/4), fill="purple")
+        map_canvas.create_oval(box_width * (y_adventurer_loc+1/4), box_height * (x_adventurer_loc+ 1/4), box_width * (y_adventurer_loc+3/4),box_height * (x_adventurer_loc+ 3/4), fill="purple")
+
+        # create text "En" to represent entrance, "Ex" to represent exit
+        x_entrance_loc = dungeon.entrance[0]
+        y_entrance_loc = dungeon.entrance[1]
+        map_canvas.create_text(box_width *(y_entrance_loc+1/4), box_height * (x_entrance_loc+ 1/4), text = "En", fill="green", font=('Helvetica','30','bold'))
+
+        x_exit_loc = dungeon.exit[0]
+        y_exit_loc = dungeon.exit[1]
+        map_canvas.create_text(box_width * (y_exit_loc + 1 / 4), box_height * (x_exit_loc + 1 / 4), text="Ex",
+                               fill="green", font=('Helvetica', '30', 'bold'))
+
 
 
 
