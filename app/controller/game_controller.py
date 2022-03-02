@@ -105,6 +105,20 @@ class GameController:
         # brawl = DungeonBrawler()
         # self.__view = brawl
         # self.__view.setup()
+        # Change over to the DungeonBrawler view
+        # while the hero and monster is alive ensure that the event loop continues
+            # Update health of both adventurer and monster at the start of each round
+            # Compare the attack speed of both the monster and adventurer
+            # higher attack speed goes first
+            # example: hero - as(5); monster - as(4)
+            # Since, we can based on attacks per round we will go with hero / monster
+            # hero_attacks = 1.25, so every 4 turns, we get an extra attack.
+            # Update DungeonBrawler with relevant information at the start of each round.
+            # if monster dies:
+                # Collect items, then go back to DungeonCrawler
+                # Update hero information within DungeonCrawler
+            # if hero dies:
+                # Prompt a Game Over frame, with options to start a new game or quit.
         print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
 
     def set_bag(self, room):
