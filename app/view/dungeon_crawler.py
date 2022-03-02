@@ -184,7 +184,7 @@ class DungeonCrawler(BaseFrame):
     def set_map_display(self, map, dungeon):
         map_window = Toplevel(self.root)
         map_window.title("Dungeon complete map")
-        map_window.geometry("400x400")  # window dimension same as canvas, will it be a problem when drawing?
+        map_window.geometry("420x420")  # window dimension 20 pixel greater than canvas, for the display purpose
         canvas_width = "400"
         canvas_height = "400"
         map_canvas = Canvas(map_window, width=canvas_width, height=canvas_height)
@@ -197,34 +197,35 @@ class DungeonCrawler(BaseFrame):
 
         for i in range(rows):
             for j in range(cols):
-                map_canvas.create_rectangle((box_width)*j, (box_height)*i, box_width*(j+1), box_height*(i+1), width=3)
+                map_canvas.create_rectangle((box_width)*j+2, (box_height)*i+2, box_width*(j+1), box_height*(i+1), width=3) # (box_width)*j+2 to make sure the left and top is also printed
+                # map_canvas.create_rectangle((box_width) * j, (box_height) * i, box_width * (j + 1),
+                                            # box_height * (i + 1), width=3)
 
 
         for i in range(rows):
             for j in range(cols):
+
+                # create rectangle to represent doors
                 for try_door in ['north', 'east', 'west', 'south']:
                     if dungeon.get_room([i,j]).get_door(try_door):
-                        if try_door == 'east': # east door is working!!
-                            map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1), box_height * (i + 3 / 4), width=3, fill='white')
+                        if try_door == 'east':
+                            map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1), box_height * (i + 3 / 4), width=10, fill='white')
 
-                        if try_door == 'west': # west door is working!!
-                            map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j), box_height * (i + 3 / 4), width=3, fill='white')
+                        if try_door == 'west':
+                            map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j), box_height * (i + 3 / 4), width=10, fill='white')
 
-                        if try_door == 'north':  # west door is working!!
+                        if try_door == 'north':
                             map_canvas.create_line(box_width * (j+1/4), box_height * (i), box_width * (j+3/4),
-                                                   box_height * (i), width=3, fill='white')
-                        if try_door == 'south':  # west door is working!!
+                                                   box_height * (i), width=10, fill='white')
+                        if try_door == 'south':
                             map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
-                                                   box_height * (i + 1), width=3, fill='white')
+                                                   box_height * (i + 1), width=10, fill='white')
 
-                # map_canvas.create_line(box_width * (0 + 1), box_height * (0 + 1 / 4), box_width * (0 + 1),
-                #                        box_height * (0 + 3 / 4), width=3, fill='white')
-                # map_canvas.create_line(box_width * (1 + 1), box_height * (0 + 1 / 4), box_width * (1 + 1),
-                #                        box_height * (0 + 3 / 4), width=3, fill='white')
-                # map_canvas.create_line(box_width * (1 + 1), box_height * (1 + 1 / 4), box_width * (1 + 1),
-                #                        box_height * (1 + 3 / 4), width=3, fill='white')
-                # map_canvas.create_line(box_width * (4 + 1), box_height * (4 + 1 / 4), box_width * (4 + 1),
-                #                        box_height * (4 + 3 / 4), width=3, fill='white')
+
+        # create purple dot to represent adventurer
+        x_adventurer_loc = dungeon.adventurer_loc[0]
+        y_adventurer_loc = dungeon.adventurer_loc[1]
+        map_canvas.create_oval(box_width * (y_adventurer_loc+1/4),box_height * (x_adventurer_loc+ 1/4), box_width * (y_adventurer_loc+3/4),box_height * (x_adventurer_loc+ 3/4), fill="purple")
 
 
 
@@ -241,7 +242,9 @@ class DungeonCrawler(BaseFrame):
         # map_canvas.create_rectangle(box_width * 4, box_height * 1, box_width * 5, box_height * 2)
 
 
-
+        print(dungeon.entrance)
+        print(dungeon.adventurer_loc)
+        print(dungeon.exit)
         print(dungeon.get_visible_dungeon_string())  # debug
 
         map_canvas.pack()
