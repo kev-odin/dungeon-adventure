@@ -278,5 +278,5 @@ class TestDungeon(unittest.TestCase):
 
     def test_json_dict(self):
         dungeon = self.init_dungeon("Easy")
-        check = type(dungeon.json_dict())
+        check = type(dungeon.json_dict)
         self.assertEqual(dict, check, "Failed to make a dictionary of dictionary rooms.")

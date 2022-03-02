@@ -1,9 +1,3 @@
-"""
-Time used: 34 hours: main + map + test
-xingguo
-"""
-
-
 class Map:
     """
         Map class to create a 2D array list to store the rooms traveled.

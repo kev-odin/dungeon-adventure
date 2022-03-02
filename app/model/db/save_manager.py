@@ -8,6 +8,13 @@ class SaveManager:
     """
     @staticmethod
     def save(dungeon_dict: dict, adventurer_dict: dict, map_dict: dict):
+        """
+        Sets up dictionary to send to queryhelper to save the game.
+        :param dungeon_dict: dict representing dungeon with every object inside stored as a dict.
+        :param adventurer_dict: dict representing the adventurer.  Just basic char_dict
+        :param map_dict: dict representing the map.
+        :return: True if no errors occurred while attempting to save.  False if an error occurred and save failed.
+        """
         save_dict = {}
         current_time = str(datetime.now())
         save_dict["timestamp"] = current_time  # How we will query for saves to load.
