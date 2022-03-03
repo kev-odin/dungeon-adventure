@@ -309,3 +309,9 @@ class TestRoom(unittest.TestCase):
              'min_heal': 30,
              'name': 'Ogre'}, 'north': False, 'east': False, 'south': False,
                           'west': False, 'contents': 'X'}, test.json_dict(), "Verify dict converstion successful")
+
+    def test_doors(self):
+            test = Room()
+            test.set_door("east", True)
+            expected = {"east": True,'north': False, "south": False, "west": False }
+            self.assertDictEqual(expected, test.doors, "Check that doors dict presented as expected")

@@ -200,8 +200,8 @@ class Adventurer(DungeonCharacter, ABC):
 
     def take_damage(self, damage: int, always_hits=False):
         """
-        Adventurer takes damage, most likely from combat.
-        Inheritance pillar power reduces pit damage by half.
+        Adventurer takes damage, most likely from combat.  Has a chance to block.
+        Inheritance pillar power reduces damage by half.
         :param damage: int representing damage dealt to adventurer
         :param always_hits: if True, cannot block.  If false, can block.
         :return: int, 0 if they blocked the damage, damage if taken.

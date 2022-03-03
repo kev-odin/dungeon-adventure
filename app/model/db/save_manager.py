@@ -36,7 +36,24 @@ class SaveManager:
         except BaseException:  # Literally anything happened that shouldn't have.
             return False
 
-    def load(self):
+    @staticmethod
+    def get_saved_games():
+        """
+        Returns a sorted list (by timestamp) of dictionaries of all saved games with "timestamp", "hero_name",
+        "class", "difficulty", "current_hp", "max_hp".
+        :return: list of dicts
+        """
         pass
+
+    @staticmethod
+    def load(timestamp):
+        """
+        Selects and loads a game based on its timestamp.  Returns the dungeon, adventurerer, and map objects.
+        :param timestamp: str matching datetime in saves db.
+        :return: tuple (dungeon, adventurerer, map)
+        """
+        pass
+
+
 
 

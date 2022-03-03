@@ -332,6 +332,19 @@ class Room:
     def room_dict(self):
         return self.__room_dict
 
+    @property
+    def doors(self):
+        """
+        Returns dictionary for "east", "west", "north", and "south" doors with matching bool (True if door in that
+        direction, false otherwise).
+        :return: dict representing directions and whether there's a door there.
+        """
+        doors_dict = {}
+        keys = {"east", "west", "north", "south"}
+        for key in keys:
+            doors_dict[key] = self.__room_dict[key]
+        return doors_dict
+
     def json_dict(self):
         """
         :return: dictionary in json friendly format with objects within dict converted to json friendly dicts.

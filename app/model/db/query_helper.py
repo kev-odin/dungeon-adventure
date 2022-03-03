@@ -92,8 +92,13 @@ class QueryHelper:
     def console(self):
         return self._con
 
-    def save_game(self, save_data):
-        keys = {"timestamp", "hero_name","class", "difficulty", "current_hp", "max_hp", "dungeon", "adventurer"}
+    def save_game(self, save_data: dict):
+        """
+        Saves game in saves table with save_data.  Varifies keys required in dict.
+        :param save_data: dict, timestamp - str, hero_name - str, class - str, difficulty - str, current_hp - int,
+            max_hp - int, dungeon - json string, adventurerer - json string, save_data - json string.
+        """
+        keys = {"timestamp", "hero_name","class", "difficulty", "current_hp", "max_hp", "dungeon", "adventurer", "map"}
         for key in keys:
             if key not in save_data:
                 assert KeyError(f"Missing key {key} from save dictionary.")
