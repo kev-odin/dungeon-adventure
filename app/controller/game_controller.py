@@ -154,8 +154,9 @@ class GameController:
         """Update the DungeonCrawler frame with map information from the model.
         """
         print("DEBUG - Retrieving the hero position")
+        map = self.__model["map"]
         adv_telemetry = self.__model["dungeon"]
-        self.__view.set_dungeon_display(adv_telemetry)
+        self.__view.set_dungeon_display(map, adv_telemetry)
 
     def update_adv_bag(self):
         """Update the DungeonCrawler frame with hero inventory information from the model.

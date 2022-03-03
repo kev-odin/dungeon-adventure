@@ -112,7 +112,7 @@ class DungeonCrawler(BaseFrame):
 
         canvas.pack()
 
-    def set_dungeon_display(self, adv_telemetry):
+    def set_dungeon_display(self, map, adv_telemetry):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
         """
         canvas = self.root
@@ -127,7 +127,21 @@ class DungeonCrawler(BaseFrame):
         for i in range(3):
             for j in range(3):
                 adjacent_rooms_canvas.create_rectangle(box_width * j + 2, box_height * i + 2, box_width * (j + 1),
-                                            box_height * (i + 1), width=3)
+                                                       box_height * (i + 1), width=3)
+
+
+                if not map.visited_array()[i][j]:
+                    adjacent_rooms_canvas.create_rectangle(box_width * j + 2, box_height * i + 2, box_width * (j + 1),
+                                                           box_height * (i + 1), width=3, fill='grey')
+                # print a purple circle on the 3x3 grid to represent the hero, no matter what it is centered
+                if i == 1 and j == 1:
+                    adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
+
+
+        print(map.visited_array())
+
+        print("set_dungeon_display print adv_loc:")
+        print(adv_telemetry.adventurer_loc)
 
         # base_dir = os.path.dirname(os.path.abspath(__file__))
         # path = os.path.join(base_dir, "image assets/priest.gif") # debug
@@ -135,11 +149,12 @@ class DungeonCrawler(BaseFrame):
         # adjacent_rooms_canvas.create_image(125, 125, image=img, anchor='nw')
 
         # print a purple circle on the 3x3 grid to represent the hero
-        adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
+        # adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
 
         # greyed out the box if that room is no traveled yet
-        adjacent_rooms_canvas.create_rectangle(0, 0, box_width * (1),
-                                               box_height * (1), width=3, fill = 'grey')
+
+        # adjacent_rooms_canvas.create_rectangle(0, 0, box_width * (1),
+        #                                        box_height * (1), width=3, fill = 'grey')
 
 
         # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc)) # this get room will return a room(string)
@@ -246,7 +261,8 @@ class DungeonCrawler(BaseFrame):
                     color = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][1] # get the key value from the dictionary
                     map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
                                            text=text,
-                                           fill=color, font=('Helvetica', '10', 'bold'))
+                                           fill=color, font=('Helvetica', str(int(100/rows)), 'bold'))
+                                            # "str(int(100/rows))" is used to adjust the font size according to the rows
 
 
         # create purple dot to represent adventurer
