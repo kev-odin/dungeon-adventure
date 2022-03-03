@@ -79,7 +79,7 @@ class DungeonCrawler(BaseFrame):
         """
         canvas = self.dungeon_crawl_canvas
         bag = Button(canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
-        map = Button(canvas, text= "Map", command= lambda: self.controller.still_playing())
+        map = Button(canvas, text= "Map", command= lambda: self.controller.update_adv_map())
         
         bag.grid(row=3, column=1, sticky="nswe")
         map.grid(row=3, column=2, sticky="nswe")
