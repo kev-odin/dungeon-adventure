@@ -1,3 +1,6 @@
+"""
+Below are the scripts for building the python sql database.
+"""
 import sqlite3
 con = sqlite3.connect('app.db')
 cur = con.cursor()
@@ -29,6 +32,11 @@ cur = con.cursor()
 
 # cur.execute('''CREATE TABLE classes
 #                (name text, hp int, attack_speed int, hit_chance float, min_dmg int, max_dmg int, block_chance float, special text)''')
+
+# con.commit()
+
+cur.execute('''CREATE TABLE saves
+                (timestamp text, hero_name text, class text, difficulty text, current_hp int, max_hp int, dungeon text, adventurer text, map text)''')
 
 con.commit()
 
