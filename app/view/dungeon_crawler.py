@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter as tk
-from PIL import Image
-import os
+
 
 # TODO: Readable pillars in the bag view
 # TODO: Ability to use items in the bag view
@@ -235,7 +234,7 @@ class DungeonCrawler(BaseFrame):
                     'O':('Ex','green'),
                     'H':('H','red'),
                     'V':('V','blue'),
-                    'M':('M','yellow'),
+                    'M':('M','orange'),
                     'A':('A','purple'),
                     'P':('P','purple'),
                     'I':('I','purple'),
@@ -247,7 +246,7 @@ class DungeonCrawler(BaseFrame):
                     color = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][1] # get the key value from the dictionary
                     map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
                                            text=text,
-                                           fill=color, font=('Helvetica', '30', 'bold'))
+                                           fill=color, font=('Helvetica', '10', 'bold'))
 
 
         # create purple dot to represent adventurer
