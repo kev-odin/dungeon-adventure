@@ -109,12 +109,12 @@ class GameController:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
             print(f"{new_room}")
-            moving = self.__model["dungeon"].get_visible_dungeon_string() # Just for easy debug
+            moving = self.get_dungeon() # DEBUG
             print(f"{moving}")
 
             if new_room.monster:
-                hero = self.__model["hero"]
-                monster = self.__model["dungeon"].monster
+                hero = self.get_hero()
+                monster = self.get_monster()
                 self.start_combat(hero, monster)
 
             if new_room.contents:
@@ -124,9 +124,7 @@ class GameController:
             return f"An error occured. Please verify the {move} is a valid option."
 
     def start_combat(self, hero = None, monster = None):
-        # brawl = DungeonBrawler()
-        # self.__view = brawl
-        # self.__view.setup()
+        print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
         # Change over to the DungeonBrawler view
         # while the hero and monster is alive ensure that the event loop continues
             # Update health of both adventurer and monster at the start of each round
@@ -141,7 +139,6 @@ class GameController:
                 # Update hero information within DungeonCrawler
             # if hero dies:
                 # Prompt a Game Over frame, with options to start a new game or quit.
-        print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
@@ -186,16 +183,12 @@ class GameController:
         except ValueError:
             return f"An error occurred.  Please verify {difficulty} is a valid option."
 
-    def update_dungeon_movement(self, valid_rooms):
-        valid_rooms = self.__model["dungeon"]
-
-
     def update_adv_info(self):
         """Update the DungeonCrawler frame with hero information from the model.
         """
-        hero_name = self.__model["hero"].name
-        hero_hp = self.__model["hero"].current_hitpoints
-        hero_max_hp = self.__model["hero"].max_hitpoints
+        hero_name = self.get_hero_name()
+        hero_hp = self.get_hero_curr_hp()
+        hero_max_hp = self.get_hero_max_hp()
         self.__view.set_adventurer_info(hero_name, hero_hp, hero_max_hp)
 
     def update_dungeon_display(self):
@@ -221,20 +214,76 @@ class GameController:
         }
         print(f"DEBUG - {bag}")
         self.__view.set_bag_display(bag)
-    
-    def get_collected_pillars(self):
-        return self.__model["hero"].pillars_collected
-
-    def get_health_pots(self):
-        return self.__model["hero"].health_pots
-    
-    def get_vision_pots(self):
-        return self.__model["hero"].vision_pots
 
     def update_adv_map(self):
         """Update the frame with map information from the model.
         """
         print("DEBUG - Pressing the Map Button")
+    
+    def get_hero(self):
+        """Hero getter for the model.
+        :return: Hero object
+        """
+        return self.__model["hero"]
+
+    def get_monster(self):
+        """Returns the current monster that the hero has encountered in the room.
+        :return: Monster object
+        """
+        return self.__model["dungeon"].monster
+
+    def get_hero_name(self):
+        """Hero name getter for the model.
+        :return: str
+        """
+        return self.__model["hero"].name
+
+    def get_hero_curr_hp(self):
+        """Hero current hp getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].current_hitpoints
+    
+    def get_hero_max_hp(self):
+        """Hero max hp getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].max_hitpoints
+    
+    def get_collected_pillars(self):
+        """Hero current health count getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].pillars_collected
+
+    def get_health_pots(self):
+        """Hero current health count getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].health_pots
+    
+    def get_vision_pots(self):
+        """Hero current vision count getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].vision_pots
+
+    def get_dungeon(self):
+        """Entire dungeon representation in this string 
+        :return: str
+        """
+        return self.__model["dungeon"].get_visible_dungeon_string()
+
+    def get_hero_location(self):
+        return self.__model["dungeon"].adventurer_loc
+
+    def get_room(self, location):
+        return self.__model["dungeon"].get_room(location)
+
+    def get_current_doors(self):
+        current_loc = self.get_hero_location()
+        current_room = self.get_room(current_loc)
+        return current_room.doors
         
     def still_playing(self):
         return self.__model["hero"].is_alive()

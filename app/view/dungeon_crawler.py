@@ -10,7 +10,7 @@ class BaseFrame(tk.Frame):
     def __init__(self):
         self.root = Tk()
         self.root.resizable(height = False, width = False)
-        self.root.title("Dungeon Adventure 2.0 - The Spoony Bard Returns")
+        self.root.title("Dungeon Adventure 2.0")
         self.root.geometry("800x600")
         self.controller = None
         self.basic_menu_bar()
@@ -155,12 +155,15 @@ class DungeonCrawler(BaseFrame):
         :type bag_stuff: dictionary {pillars : {str : bool}, "health" : int, "vision" : int}
         """
 
-        def update_counter(label, potion_type):
+        def update_counter(label, button, potion_type):
             
             if potion_type == "Health":
                 curr_count = self.controller.get_health_pots()
             elif potion_type == "Vision":
                 curr_count = self.controller.get_vision_pots()
+            
+            if curr_count == 0:
+                button["state"] = DISABLED
 
             label["text"] = f"{potion_type} Potion Count: {curr_count}"
 
@@ -196,14 +199,14 @@ class DungeonCrawler(BaseFrame):
 
             if bag_stuff["health"]:
                 health_lbl = Label(potion_frame, text = f"Health Potion Count: {bag_stuff['health']}", padx = 10)
-                use_health = Button(potion_frame, text="Use Health Potion", command = lambda: [self.controller.set_potion("health"), update_counter(health_lbl, "Health")])
+                use_health = Button(potion_frame, text="Use Health Potion", command = lambda: [self.controller.set_potion("health"), update_counter(health_lbl, use_health, "Health")])
                 
                 health_lbl.grid(row=0, column=0)
                 use_health.grid(row=0, column=1)
 
             if bag_stuff["vision"]:
                 vision_lbl = Label(potion_frame, text = f"Vision Potion Count: {bag_stuff['vision']}", padx = 10)
-                use_vision = Button(potion_frame, text="Use Vision Potion", command = lambda: [self.controller.set_potion("vision"), update_counter(vision_lbl, "Vision")])
+                use_vision = Button(potion_frame, text="Use Vision Potion", command = lambda: [self.controller.set_potion("vision"), update_counter(vision_lbl, use_vision, "Vision")])
                 
                 vision_lbl.grid(row=1, column=0)
                 use_vision.grid(row=1, column=1)
@@ -211,7 +214,7 @@ class DungeonCrawler(BaseFrame):
 class DungeonBrawler(BaseFrame):
     def setup(self):
         self.dungeon_brawl_frame = Frame(self.root)
-        self.root.title("DungeonBrawler")
+        self.root.title("Dungeon Adventure 2.0 - DungeonCrawler")
         left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
         right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
         combat_log = Frame(self.dungeon_brawl_frame, width = 400, height = 200, bg = "blue")
@@ -233,8 +236,6 @@ class DungeonBrawler(BaseFrame):
         hero_frame.pack(side = TOP)
         hero_label.grid(row = 0, column=0)
         
-        # return hero_frame
-
     def set_monster(self, monster = None):
         monster_frame = Frame(self.right_frame)
         monster_label = Label(monster_frame, text = f"{monster}")
