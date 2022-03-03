@@ -144,68 +144,57 @@ class DungeonCrawler(BaseFrame):
         labelFrame_width = 300
         labelFrame_height = 300
         adjacent_rooms_frame = LabelFrame(canvas, width = labelFrame_width, height = labelFrame_height, bg = "White")
-        adjacent_rooms_canvas = Canvas(adjacent_rooms_frame, width = 300, height = 300, bg = "black")
+        adjacent_rooms_canvas = Canvas(adjacent_rooms_frame, width = 300, height = 300, bg = "white")
         box_width = labelFrame_width/3
         box_height = labelFrame_height/3
 
+        # create a 3x3 grid to show the dungeon
         for i in range(3):
             for j in range(3):
-                # create a 3x3 grid to show the dungeon
                 adjacent_rooms_canvas.create_rectangle(box_width * (j) + 2, box_height * (i) + 2,
                                                        box_width * (j + 1),
                                                        box_height * (i + 1), width=3)
 
-
-
-        x_offset = adv_telemetry.adventurer_loc[0] - 1
-        y_offset = adv_telemetry.adventurer_loc[1] - 1
-
-        for i in range(adv_telemetry.adventurer_loc[0] - 1, adv_telemetry.adventurer_loc[0] + 2):
-            for j in range(adv_telemetry.adventurer_loc[1] - 1, adv_telemetry.adventurer_loc[1] + 2):
-
-                if not map.visited_array()[i][j]:
-
-                    adjacent_rooms_canvas.create_rectangle(box_width * (j - x_offset) + 2,
-                                                           box_height * (i - y_offset) + 2,
-                                                           box_width * (j - x_offset + 1),
-                                                           box_height * (i - y_offset + 1), width=3,fill='grey')
+        # use the adventurer's loc to try the doors, if there is a door then print grey room to that direction
+        x_adv_loc = adv_telemetry.adventurer_loc[0]
+        y_adv_loc = adv_telemetry.adventurer_loc[1]
+        for try_door in ['north', 'south', 'east', 'west']:
+            if adv_telemetry.get_room([x_adv_loc, y_adv_loc]).get_door(try_door):
+                if try_door == 'north':
+                    adjacent_rooms_canvas.create_rectangle(box_width * (1),
+                                                           box_height * (0),
+                                                           box_width * (2),
+                                                           box_height * (1), width=3, fill='grey')
+                if try_door == 'south':
+                    adjacent_rooms_canvas.create_rectangle(box_width * (1),
+                                                           box_height * (2),
+                                                           box_width * (2),
+                                                           box_height * (3), width=3, fill='grey')
+                if try_door == 'east':
+                    adjacent_rooms_canvas.create_rectangle(box_width * (2),
+                                                          box_height * (1),
+                                                          box_width * (3),
+                                                          box_height * (2), width=3, fill='grey')
+                if try_door == 'west':
+                    adjacent_rooms_canvas.create_rectangle(box_width * (0),
+                                                           box_height * (1),
+                                                           box_width * (1),
+                                                           box_height * (2), width=3, fill='grey')
 
 
         print('map.visited 2d array:')
         print(map.visited_array())
-
-        print(map.visited_array()[adv_telemetry.adventurer_loc[0] - 1][adv_telemetry.adventurer_loc[1] - 1])
-
-        print("set_dungeon_display print adv_loc:")
-        print(adv_telemetry.adventurer_loc)
-        print((adv_telemetry.adventurer_loc[0] - 1, adv_telemetry.adventurer_loc[1]- 1)) # top left
-        print((adv_telemetry.adventurer_loc[0] - 1, adv_telemetry.adventurer_loc[1] ))  # top middle
-        print((adv_telemetry.adventurer_loc[0] - 1, adv_telemetry.adventurer_loc[1] +1))  # top right
 
         # base_dir = os.path.dirname(os.path.abspath(__file__))
         # path = os.path.join(base_dir, "image assets/priest.gif") # debug
         # img = PhotoImage(file=path)
         # adjacent_rooms_canvas.create_image(125, 125, image=img, anchor='nw')
 
-        # print a purple circle on the 3x3 grid to represent the hero
-        # adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
-
-        # greyed out the box if that room is no traveled yet
-
-        # adjacent_rooms_canvas.create_rectangle(0, 0, box_width * (1),
-        #                                        box_height * (1), width=3, fill = 'grey')
-
-
-        # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc)) # this get room will return a room(string)
-        # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc).string_top())
-
-        # print a purple circle on the 3x3 grid to represent the hero, no matter what it is centered
+        # print a purple circle at the center of the 3x3 grid to represent the hero
         adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
 
-        # use the adventurer_loc from the dungeon class to update the current dungeon display window
         adjacent_rooms_canvas.pack()
         adjacent_rooms_frame.place(relx = 0.5, rely = 0.25, anchor = N)
-
 
     def set_bag_display(self, bag_stuff):
         """Display the current hero bag to player
