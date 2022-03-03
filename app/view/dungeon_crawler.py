@@ -155,8 +155,13 @@ class DungeonCrawler(BaseFrame):
         :type bag_stuff: dictionary {pillars : {str : bool}, "health" : int, "vision" : int}
         """
 
-        def update_counter(label, curr_count, potion_type):
-            curr_count -= 1
+        def update_counter(label, potion_type):
+            
+            if potion_type == "Health":
+                curr_count = self.controller.get_health_pots()
+            elif potion_type == "Vision":
+                curr_count = self.controller.get_vision_pots()
+
             label["text"] = f"{potion_type} Potion Count: {curr_count}"
 
         bag = Toplevel(self.root)
@@ -190,19 +195,17 @@ class DungeonCrawler(BaseFrame):
             potion_frame.pack(side=TOP)
 
             if bag_stuff["health"]:
-                health_int = bag_stuff["health"]
-                health_count = Label(potion_frame, text = f"Health Potion Count: {health_int}", padx = 10)
-                use_health = Button(potion_frame, text="Use Health Potion", command = lambda: [self.controller.set_potion("health"), update_counter(health_count, health_int, "Health")])
+                health_lbl = Label(potion_frame, text = f"Health Potion Count: {bag_stuff['health']}", padx = 10)
+                use_health = Button(potion_frame, text="Use Health Potion", command = lambda: [self.controller.set_potion("health"), update_counter(health_lbl, "Health")])
                 
-                health_count.grid(row=0, column=0)
+                health_lbl.grid(row=0, column=0)
                 use_health.grid(row=0, column=1)
 
             if bag_stuff["vision"]:
-                vision_int = bag_stuff["vision"]
-                vision_count = Label(potion_frame, text = f"Vision Potion Count: {vision_int}", padx = 10)
-                use_vision = Button(potion_frame, text="Use Vision Potion", command = lambda: [self.controller.set_potion("vision"), update_counter(vision_count, vision_int, "Vision")])
+                vision_lbl = Label(potion_frame, text = f"Vision Potion Count: {bag_stuff['vision']}", padx = 10)
+                use_vision = Button(potion_frame, text="Use Vision Potion", command = lambda: [self.controller.set_potion("vision"), update_counter(vision_lbl, "Vision")])
                 
-                vision_count.grid(row=1, column=0)
+                vision_lbl.grid(row=1, column=0)
                 use_vision.grid(row=1, column=1)
 
 class DungeonBrawler(BaseFrame):

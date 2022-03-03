@@ -14,7 +14,6 @@ from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 # TODO: Quit Game                                   - WIP
 # TODO: Save Game                                   - WIP
 
-
 # Controller methods are accessed by the view because we are passing the reference to Controller.
 
 # From here everything you need from the dungeon and adventurer can be accessed via dungeon builder.
@@ -172,8 +171,8 @@ class GameController:
             self.__model["hero"].heal_adventurer(heal)
             print("DEBUG - Should be using a health potion")
         
-        if potion == "vision":
-            print(f"DEBUG - Not Implemented yet.")
+        if potion == "vision" and self.__model["hero"].has_vision_potion():
+            print(f"DEBUG - Should be using a vision potion")
 
     def create_adventurer(self, name: str, class_name: str):
         try:
@@ -211,9 +210,9 @@ class GameController:
         """Update the DungeonCrawler frame with hero inventory information from the model.
         """
         print("DEBUG - Pressing the Bag Button")
-        pillars = self.__model["hero"].pillars_collected
-        health_pots = self.__model["hero"].health_pots
-        vision_pots = self.__model["hero"].vision_pots
+        pillars = self.get_collected_pillars()
+        health_pots = self.get_health_pots()
+        vision_pots = self.get_vision_pots()
 
         bag = {
             "pillars": pillars,
@@ -222,6 +221,15 @@ class GameController:
         }
         print(f"DEBUG - {bag}")
         self.__view.set_bag_display(bag)
+    
+    def get_collected_pillars(self):
+        return self.__model["hero"].pillars_collected
+
+    def get_health_pots(self):
+        return self.__model["hero"].health_pots
+    
+    def get_vision_pots(self):
+        return self.__model["hero"].vision_pots
 
     def update_adv_map(self):
         """Update the frame with map information from the model.
