@@ -125,10 +125,10 @@ class DungeonCrawler(BaseFrame):
         #         button = Button(canvas, text = {door}, command= lambda: self.controller.set_move(encode[door]))
         #         button.grid(row = 2, column=pos)
 
-        travel_north = Button(canvas, text="North", command= lambda: self.controller.set_move("n"))
-        travel_south = Button(canvas, text="South", command= lambda: self.controller.set_move("s"))
-        travel_west = Button(canvas, text="West", command= lambda: self.controller.set_move("w"))
-        travel_east = Button(canvas, text="East", command= lambda: self.controller.set_move("e"))
+        travel_north = Button(canvas, text="North", command= lambda: [self.controller.set_move("n"), self.controller.update_dungeon_display()])
+        travel_south = Button(canvas, text="South", command= lambda: [self.controller.set_move("s"), self.controller.update_dungeon_display()])
+        travel_west = Button(canvas, text="West", command= lambda: [self.controller.set_move("w"), self.controller.update_dungeon_display()])
+        travel_east = Button(canvas, text="East", command= lambda: [self.controller.set_move("e"), self.controller.update_dungeon_display()])
 
         travel_north.grid(row=2, column=1)
         travel_south.grid(row=2, column=2)
