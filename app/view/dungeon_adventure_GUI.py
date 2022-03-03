@@ -163,8 +163,6 @@ class dungeon_adventure_GUI:
         quit_game_btn.place(relx=0.5, rely=0.7)
 
         global img
-        # img = PhotoImage(file="app/view/welcome_bg.gif") # OS path
-        # path = "/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/image assets/welcome_bg.gif"
         base_dir = os.path.dirname(os.path.abspath(__file__))
         path = os.path.join(base_dir, "image assets/welcome_bg.gif")
         img = PhotoImage(file=path)

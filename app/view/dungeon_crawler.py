@@ -1,5 +1,7 @@
 from tkinter import *
 import tkinter as tk
+from PIL import Image
+import os
 
 # TODO: Readable pillars in the bag view
 # TODO: Ability to use items in the bag view
@@ -115,34 +117,40 @@ class DungeonCrawler(BaseFrame):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
         """
         canvas = self.root
-        adjacent_rooms = LabelFrame(canvas, width = 300, height = 300, bg = "White")
-        text = Label(adjacent_rooms, text = "Place Maze Here...", bg = "White")
+        labelFrame_width = 300
+        labelFrame_height = 300
+        adjacent_rooms_frame = LabelFrame(canvas, width = labelFrame_width, height = labelFrame_height, bg = "White")
+        adjacent_rooms_canvas = Canvas(adjacent_rooms_frame, width = 300, height = 300)
+        box_width = labelFrame_width/3
+        box_height = labelFrame_height/3
+
+        # create a 3x3 grid to show the dungeon
+        for i in range(3):
+            for j in range(3):
+                adjacent_rooms_canvas.create_rectangle(box_width * j + 2, box_height * i + 2, box_width * (j + 1),
+                                            box_height * (i + 1), width=3)
+
+        # base_dir = os.path.dirname(os.path.abspath(__file__))
+        # path = os.path.join(base_dir, "image assets/priest.gif") # debug
+        # img = PhotoImage(file=path)
+        # adjacent_rooms_canvas.create_image(125, 125, image=img, anchor='nw')
+
+        # print a purple circle on the 3x3 grid to represent the hero
+        adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
+
+        # greyed out the box if that room is no traveled yet
+        adjacent_rooms_canvas.create_rectangle(0, 0, box_width * (1),
+                                               box_height * (1), width=3, fill = 'grey')
+
 
         # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc)) # this get room will return a room(string)
         # print(adv_telemetry.get_room(adv_telemetry.adventurer_loc).string_top())
 
-        for i in range(9):
-            b = 'b'+str(i)
-            if (b == 'b4'):
-                b = Button(adjacent_rooms)
-                b.img = PhotoImage(file='/Users/hxg/Library/Mobile Documents/com~apple~CloudDocs/Desktop/UniversityOfWashington/TCSS504Winter/Assignment9-Groupwork/The_Spoony_Bard/app/view/image assets/priest.gif')
-                # b.img = PhotoImage()
-                b.img = b.img.subsample(10, 10)
-                b.config(height=100, width=100, image=b.img)
-                # b.config(height=100, width=100, text="---")
-                b.grid(row=int(i/3), column=int(i%3))
-                b.grid(sticky = "NWSE")
-            else:
-                b = Button(adjacent_rooms)
-                b.img = PhotoImage()
-                b.config(height=100, width=100, image=b.img, compound=CENTER)
-                b.grid(row=int(i / 3), column=int(i % 3))
-                b.grid(sticky="NWSE")
 
         # use the adventurer_loc from the dungeon class to update the current dungeon display window
+        adjacent_rooms_canvas.pack()
+        adjacent_rooms_frame.place(relx = 0.5, rely = 0.25, anchor = N)
 
-        adjacent_rooms.place(relx = 0.5, rely = 0.25, anchor = N)
-        # text.place(relx = 0.5, rely = 0.5, anchor = N)
 
     def set_bag_display(self, bag_stuff):
         bag = Toplevel(self.root)
@@ -222,7 +230,7 @@ class DungeonCrawler(BaseFrame):
                             map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
                                                    box_height * (i + 1), width=10, fill='white')
 
-                abbrevation_to_symbols = {
+                abbreviation_to_symbols = {
                     'i':('En','green'),
                     'O':('Ex','green'),
                     'H':('H','red'),
@@ -234,52 +242,12 @@ class DungeonCrawler(BaseFrame):
                     'E':('E','purple'),
                 }
 
-                if dungeon.get_room([i, j]).contents in abbrevation_to_symbols.keys():
-                    text = abbrevation_to_symbols[dungeon.get_room([i, j]).contents][0]
-                    color = abbrevation_to_symbols[dungeon.get_room([i, j]).contents][1]
+                if dungeon.get_room([i, j]).contents in abbreviation_to_symbols.keys():
+                    text = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][0] # get the key value from the dictionary
+                    color = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][1] # get the key value from the dictionary
                     map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
                                            text=text,
                                            fill=color, font=('Helvetica', '30', 'bold'))
-
-
-
-                # if dungeon.get_room([i, j]).contents == 'i':
-                #     # "i", "O", "H", "V", "X", "M", "A", "P", "I", "E","*"
-                #     map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
-                #                            text="En",
-                #                            fill="green", font=('Helvetica', '30', 'bold'))
-                # elif dungeon.get_room([i, j]).contents == 'O':
-                #     map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
-                #                            text="Ex",
-                #                            fill="green", font=('Helvetica', '30', 'bold'))
-                # elif dungeon.get_room([i, j]).contents == 'H':
-                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                #                            text="H",
-                #                            fill="red", font=('Helvetica', '30', 'bold'))
-                # elif dungeon.get_room([i, j]).contents == 'V':
-                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                #                            text="V",
-                #                            fill="blue", font=('Helvetica', '30', 'bold'))
-                # elif dungeon.get_room([i, j]).contents == 'M':
-                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                #                            text="M",
-                #                            fill="yellow", font=('Helvetica', '30', 'bold'))
-                # elif dungeon.get_room([i, j]).contents == 'A':
-                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                #                            text="A",
-                #                            fill="purple", font=('Helvetica', '30', 'bold'))
-                # elif dungeon.get_room([i, j]).contents == 'P':
-                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                #                            text="P",
-                #                            fill="purple", font=('Helvetica', '30', 'bold'))
-                # elif dungeon.get_room([i, j]).contents == 'I':
-                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                #                            text="I",
-                #                            fill="purple", font=('Helvetica', '30', 'bold'))
-                # elif dungeon.get_room([i, j]).contents == 'E':
-                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                #                            text="E",
-                #                            fill="purple", font=('Helvetica', '30', 'bold'))
 
 
         # create purple dot to represent adventurer
