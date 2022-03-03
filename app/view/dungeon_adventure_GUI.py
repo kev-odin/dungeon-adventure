@@ -97,12 +97,12 @@ class dungeon_adventure_GUI:
 
         hero_options = [
             "Warrior",
-            "Priest",
+            "Priestess",
             "Thief"
         ]
         hero_options_description = {
             "Warrior": "This is the Warrior description.",
-            "Priest": "This is the Priest description.",
+            "Priestess": "This is the Priest description.",
             "Thief": "This is the Thief description."
         }
 
