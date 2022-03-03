@@ -212,11 +212,9 @@ class DungeonCrawler(BaseFrame):
                         if try_door == 'east':
                             map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1),
                                                    box_height * (i + 3 / 4), width=10, fill='white')
-
                         if try_door == 'west':
                             map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j),
                                                    box_height * (i + 3 / 4), width=10, fill='white')
-
                         if try_door == 'north':
                             map_canvas.create_line(box_width * (j+1/4), box_height * (i), box_width * (j+3/4),
                                                    box_height * (i), width=10, fill='white')
@@ -224,44 +222,64 @@ class DungeonCrawler(BaseFrame):
                             map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
                                                    box_height * (i + 1), width=10, fill='white')
 
+                abbrevation_to_symbols = {
+                    'i':('En','green'),
+                    'O':('Ex','green'),
+                    'H':('H','red'),
+                    'V':('V','blue'),
+                    'M':('M','yellow'),
+                    'A':('A','purple'),
+                    'P':('P','purple'),
+                    'I':('I','purple'),
+                    'E':('E','purple'),
+                }
 
-                if dungeon.get_room([i, j]).contents == 'i':
-                    # "i", "O", "H", "V", "X", "M", "A", "P", "I", "E","*"
+                if dungeon.get_room([i, j]).contents in abbrevation_to_symbols.keys():
+                    text = abbrevation_to_symbols[dungeon.get_room([i, j]).contents][0]
+                    color = abbrevation_to_symbols[dungeon.get_room([i, j]).contents][1]
                     map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
-                                           text="En",
-                                           fill="green", font=('Helvetica', '30', 'bold'))
-                elif dungeon.get_room([i, j]).contents == 'O':
-                    map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
-                                           text="Ex",
-                                           fill="green", font=('Helvetica', '30', 'bold'))
-                elif dungeon.get_room([i, j]).contents == 'H':
-                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                                           text="H",
-                                           fill="red", font=('Helvetica', '30', 'bold'))
-                elif dungeon.get_room([i, j]).contents == 'V':
-                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                                           text="V",
-                                           fill="blue", font=('Helvetica', '30', 'bold'))
-                elif dungeon.get_room([i, j]).contents == 'M':
-                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                                           text="M",
-                                           fill="yellow", font=('Helvetica', '30', 'bold'))
-                elif dungeon.get_room([i, j]).contents == 'A':
-                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                                           text="A",
-                                           fill="blue", font=('Helvetica', '30', 'bold'))
-                elif dungeon.get_room([i, j]).contents == 'P':
-                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                                           text="P",
-                                           fill="blue", font=('Helvetica', '30', 'bold'))
-                elif dungeon.get_room([i, j]).contents == 'I':
-                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                                           text="I",
-                                           fill="blue", font=('Helvetica', '30', 'bold'))
-                elif dungeon.get_room([i, j]).contents == 'E':
-                    map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-                                           text="E",
-                                           fill="blue", font=('Helvetica', '30', 'bold'))
+                                           text=text,
+                                           fill=color, font=('Helvetica', '30', 'bold'))
+
+
+
+                # if dungeon.get_room([i, j]).contents == 'i':
+                #     # "i", "O", "H", "V", "X", "M", "A", "P", "I", "E","*"
+                #     map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
+                #                            text="En",
+                #                            fill="green", font=('Helvetica', '30', 'bold'))
+                # elif dungeon.get_room([i, j]).contents == 'O':
+                #     map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
+                #                            text="Ex",
+                #                            fill="green", font=('Helvetica', '30', 'bold'))
+                # elif dungeon.get_room([i, j]).contents == 'H':
+                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                #                            text="H",
+                #                            fill="red", font=('Helvetica', '30', 'bold'))
+                # elif dungeon.get_room([i, j]).contents == 'V':
+                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                #                            text="V",
+                #                            fill="blue", font=('Helvetica', '30', 'bold'))
+                # elif dungeon.get_room([i, j]).contents == 'M':
+                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                #                            text="M",
+                #                            fill="yellow", font=('Helvetica', '30', 'bold'))
+                # elif dungeon.get_room([i, j]).contents == 'A':
+                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                #                            text="A",
+                #                            fill="purple", font=('Helvetica', '30', 'bold'))
+                # elif dungeon.get_room([i, j]).contents == 'P':
+                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                #                            text="P",
+                #                            fill="purple", font=('Helvetica', '30', 'bold'))
+                # elif dungeon.get_room([i, j]).contents == 'I':
+                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                #                            text="I",
+                #                            fill="purple", font=('Helvetica', '30', 'bold'))
+                # elif dungeon.get_room([i, j]).contents == 'E':
+                #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
+                #                            text="E",
+                #                            fill="purple", font=('Helvetica', '30', 'bold'))
 
 
         # create purple dot to represent adventurer
