@@ -13,7 +13,6 @@ from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 # TODO: Start New                                   - WIP
 # TODO: Load Game                                   - WIP
 # TODO: Quit Game                                   - WIP
-# TODO: Save Game                                   - WIP
 
 
 # Controller methods are accessed by the view because we are passing the reference to Controller.
