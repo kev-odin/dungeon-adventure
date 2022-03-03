@@ -6,7 +6,6 @@ from app.model.characters.healable import HealAble
 class Monster(DungeonCharacter, HealAble):
     def __init__(self, mon_dict):
         super().__init__(mon_dict)
-        self.__char_dict = mon_dict
 
     def take_damage(self, damage):
         """
@@ -23,9 +22,9 @@ class Monster(DungeonCharacter, HealAble):
         If monster is alive and meets heal percentage, heals health for number between min and max.
         :return: int amount healed or 0 if not healed at all.
         """
-        monster = self.__char_dict
+        monster = self.char_dict
         if monster["heal_chance"] < random():
-            heal_amount = self.heal(self.__char_dict)
+            heal_amount = self.heal(self.char_dict)
             self.current_hitpoints += heal_amount
             return heal_amount
         return 0
