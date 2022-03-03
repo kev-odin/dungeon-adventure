@@ -1,13 +1,18 @@
 from app.model.dungeon.dungeon_builder import DungeonBuilder
+from app.model.items.potion_factory import PotionFactory
 from app.view.dungeon_crawler import DungeonCrawler, DungeonBrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
-# TODO: Update adventurer bag when entering a room - Done
-# TODO: Update view with room contents - Done
-# TODO: Room Dungeon Canvas
-# TODO: Dungeon Map Canvas
-# TODO: DungeonBrawler
+# TODO: Update adventurer bag when entering a room  - Done
+# TODO: Update view with room contents              - Done
+# TODO: Room Dungeon Canvas                         - WIP
+# TODO: Dungeon Map Canvas                          - WIP
+# TODO: DungeonBrawler                              - WIP
+# TODO: Start New                                   - WIP
+# TODO: Load Game                                   - WIP
+# TODO: Quit Game                                   - WIP
+# TODO: Save Game                                   - WIP
 
 # Controller methods are accessed by the view because we are passing the reference to Controller.
 
@@ -35,6 +40,24 @@ class GameController:
         """
         self.__model = model                            # Model
         self.__view = view                              # View
+
+    def start_new(self):
+        """Function to restart game from the start.
+        """
+        print(f"Starting new game...")
+        self.__model = None
+        self.__view = None
+        db = DungeonBuilder()
+        gui = dungeon_adventure_GUI()
+        self.__model = db
+        self.__view = gui
+        self.frame_setup()
+
+    def save_game(self):
+        print(f"Saving game...")
+
+    def load_game(self):
+        print(f"Loading previous game...")
 
     def frame_setup(self):
         """Builds tKinter frames for the user based on the current view.
@@ -85,14 +108,14 @@ class GameController:
         try:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
-            moving = self.__model["dungeon"].get_visible_dungeon_string() # Just for easy debug
-
+            print(f"{new_room}")
+            moving = self.get_dungeon() # DEBUG
             print(f"{moving}")
 
-            # if new_room.monster:
-            #     hero = self.__model["hero"]
-            #     monster = self.__model["dungeon"].monster
-            #     self.update_combat(hero, monster)
+            if new_room.monster:
+                hero = self.get_hero()
+                monster = self.get_monster()
+                self.start_combat(hero, monster)
 
             if new_room.contents:
                 self.set_bag(new_room)
@@ -100,10 +123,22 @@ class GameController:
         except KeyError:
             return f"An error occured. Please verify the {move} is a valid option."
 
-    def update_combat(self, hero = None, monster = None):
-        brawl = DungeonBrawler()
-        self.__view = brawl
-        self.__view.setup()
+    def start_combat(self, hero = None, monster = None):
+        print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
+        # Change over to the DungeonBrawler view
+        # while the hero and monster is alive ensure that the event loop continues
+            # Update health of both adventurer and monster at the start of each round
+            # Compare the attack speed of both the monster and adventurer
+            # higher attack speed goes first
+            # example: hero - as(5); monster - as(4)
+            # Since, we can based on attacks per round we will go with hero / monster
+            # hero_attacks = 1.25, so every 4 turns, we get an extra attack.
+            # Update DungeonBrawler with relevant information at the start of each round.
+            # if monster dies:
+                # Collect items, then go back to DungeonCrawler
+                # Update hero information within DungeonCrawler
+            # if hero dies:
+                # Prompt a Game Over frame, with options to start a new game or quit.
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
@@ -112,15 +147,7 @@ class GameController:
         :param room: rooms can contain an entrance/exit, potions, pillars, or monsters
         :type room: room
         """
-        
         if room.contents in ("A", "P", "I", "E"):
-            pillar_dict = {
-                "A": "Abstraction is found!!  It grants double health potion collection.",
-                "P": "Polymorphism is found!!  It grants double vision potion collection.",
-                "I": "Inheritance is found!! It slows your fall, reducing pit damage by half.",
-                "E": "Encapsulation is found!! It increases health potion potency."
-                }
-            
             pillar_str = self.__model["dungeon"].collect_pillars()
 
             if pillar_str:
@@ -129,6 +156,20 @@ class GameController:
         if room.contents in ("H", "V", "M"):
             collected_pots = self.__model["dungeon"].collect_potions()
             self.__model["hero"].add_potions(collected_pots)
+
+    def set_potion(self, potion: str):
+        """Function to use health/vision potion in hero inventory.
+
+        :param potion: _description_
+        :type potion: str
+        """
+        if potion == "health" and self.__model["hero"].has_health_potion():
+            heal = PotionFactory().create_potion("health")
+            self.__model["hero"].heal_adventurer(heal)
+            print("DEBUG - Should be using a health potion")
+
+        if potion == "vision" and self.__model["hero"].has_vision_potion():
+            print(f"DEBUG - Should be using a vision potion")
 
     def create_adventurer(self, name: str, class_name: str):
         try:
@@ -145,9 +186,9 @@ class GameController:
     def update_adv_info(self):
         """Update the DungeonCrawler frame with hero information from the model.
         """
-        hero_name = self.__model["hero"].name
-        hero_hp = self.__model["hero"].current_hitpoints
-        hero_max_hp = self.__model["hero"].max_hitpoints
+        hero_name = self.get_hero_name()
+        hero_hp = self.get_hero_curr_hp()
+        hero_max_hp = self.get_hero_max_hp()
         self.__view.set_adventurer_info(hero_name, hero_hp, hero_max_hp)
 
     def update_dungeon_display(self):
@@ -162,16 +203,16 @@ class GameController:
         """Update the DungeonCrawler frame with hero inventory information from the model.
         """
         print("DEBUG - Pressing the Bag Button")
-        pillars = self.__model["hero"].pillars_collected
-        health_pots = self.__model["hero"].health_pots
-        vision_pots = self.__model["hero"].vision_pots
+        pillars = self.get_collected_pillars()
+        health_pots = self.get_health_pots()
+        vision_pots = self.get_vision_pots()
 
         bag = {
             "pillars": pillars,
             "health": health_pots,
             "vision": vision_pots
         }
-        print(bag)
+        print(f"DEBUG - {bag}")
         self.__view.set_bag_display(bag)
 
     def update_adv_map(self):
@@ -182,6 +223,72 @@ class GameController:
         dungeon = self.__model["dungeon"]  # and then view is going to use this info to prepare the display
 
         self.__view.set_map_display(map, dungeon)
+
+
+    def get_hero(self):
+        """Hero getter for the model.
+        :return: Hero object
+        """
+        return self.__model["hero"]
+
+    def get_monster(self):
+        """Returns the current monster that the hero has encountered in the room.
+        :return: Monster object
+        """
+        return self.__model["dungeon"].monster
+
+    def get_hero_name(self):
+        """Hero name getter for the model.
+        :return: str
+        """
+        return self.__model["hero"].name
+
+    def get_hero_curr_hp(self):
+        """Hero current hp getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].current_hitpoints
+
+    def get_hero_max_hp(self):
+        """Hero max hp getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].max_hitpoints
+
+    def get_collected_pillars(self):
+        """Hero current health count getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].pillars_collected
+
+    def get_health_pots(self):
+        """Hero current health count getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].health_pots
+
+    def get_vision_pots(self):
+        """Hero current vision count getter for the model.
+        :return: int
+        """
+        return self.__model["hero"].vision_pots
+
+    def get_dungeon(self):
+        """Entire dungeon representation in this string
+        :return: str
+        """
+        return self.__model["dungeon"].get_visible_dungeon_string()
+
+    def get_hero_location(self):
+        return self.__model["dungeon"].adventurer_loc
+
+    def get_room(self, location):
+        return self.__model["dungeon"].get_room(location)
+
+    def get_current_doors(self):
+        current_loc = self.get_hero_location()
+        current_room = self.get_room(current_loc)
+        return current_room.doors
 
     def still_playing(self):
         return self.__model["hero"].is_alive()
