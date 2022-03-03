@@ -1,9 +1,10 @@
 from tkinter import *
 import tkinter as tk
 
-# TODO: Readable pillars in the bag view - Done
-# TODO: Ability to use items in the bag view - Bug
-# TODO: Item number not updating after use - Bug
+# TODO: Readable pillars in the bag view        - Done
+# TODO: Ability to use items in the bag view    - Bug
+# TODO: Item number not updating after use      - Bug
+# TODO: Controller saving                       - Bug
 
 class BaseFrame(tk.Frame):
     def __init__(self):
@@ -20,14 +21,17 @@ class BaseFrame(tk.Frame):
     def start_main_loop(self):
         self.root.mainloop()
 
+    def set_controller(self, controller):
+        self.controller = controller
+
     def basic_menu_bar(self):
         menubar = Menu()
 
         filemenu = Menu(menubar, tearoff = 0)
-        filemenu.add_command(label = "New game...")
-        filemenu.add_command(label = "Save game")
-        filemenu.add_command(label = "Load game", command=self.load_existing_game_window)
-        filemenu.add_command(label = "Quit game", command=self.root.destroy)
+        filemenu.add_command(label = "New game", command= lambda: self.controller.start_new())
+        filemenu.add_command(label = "Save game", command= lambda: self.controller.save_game())
+        filemenu.add_command(label = "Load game", command= lambda: self.controller.load_game())
+        filemenu.add_command(label = "Quit game", command= self.root.destroy)
 
         menubar.add_cascade(label = "File", menu = filemenu)
 
@@ -50,6 +54,7 @@ class BaseFrame(tk.Frame):
 
 class DungeonCrawler(BaseFrame):
     def setup(self, controller):
+        self.root.title("Dungeon Adventure 2.0 - DungeonCrawler")
         self.dungeon_crawl_frame = Frame(self.root, highlightbackground="Blue", highlightthickness=2)
         self.dungeon_crawl_canvas = Canvas(self.dungeon_crawl_frame, width=800, height=600)
         self.adventurer_canvas = Canvas(self.dungeon_crawl_frame, width=400, height=600)
@@ -65,7 +70,6 @@ class DungeonCrawler(BaseFrame):
 
     def update_display(self, controller):
         canvas = self.root
-        
         dungeon = LabelFrame(canvas, width = 600, height = 400, bg = "White")
         text = Label(dungeon, text = f"{controller}", bg = "White")
         text.place(relx = 0.5, rely = 0.5, anchor = N)
@@ -101,6 +105,25 @@ class DungeonCrawler(BaseFrame):
 
     def dungeon_navigation(self):
         canvas = self.dungeon_crawl_canvas
+
+        encode = {
+            "north" : "n",
+            "south" : "s",
+            "west"  : "w",
+            "east"  : "e"
+        }
+
+        direction = {
+            "north" : True,
+            "south" : True,
+            "west"  : False,
+            "east"  : True
+        }
+
+        # for pos, door in enumerate(direction):
+        #     if direction[door]:
+        #         button = Button(canvas, text = {door}, command= lambda: self.controller.set_move(encode[door]))
+        #         button.grid(row = 2, column=pos)
 
         travel_north = Button(canvas, text="North", command= lambda: self.controller.set_move("n"))
         travel_south = Button(canvas, text="South", command= lambda: self.controller.set_move("s"))
@@ -198,7 +221,7 @@ class DungeonBrawler(BaseFrame):
 
         left_frame.grid(row = 0, column= 0)
         right_frame.grid(row = 0, column= 1)
-        combat_action.grid(row=1, column=0)
+        combat_action.grid(row = 1, column=0)
         combat_log.grid(row = 1, column= 1)
 
     def create_hero_frame(self, parent, hero = None):
@@ -206,11 +229,13 @@ class DungeonBrawler(BaseFrame):
         hero_label = Label(hero_frame, text = f"{hero}", bg="white")
         hero_frame.pack(side = TOP)
         hero_label.grid(row = 0, column=0)
-        return hero_frame
+        
+        # return hero_frame
 
     def set_monster(self, monster = None):
         monster_frame = Frame(self.right_frame)
         monster_label = Label(monster_frame, text = f"{monster}")
+        monster_label.pack()
 
     def set_combat_log(self, parent_frame, event = None):
         canvas = parent_frame

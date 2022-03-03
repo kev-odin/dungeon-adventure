@@ -4,11 +4,16 @@ from app.view.dungeon_crawler import DungeonCrawler, DungeonBrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
-# TODO: Update adventurer bag when entering a room - Done
-# TODO: Update view with room contents - Done
-# TODO: Room Dungeon Canvas 
-# TODO: Dungeon Map Canvas
-# TODO: DungeonBrawler
+# TODO: Update adventurer bag when entering a room  - Done
+# TODO: Update view with room contents              - Done
+# TODO: Room Dungeon Canvas                         - WIP
+# TODO: Dungeon Map Canvas                          - WIP
+# TODO: DungeonBrawler                              - WIP
+# TODO: Start New                                   - WIP
+# TODO: Load Game                                   - WIP
+# TODO: Quit Game                                   - WIP
+# TODO: Save Game                                   - WIP
+
 
 # Controller methods are accessed by the view because we are passing the reference to Controller.
 
@@ -36,6 +41,24 @@ class GameController:
         """
         self.__model = model                            # Model
         self.__view = view                              # View
+
+    def start_new(self):
+        """Function to restart game from the start.
+        """
+        print(f"Starting new game...")
+        self.__model = None
+        self.__view = None
+        db = DungeonBuilder()
+        gui = dungeon_adventure_GUI()
+        self.__model = db
+        self.__view = gui
+        self.frame_setup()
+
+    def save_game(self):
+        print(f"Saving game...")
+
+    def load_game(self):
+        print(f"Loading previous game...")
 
     def frame_setup(self):
         """Builds tKinter frames for the user based on the current view.
@@ -163,6 +186,10 @@ class GameController:
             return self.__model.build_dungeon(difficulty)
         except ValueError:
             return f"An error occurred.  Please verify {difficulty} is a valid option."
+
+    def update_dungeon_movement(self, valid_rooms):
+        valid_rooms = self.__model["dungeon"]
+
 
     def update_adv_info(self):
         """Update the DungeonCrawler frame with hero information from the model.
