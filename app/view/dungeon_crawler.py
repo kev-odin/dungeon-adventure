@@ -106,25 +106,6 @@ class DungeonCrawler(BaseFrame):
     def dungeon_navigation(self):
         canvas = self.dungeon_crawl_canvas
 
-        encode = {
-            "north" : "n",
-            "south" : "s",
-            "west"  : "w",
-            "east"  : "e"
-        }
-
-        direction = {
-            "north" : True,
-            "south" : True,
-            "west"  : False,
-            "east"  : True
-        }
-
-        # for pos, door in enumerate(direction):
-        #     if direction[door]:
-        #         button = Button(canvas, text = {door}, command= lambda: self.controller.set_move(encode[door]))
-        #         button.grid(row = 2, column=pos)
-
         travel_north = Button(canvas, text="North", command= lambda: [self.controller.set_move("n"), self.controller.update_dungeon_display()])
         travel_south = Button(canvas, text="South", command= lambda: [self.controller.set_move("s"), self.controller.update_dungeon_display()])
         travel_west = Button(canvas, text="West", command= lambda: [self.controller.set_move("w"), self.controller.update_dungeon_display()])
