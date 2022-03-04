@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter as tk
+import os
 
 # TODO: Readable pillars in the bag view        - Done
 # TODO: Ability to use items in the bag view    - Bug
@@ -166,13 +167,16 @@ class DungeonCrawler(BaseFrame):
         print('map.visited 2d array:')
         print(map.visited_array())
 
-        # base_dir = os.path.dirname(os.path.abspath(__file__))
-        # path = os.path.join(base_dir, "image assets/priest.gif") # debug
-        # img = PhotoImage(file=path)
-        # adjacent_rooms_canvas.create_image(125, 125, image=img, anchor='nw')
+        # print a hero image at the center of the 3x3 grid, potentially we can print different types of hero
+        global img
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(base_dir, "image assets/priest.gif") # debug
+        img = PhotoImage(file=path)
+        img = img.subsample(10)
+        adjacent_rooms_canvas.create_image(150, 150, image=img)
 
-        # print a purple circle at the center of the 3x3 grid to represent the hero
-        adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
+        # # print a purple circle at the center of the 3x3 grid to represent the hero
+        # adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
 
         adjacent_rooms_canvas.pack()
         adjacent_rooms_frame.place(relx = 0.5, rely = 0.25, anchor = N)
