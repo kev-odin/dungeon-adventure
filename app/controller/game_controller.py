@@ -1,4 +1,5 @@
 from app.model.dungeon.dungeon_builder import DungeonBuilder
+from app.model.db.save_manager import SaveManager
 from app.model.items.potion_factory import PotionFactory
 from app.view.dungeon_crawler import DungeonCrawler, DungeonBrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
@@ -12,7 +13,6 @@ from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 # TODO: Start New                                   - WIP
 # TODO: Load Game                                   - WIP
 # TODO: Quit Game                                   - WIP
-# TODO: Save Game                                   - WIP
 
 # Controller methods are accessed by the view because we are passing the reference to Controller.
 
@@ -54,7 +54,14 @@ class GameController:
         self.frame_setup()
 
     def save_game(self):
-        print(f"Saving game...")
+        """
+        Saves the game to the database.
+        :return: True if saved, False if an error occurred.
+        """
+        dungeon, adventurer, map = self.__model["dungeon"], self.__model["hero"], self.__model["map"]
+        dungeon, adventurer, map = dungeon.json_dict, adventurer.char_dict, map.map_dict
+        return SaveManager.save(dungeon, adventurer, map)
+        print(f"Game saved.")
 
     def load_game(self):
         print(f"Loading previous game...")

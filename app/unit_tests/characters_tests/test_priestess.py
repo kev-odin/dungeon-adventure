@@ -29,10 +29,10 @@ class TestPriestess(TestCase):
         self.assertEqual(0.3, self._priestess.block_chance, "Check can access super methods")
 
     def test_take_damage(self):
-        self._priestess.take_damage(10)
+        self._priestess.take_damage(10, always_hits=True)
         self.assertEqual(65, self._priestess.current_hitpoints, "Check damage registered")
 
     def test_heal_damage(self):
-        self._priestess.take_damage(50)
+        self._priestess.take_damage(50, always_hits=True)
         actual = self._priestess.use_special()
         self.assertLessEqual(17, actual, "Should heal at least minimum.")

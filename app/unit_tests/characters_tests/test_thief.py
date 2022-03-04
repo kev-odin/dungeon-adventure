@@ -36,7 +36,7 @@ class TestThief(TestCase):
         self.assertEqual(0.4, self._thief.block_chance, "Check can access super methods")
 
     def test_take_damage(self):
-        self._thief.take_damage(10)
+        self._thief.take_damage(10, always_hits=True)
         self.assertEqual(65, self._thief.current_hitpoints, "Check damage registered")
 
     def test_attack(self):
