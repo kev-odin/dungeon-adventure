@@ -361,23 +361,34 @@ class DungeonCrawler(BaseFrame):
 
 class DungeonBrawler(BaseFrame):
     def setup(self):
-        self.dungeon_brawl_frame = Frame(self.root)
+        self.dungeon_brawl_frame = Frame(self.root, width = 800, height = 600, bg = "black")
         self.root.title("Dungeon Adventure 2.0 - DungeonCrawler")
         left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
         right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
         combat_log = Frame(self.dungeon_brawl_frame, width = 400, height = 200, bg = "blue")
         combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
         
-        self.dungeon_brawl_frame.pack()
+
         # self.create_hero_frame(left_frame, "hello")
         self.set_combat_action(combat_action)
         self.set_combat_log(combat_log)
 
-        left_frame.grid(row = 0, column= 0)
-        right_frame.grid(row = 0, column= 1)
-        combat_action.grid(row = 1, column=0)
-        combat_log.grid(row = 1, column= 1)
+        # left_frame.grid(row = 0, column= 0)
+        # right_frame.grid(row = 0, column= 1)
+        # combat_action.grid(row = 1, column=0)
+        # combat_log.grid(row = 1, column= 1)
 
+
+        # left_frame.pack(fill='both', side='left', expand='True')
+        # right_frame.pack(fill='both', side='right', expand='True')
+
+        left_frame.place(x=0, y= 0)
+        right_frame.place(x = 400, y = 0)
+        #
+        combat_action.place(relx = 0.15, rely = 0.8)
+        combat_log.place(relx = 0.5, rely = 0.7)
+
+        self.dungeon_brawl_frame.pack()
     def create_hero_frame(self, parent, hero = None):
         hero_frame = Frame(parent)
         hero_label = Label(hero_frame, text = f"{hero}", bg="white")
@@ -391,7 +402,7 @@ class DungeonBrawler(BaseFrame):
 
     def set_combat_log(self, parent_frame, event = None):
         canvas = parent_frame
-        text = Text(canvas, height=10)
+        text = Text(canvas, height=10, width=55)
         text.grid(row=0, column=0, sticky='ew')
         scrollbar = Scrollbar(canvas, orient='vertical', command= text.yview)
         scrollbar.grid(row=0, column=0, sticky='ns')
