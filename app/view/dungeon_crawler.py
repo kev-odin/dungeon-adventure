@@ -260,6 +260,11 @@ class DungeonCrawler(BaseFrame):
         # create the boxes of the dungeon, original dungeon missing the very top and left boarder. might be a tkinter thing.
         for i in range(rows):
             for j in range(cols):
+                # print(dungeon.get_room([i,j]))
+                # print(type(dungeon.get_room([i, j])))
+                if (dungeon.get_room([i, j]).monster):
+                    print(dungeon.get_room([i, j]).monster.char_dict)
+
                 # (box_width)*j+2 to make sure the very left and top boarder is also printed
                 map_canvas.create_rectangle(box_width * j + 2, box_height * i + 2, box_width * (j + 1), box_height * (i + 1), width=3)
                 # map_canvas.create_rectangle((box_width) * j, (box_height) * i, box_width * (j + 1),
@@ -285,6 +290,7 @@ class DungeonCrawler(BaseFrame):
                             map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
                                                    box_height * (i + 1), width=10, fill='white')
 
+                # create letter represent the contents
                 abbreviation_to_symbols = {
                     'i':('En','green'),
                     'O':('Ex','green'),
@@ -296,7 +302,6 @@ class DungeonCrawler(BaseFrame):
                     'I':('I','purple'),
                     'E':('E','purple'),
                 }
-
                 if dungeon.get_room([i, j]).contents in abbreviation_to_symbols.keys():
                     text = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][0] # get the key value from the dictionary
                     color = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][1] # get the key value from the dictionary
@@ -305,52 +310,18 @@ class DungeonCrawler(BaseFrame):
                                            fill=color, font=('Helvetica', str(int(100/rows)), 'bold'))
                                             # "str(int(100/rows))" is used to adjust the font size according to the rows
 
+                # create letter mstr to represent monsters in the room
+                if (dungeon.get_room([i, j]).monster):
+                    map_canvas.create_text(box_width * (j + 3 / 4), box_height * (i + 3 / 4),
+                                           text='mstr',
+                                           fill='red', font=('Helvetica', str(int(100 / rows))))
+
 
         # create purple dot to represent adventurer
         x_adventurer_loc = dungeon.adventurer_loc[0]
         y_adventurer_loc = dungeon.adventurer_loc[1]
         map_canvas.create_oval(box_width * (y_adventurer_loc+1/4), box_height * (x_adventurer_loc+ 1/4),
                                box_width * (y_adventurer_loc+3/4),box_height * (x_adventurer_loc+ 3/4), fill="purple")
-
-        # M stands for multiple items, H for health potion, V for vision potion
-        # if dungeon.get_room([i, j]).health_potion and dungeon.get_room([i, j]).vision_potion:
-        #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-        #                            text="M",
-        #                            fill="green", font=('Helvetica', '30', 'bold'))
-        # elif dungeon.get_room([i, j]).health_potion:
-        #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-        #                            text="H",
-        #                            fill="red", font=('Helvetica', '30', 'bold'))
-        # elif dungeon.get_room([i, j]).vision_potion:
-        #     map_canvas.create_text(box_width * (j + 1 / 2), box_height * (i + 1 / 2),
-        #                            text="V",
-        #                            fill="blue", font=('Helvetica', '30', 'bold'))
-
-
-
-        # # create text "En" to represent entrance, "Ex" to represent exit
-        # x_entrance_loc = dungeon.entrance[0]
-        # y_entrance_loc = dungeon.entrance[1]
-        # map_canvas.create_text(box_width *(y_entrance_loc+1/4), box_height * (x_entrance_loc+ 1/4), text = "En",
-        #                        fill="green", font=('Helvetica','30','bold'))
-        # x_exit_loc = dungeon.exit[0]
-        # y_exit_loc = dungeon.exit[1]
-        # map_canvas.create_text(box_width * (y_exit_loc + 1 / 4), box_height * (x_exit_loc + 1 / 4), text="Ex",
-        #                        fill="green", font=('Helvetica', '30', 'bold'))
-
-
-
-        # map_canvas.create_rectangle(box_width * 0, 0, box_width * 1, box_height)
-        # map_canvas.create_rectangle(box_width * 1, 0, box_width * 2, box_height)
-        # map_canvas.create_rectangle(box_width * 2, 0, box_width * 3, box_height)
-        # map_canvas.create_rectangle(box_width * 3, 0, box_width * 4, box_height)
-        # map_canvas.create_rectangle(box_width * 4, 0, box_width * 5, box_height)
-
-        # map_canvas.create_rectangle(box_width * 0, box_height * 1, box_width * 1, box_height * 2)
-        # map_canvas.create_rectangle(box_width * 1, box_height * 1, box_width * 2, box_height * 2)
-        # map_canvas.create_rectangle(box_width * 2, box_height * 1, box_width * 3, box_height * 2)
-        # map_canvas.create_rectangle(box_width * 3, box_height * 1, box_width * 4, box_height * 2)
-        # map_canvas.create_rectangle(box_width * 4, box_height * 1, box_width * 5, box_height * 2)
 
 
         print(dungeon.get_visible_dungeon_string())  # debug
