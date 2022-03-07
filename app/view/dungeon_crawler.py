@@ -82,8 +82,8 @@ class DungeonCrawler(BaseFrame):
         bag = Button(canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
         map = Button(canvas, text= "Map", command= lambda: self.controller.update_adv_map())
         
-        bag.grid(row=3, column=1, sticky="nswe")
-        map.grid(row=3, column=2, sticky="nswe")
+        bag.grid(row=2, column=0, sticky="nswe")
+        map.grid(row=3, column=0, sticky="nswe")
 
         canvas.pack()
 
@@ -112,10 +112,10 @@ class DungeonCrawler(BaseFrame):
         travel_west = Button(canvas, text="West", command= lambda: [self.controller.set_move("w"), self.controller.update_dungeon_display()])
         travel_east = Button(canvas, text="East", command= lambda: [self.controller.set_move("e"), self.controller.update_dungeon_display()])
 
-        travel_north.grid(row=2, column=1)
-        travel_south.grid(row=2, column=2)
-        travel_west.grid(row=2, column=3)
-        travel_east.grid(row=2, column=4)
+        travel_north.grid(row=1, column=2)
+        travel_south.grid(row=3, column=2)
+        travel_west.grid(row=2, column=1)
+        travel_east.grid(row=2, column=3)
 
         canvas.pack()
 
