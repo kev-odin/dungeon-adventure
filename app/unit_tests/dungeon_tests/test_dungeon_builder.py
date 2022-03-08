@@ -2,8 +2,11 @@ import unittest
 from app.model.dungeon.dungeon_builder import DungeonBuilder
 from app.model.dungeon.room import Room
 from app.model.dungeon.dungeon import Dungeon
+from app.model.dungeon.map import Map
 from app.model.characters.adventurer import Adventurer
 from app.model.db.query_helper import QueryHelper
+from app.model.db.save_manager import SaveManager
+from app.model.characters.priestess import Priestess
 
 
 class TestDungeonBuilder(unittest.TestCase):
@@ -183,3 +186,22 @@ class TestDungeonBuilder(unittest.TestCase):
         monster = db._build_monster(False)
         check = monster.name == "Skeleton" or monster.name == "Gremlin"
         self.assertTrue(check, "Verify monster created is skeleton or Gremlin if not pillar room.")
+
+    def test_load_dungeon(self):
+        db = DungeonBuilder()
+        sm = SaveManager()
+        game = sm.load("2022-03-01 23:20:08.356245")
+        game = db.load_game(game)
+        print(game["dungeon"])
+        for row in range(game["dungeon"].dungeon_dict["rows"]):
+            for col in range(game["dungeon"].dungeon_dict["cols"]):
+                if type(game["dungeon"].get_room((row, col))) is not Room:
+                    self.fail(f"Didn't properly fill dungeon with rooms at row: {row}, col: {col}")
+        if type(game["adventurer"]) is not Priestess:
+            self.fail("Failed to create Priestess class.")
+        elif type(game["dungeon"]) is not Dungeon:
+            self.fail("Failed to create dungeon class.")
+        elif type(game["map"]) is not Map:
+            self.fail("Failed to create map class.")
+        else:
+            self.assertEqual(True, True, "Successfully loaded game, should never see this message.")

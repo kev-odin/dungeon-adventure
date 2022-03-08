@@ -7,6 +7,7 @@ from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
 # TODO: Update adventurer bag when entering a room  - Done
 # TODO: Update view with room contents              - Done
+# TODO: Save Game                                   - Done
 # TODO: Room Dungeon Canvas                         - WIP
 # TODO: Dungeon Map Canvas                          - WIP
 # TODO: DungeonBrawler                              - WIP
@@ -40,6 +41,7 @@ class GameController:
         """
         self.__model = model                            # Model
         self.__view = view                              # View
+        self.__base = view
 
     def start_new(self):
         """Function to restart game from the start.
@@ -64,6 +66,7 @@ class GameController:
         print(f"Game saved.")
 
     def load_game(self):
+        self.__view.load_existing_game_window()
         print(f"Loading previous game...")
 
     def frame_setup(self):
