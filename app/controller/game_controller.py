@@ -3,6 +3,7 @@ from app.model.db.save_manager import SaveManager
 from app.model.items.potion_factory import PotionFactory
 from app.view.dungeon_crawler import DungeonCrawler, DungeonBrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
+from app.view.load_view import LoadView
 
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
 # TODO: Update adventurer bag when entering a room  - Done
@@ -55,19 +56,32 @@ class GameController:
         self.__view = gui
         self.frame_setup()
 
-    def save_game(self):
+    def load_game(self, view):
+        load_view = LoadView()
+        load_view.setup(controller=self, parent=view)
+        print(f"Loading previous game...")
+
+    def get_saved_games(self):
+        games = SaveManager.get_saved_games()
+        print("Games retrieved.")
+        return games
+
+    def load_game_to_model(self, timestamp: str):
+        game = SaveManager.load(timestamp)
+        db = DungeonBuilder()
+        game = db.load_game(game)
+        self.set_model(game)
+        print("Game loaded.")
+
+    def save_game(self, game):
         """
         Saves the game to the database.
         :return: True if saved, False if an error occurred.
         """
-        dungeon, adventurer, map = self.__model["dungeon"], self.__model["hero"], self.__model["map"]
+        dungeon, adventurer, map = game["dungeon"], game["hero"], game["map"]
         dungeon, adventurer, map = dungeon.json_dict, adventurer.char_dict, map.map_dict
-        return SaveManager.save(dungeon, adventurer, map)
         print(f"Game saved.")
-
-    def load_game(self):
-        self.__view.load_existing_game_window()
-        print(f"Loading previous game...")
+        return SaveManager.save(dungeon, adventurer, map)
 
     def frame_setup(self):
         """Builds tKinter frames for the user based on the current view.
@@ -90,24 +104,29 @@ class GameController:
         print(f"DEBUG - Destroyed by Controller! {self}")
         self.__view.destruct()
 
-    def set_model(self):
+    def set_model(self, game=None):
         """Function that grabs user settings from the view and pass to controller.
+        It can also receive the game from a loaded game state.
         Controller passes the settings to the model. Creates the model model dictionary for
         organization.
+        :param game: dict with "dungeon", "map", and "adventurer" keys.  If None, will build from scratch given settings.
         """
-        entry = self.__view.send_settings()
-        dungeon = self.create_dungeon(entry["difficulty"])
-        hero = self.create_adventurer(entry["name"], entry["class_name"])
-        dungeon_map = self.__model.map
+        if game is None:  # Allows same method to be used when loading a game vs. new game.
+            entry = self.__view.send_settings()
+            dungeon = self.create_dungeon(entry["difficulty"])
+            hero = self.create_adventurer(entry["name"], entry["class_name"])
+            dungeon_map = self.__model.map
+        else:
+            dungeon, dungeon_map, hero = game["dungeon"], game["map"], game["adventurer"]
 
         print(f"DEBUG - Dungeon created successfully. Passing off to DungeonCrawler")
-        
+
         self.__model = {
-            "dungeon"   : dungeon,
-            "map"       : dungeon_map,
-            "hero"      : hero
+            "dungeon": dungeon,
+            "map": dungeon_map,
+            "hero": hero
         }
-        
+
         self.game_start()
 
     def set_move(self, move):
