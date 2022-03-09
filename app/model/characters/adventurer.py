@@ -17,14 +17,6 @@ class Adventurer(DungeonCharacter, ABC):
 
         :param adv_dict: dict of adventurer data
         """
-        adv_dict["health_pots"] = 0
-        adv_dict["vision_pots"] = 0
-        adv_dict["pillars_collected"] = {
-            "A": False,
-            "P": False,
-            "I": False,
-            "E": False
-        }
         super().__init__(adv_dict)
 
     def _readable_pillars(self):

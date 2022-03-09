@@ -1,6 +1,7 @@
 # checkout Kevin shared site https://www.pythontutorial.net/tkinter/
 # checkout this site https://www.youtube.com/watch?v=tpwu5Zb64lQ
 from tkinter import *
+from app.view.load_view import LoadView
 import os.path
 
 class dungeon_adventure_GUI:
@@ -12,6 +13,7 @@ class dungeon_adventure_GUI:
         self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="white") # canvas within that frame
         self.welcome_window(controller)
         self.welcome_screen_frame.pack()
+        self.__controller = controller
 
         self.settings = {
             "name"       : None,
@@ -140,22 +142,16 @@ class dungeon_adventure_GUI:
                                                                 # bind multiple command in one click
         btn.place(relx=0.75,rely=0.9)
 
-    def load_existing_game_window(self):
-        global pop2 
-        pop2 = Toplevel(self.root)
-        pop2.geometry("750x450")
-        pop2.resizable(width=False, height=False)
-        pop2.title("Load Game")
-
-        btn3 = Button(pop2, text="Confirm Load", command = pop2.destroy)
-        btn3.place(relx=0.75, rely=0.9)
+    def load_existing_game_window(self, controller):
+        view = LoadView()
+        view.setup(controller, self.root)
 
     def welcome_window(self, controller):
 
         canvas = self.welcome_screen_canvas
 
         new_game_btn = Button(canvas, text="New Game", command = lambda: self.create_new_game_window(controller))
-        load_game_btn = Button(canvas, text="Load Game", command = self.load_existing_game_window)
+        load_game_btn = Button(canvas, text="Load Game", command = lambda: self.load_existing_game_window(controller))
         quit_game_btn = Button(canvas, text="Quit Game", command = self.destruct)
 
         new_game_btn.place(relx=0.5,rely=0.5)

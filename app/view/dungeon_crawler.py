@@ -31,7 +31,7 @@ class BaseFrame(tk.Frame):
         filemenu = Menu(menubar, tearoff = 0)
         filemenu.add_command(label = "New game", command= lambda: self.controller.start_new())
         filemenu.add_command(label = "Save game", command= lambda: self.controller.save_game())
-        filemenu.add_command(label = "Load game", command= lambda: self.controller.load_game())
+        filemenu.add_command(label = "Load game", command= lambda: self.controller.load_game(self.root))
         filemenu.add_command(label = "Quit game", command= self.root.destroy)
 
         menubar.add_cascade(label = "File", menu = filemenu)
@@ -39,21 +39,15 @@ class BaseFrame(tk.Frame):
         help = Menu(menubar, tearoff = 0)
         help.add_command(label = "About Us")
         help.add_command(label = "Controls")
-        
+
         menubar.add_cascade(label = "Help", menu = help)
 
         self.root.config(menu = menubar)
 
-    def load_existing_game_window(self):
-        pop = Toplevel(self.root)
-        pop.geometry("750x450")
-        pop.resizable(width=False, height=False)
-        pop.title("Load Game")
-
-        btn3 = Button(pop, text="Confirm Load", command = pop.destroy).place(relx=0.75, rely=0.9)
-        btn3.pack(self.root)
-
 class DungeonCrawler(BaseFrame):
+    def __init__(self):
+        super(DungeonCrawler, self).__init__()
+
     def setup(self, controller):
         self.root.title("Dungeon Adventure 2.0 - DungeonCrawler")
         self.dungeon_crawl_frame = Frame(self.root, highlightbackground="Blue", highlightthickness=2)
@@ -331,6 +325,9 @@ class DungeonCrawler(BaseFrame):
         close_map_window.place(relx=1.0, rely=1.0, anchor=SE)
 
 class DungeonBrawler(BaseFrame):
+    def __init__(self):
+        super(DungeonBrawler, self).__init__()
+
     def setup(self):
         self.dungeon_brawl_frame = Frame(self.root, width = 800, height = 600, bg = "black")
         self.root.title("Dungeon Adventure 2.0 - DungeonCrawler")
