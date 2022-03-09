@@ -5,7 +5,7 @@ class LoadView:
     def setup(self, controller, parent):
         games = controller.get_saved_games()
         pop2 = Toplevel(parent)
-        pop2.geometry("750x450")
+        pop2.geometry("800x450")
         pop2.resizable(width=False, height=False)
         pop2.title("Select a Game to Load")
         button_text, button_dict = {}, {}
