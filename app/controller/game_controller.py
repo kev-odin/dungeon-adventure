@@ -56,17 +56,31 @@ class GameController:
         self.__view = gui
         self.frame_setup()
 
-    def load_game(self, view):
+    def load_game(self, view_root):
+        """
+        Opens menu to load a game.
+        :param view: current view's tk root.
+        :return:
+        """
         load_view = LoadView()
-        load_view.setup(controller=self, parent=view)
-        print(f"Loading previous game...")
+        load_view.setup(controller=self, parent=view_root)
+        print(f"Launching load menu...")
 
     def get_saved_games(self):
+        """
+        Loads all the saved games.  Keys for dictionary: "timestamp", "hero_name", "class", "difficulty", "current_hp",
+        "max_hp".
+        :return: List of dictionaries representing all the saves games basic information.
+        """
         games = SaveManager.get_saved_games()
         print("Games retrieved.")
         return games
 
     def load_game_to_model(self, timestamp: str):
+        """
+        Loads game from the database then converts it into Dungeon, Model, Adventurer classes, and sets to current model
+        :param timestamp: str matching timestamp key from get_saved_games dictionary.
+        """
         game = SaveManager.load(timestamp)
         db = DungeonBuilder()
         game = db.load_game(game)

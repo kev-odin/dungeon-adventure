@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import *
 
 class LoadView:
+    """
+    View for loading games from the save db.  Displays each save as a separate button with basic user information.
+    """
     def setup(self, controller, parent):
         games = controller.get_saved_games()
         pop2 = Toplevel(parent)
