@@ -116,19 +116,19 @@ class DungeonCrawler(BaseFrame):
         travel_north = Button(
             canvas,
             text="North",
-            command= lambda: [self.controller.set_move("n"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+            command= lambda: [self.controller.update_win_lose(), self.controller.set_move("n"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
         travel_south = Button(
             canvas, 
             text="South", 
-            command= lambda: [self.controller.set_move("s"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+            command= lambda: [self.controller.update_win_lose(), self.controller.set_move("s"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
         travel_west = Button(
             canvas,
             text="West", 
-            command= lambda: [self.controller.set_move("w"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+            command= lambda: [self.controller.update_win_lose(), self.controller.set_move("w"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
         travel_east = Button(
             canvas, 
             text="East", 
-            command= lambda: [self.controller.set_move("e"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+            command= lambda: [self.controller.update_win_lose(), self.controller.set_move("e"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
 
         nav_group = (travel_north, travel_south, travel_west, travel_east)
         update_navigation(nav_group, active_doors)
@@ -146,7 +146,7 @@ class DungeonCrawler(BaseFrame):
         canvas = self.root
         labelFrame_width = 300
         labelFrame_height = 300
-        adjacent_rooms_frame = LabelFrame(canvas, width = labelFrame_width, height = labelFrame_height, bg = "white")
+        adjacent_rooms_frame = LabelFrame(canvas, width = labelFrame_width, height = labelFrame_height)
         adjacent_rooms_canvas = Canvas(adjacent_rooms_frame, width = 300, height = 300, bg = "grey")
         box_width = labelFrame_width/3
         box_height = labelFrame_height/3
@@ -158,7 +158,7 @@ class DungeonCrawler(BaseFrame):
                                                        box_width * (j + 1),
                                                        box_height * (i + 1), width=3)
 
-        # use the adventurer's loc to try the doors, if there is a door then print grey room to that direction
+        # use the adventurer's loc to try the doors, if there is a door then print white room to that direction
         x_adv_loc = adv_telemetry.adventurer_loc[0]
         y_adv_loc = adv_telemetry.adventurer_loc[1]
         for try_door in ['north', 'south', 'east', 'west']:
@@ -167,22 +167,22 @@ class DungeonCrawler(BaseFrame):
                     adjacent_rooms_canvas.create_rectangle(box_width * (1),
                                                            box_height * (0),
                                                            box_width * (2),
-                                                           box_height * (1), width=3, fill='cyan')
+                                                           box_height * (1), width=3, fill='white')
                 if try_door == 'south':
                     adjacent_rooms_canvas.create_rectangle(box_width * (1),
                                                            box_height * (2),
                                                            box_width * (2),
-                                                           box_height * (3), width=3, fill='cyan')
+                                                           box_height * (3), width=3, fill='white')
                 if try_door == 'east':
                     adjacent_rooms_canvas.create_rectangle(box_width * (2),
                                                           box_height * (1),
                                                           box_width * (3),
-                                                          box_height * (2), width=3, fill='cyan')
+                                                          box_height * (2), width=3, fill='white')
                 if try_door == 'west':
                     adjacent_rooms_canvas.create_rectangle(box_width * (0),
                                                            box_height * (1),
                                                            box_width * (1),
-                                                           box_height * (2), width=3, fill='cyan')
+                                                           box_height * (2), width=3, fill='white')
 
 
         print('map.visited 2d array:')
@@ -350,6 +350,22 @@ class DungeonCrawler(BaseFrame):
         map_canvas.pack()
         close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
         close_map_window.place(relx=1.0, rely=1.0, anchor=SE)
+
+    def set_win_lose(self, map, dungeon, hero):
+
+
+        # if hero.health > 0: hero is alive
+            # if hero.loc() == map.exit():  hero at the exit location
+                # if hero.pillor.count == 4: hero collected all the pillars
+        # else:
+            # show the lose message
+
+        print("DEBUG - should see this when you win or lose the game.")
+        for widget in self.adventurer_canvas.winfo_children():
+            widget.destroy()
+        win_message = Message(self.root, text="Congrats, you win!", aspect=500)
+        win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
+        win_message.pack(side=tk.BOTTOM)
 
 class DungeonBrawler(BaseFrame):
     def __init__(self):

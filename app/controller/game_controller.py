@@ -267,6 +267,15 @@ class GameController:
 
         self.__view.set_map_display(map, dungeon)
 
+    def update_win_lose(self):
+        '''
+        Display the corresponding message immediately after win or lose the game
+        '''
+        dungeon = self.__model["dungeon"]
+        map = self.__model["map"]
+        hero = self.__model["hero"]
+
+        self.__view.set_win_lose(map, dungeon, hero)
 
     def get_hero(self):
         """Hero getter for the model.
