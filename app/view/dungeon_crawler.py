@@ -393,40 +393,51 @@ class DungeonBrawler(BaseFrame):
         
         def update_labels(group):
             for label in group:
-                new_hp = self.controller.get_hero_curr_hp()
-                new_max = self.controller.get_hero_max_hp()
-                new_pots = self.controller.get_vision_pots()
-                print(new_hp, new_max, new_pots)
+                if label is hero_hp:
+                    new_max = self.controller.get_hero_max_hp()
+                    new_hp = self.controller.get_hero_curr_hp()
+                    label["text"] = f"HP:{new_hp}/{new_max}"
+
+                if label is health_pot:
+                    new_pots = self.controller.get_health_pots()
+                    label["text"] = f"Health Potions: {new_pots}"
 
         hero_label = Label(
             parent, 
             text = f"{hero.name}")
         
-        health_label = Label(
+        hero_hp = Label(
             parent, 
-            text = f"HP:{hero.current_hitpoints}/{hero.max_hitpoints}")
+            text = None)
 
         health_pot = Label(
             parent,
-            text = f"Health Potions: {hero.health_pots}"
+            text = None
         )
 
-        label_group = (health_label, health_pot)
+        label_group = (hero_hp, health_pot)
+        update_labels(label_group)
         
         hero_label.grid(row=0, column=0)
-        health_label.grid(row=1, column=0)
+        hero_hp.grid(row=1, column=0)
         health_pot.grid(row=2, column=0)
 
-        # parent.after(5000, update_health(label_group))
-
     def create_monster_frame(self, parent, monster):
+        def update_labels(group):
+            for label in group:
+                
+                if label is monster_hp:
+                    new_hp = self.controller.get_monster().current_hitpoints
+                    max_hp = self.controller.get_monster().max_hitpoints
+                    label["text"] = f"HP:{new_hp} / {max_hp}"
+        
         monster_label = Label(
             parent, 
             text = f"Monster Type: {monster.name}")
         
         monster_hp = Label(
             parent,
-            text = f"HP:{monster.current_hitpoints} / {monster.max_hitpoints}"
+            text = None
             )
 
         monster_hit_chance = Label (
@@ -434,11 +445,13 @@ class DungeonBrawler(BaseFrame):
             text = f"Hit Chance: {monster.hit_chance}"
         )
 
+        label_group = (monster_label, monster_hp)
+        update_labels(label_group)
+
         monster_label.grid(row=0, column=0)
         monster_hp.grid(row=1, column=0, rowspan=1)
         monster_hit_chance.grid(row=2, column=0)
 
-        label_group = (monster_label, monster_hp)
 
     def set_combat_log(self, parent, event = None):
         canvas = parent

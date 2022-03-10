@@ -168,10 +168,11 @@ class GameController:
 
     def start_combat(self, hero = None, monster = None):
         print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
-        # self.window_destroy()
         self.__view.forget
         brawl = DungeonBrawler()
-        brawl.setup(self, hero, monster)
+        self.__brawl = brawl
+        self.__brawl.setup(self, hero, monster)
+
         # brawl.start_main_loop()
 
         # Change over to the DungeonBrawler view
@@ -190,10 +191,9 @@ class GameController:
                 # Prompt a Game Over frame, with options to start a new game or quit.
 
     def end_combat(self):
-        self.window_destroy()
-        self.__view.forget
-        self.__view = crawl
-        # self.frame_setup()
+        """After Combat Ends, the player should be back into the DungeonCrawler view
+        """
+        self.__brawl.destruct()
 
     def set_action(self, action : str):
         if action == "attack":
