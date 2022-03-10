@@ -146,8 +146,8 @@ class DungeonCrawler(BaseFrame):
         canvas = self.root
         labelFrame_width = 300
         labelFrame_height = 300
-        adjacent_rooms_frame = LabelFrame(canvas, width = labelFrame_width, height = labelFrame_height, bg = "White")
-        adjacent_rooms_canvas = Canvas(adjacent_rooms_frame, width = 300, height = 300, bg = "white")
+        adjacent_rooms_frame = LabelFrame(canvas, width = labelFrame_width, height = labelFrame_height, bg = "white")
+        adjacent_rooms_canvas = Canvas(adjacent_rooms_frame, width = 300, height = 300, bg = "grey")
         box_width = labelFrame_width/3
         box_height = labelFrame_height/3
 
@@ -167,22 +167,22 @@ class DungeonCrawler(BaseFrame):
                     adjacent_rooms_canvas.create_rectangle(box_width * (1),
                                                            box_height * (0),
                                                            box_width * (2),
-                                                           box_height * (1), width=3, fill='grey')
+                                                           box_height * (1), width=3, fill='cyan')
                 if try_door == 'south':
                     adjacent_rooms_canvas.create_rectangle(box_width * (1),
                                                            box_height * (2),
                                                            box_width * (2),
-                                                           box_height * (3), width=3, fill='grey')
+                                                           box_height * (3), width=3, fill='cyan')
                 if try_door == 'east':
                     adjacent_rooms_canvas.create_rectangle(box_width * (2),
                                                           box_height * (1),
                                                           box_width * (3),
-                                                          box_height * (2), width=3, fill='grey')
+                                                          box_height * (2), width=3, fill='cyan')
                 if try_door == 'west':
                     adjacent_rooms_canvas.create_rectangle(box_width * (0),
                                                            box_height * (1),
                                                            box_width * (1),
-                                                           box_height * (2), width=3, fill='grey')
+                                                           box_height * (2), width=3, fill='cyan')
 
 
         print('map.visited 2d array:')
@@ -193,8 +193,8 @@ class DungeonCrawler(BaseFrame):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         path = os.path.join(base_dir, "image assets/priest.gif") # debug
         img = PhotoImage(file=path)
-        img = img.subsample(10)
-        adjacent_rooms_canvas.create_image(150, 150, image=img)
+        img = img.subsample(9)
+        adjacent_rooms_canvas.create_image(151, 151, image=img)
 
         # # print a purple circle at the center of the 3x3 grid to represent the hero
         # adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
