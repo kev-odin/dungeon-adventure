@@ -190,10 +190,18 @@ class GameController:
                 # Prompt a Game Over frame, with options to start a new game or quit.
 
     def end_combat(self):
-        # self.window_destroy()
+        self.window_destroy()
         self.__view.forget
         self.__view = crawl
-        self.frame_setup()
+        # self.frame_setup()
+
+    def set_action(self, action : str):
+        if action == "attack":
+            print(f"DEBUG - ATTACKING")
+        
+        if action == "special":
+            print(f"DEBUG - USING SPECIAL")
+
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
@@ -278,7 +286,6 @@ class GameController:
         dungeon = self.__model["dungeon"]  # and then view is going to use this info to prepare the display
 
         self.__view.set_map_display(map, dungeon)
-
 
     def get_hero(self):
         """Hero getter for the model.

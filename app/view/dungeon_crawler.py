@@ -361,12 +361,10 @@ class DungeonBrawler(BaseFrame):
         self.root.title("Dungeon Adventure 2.0 - DungeonCrawler")
         self.dungeon_brawl_frame = Frame(self.root)
         self.controller = controller
-        # self.hero = hero
-        # self.monster = monster
         
         left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
         right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
-        combat_log = Frame(self.dungeon_brawl_frame, width = 400, height = 200, bg = "blue")
+        combat_log = Frame(self.dungeon_brawl_frame, width = 800, height = 200, bg = "blue")
         combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
 
         left_frame['relief'] = SUNKEN
@@ -374,20 +372,15 @@ class DungeonBrawler(BaseFrame):
         combat_log['relief'] = SUNKEN
         combat_action['relief'] = SUNKEN
 
-        left_frame['borderwidth'] = 5
-        right_frame['borderwidth'] = 5
-        combat_log['borderwidth'] = 5
-        combat_action['borderwidth'] = 5
+        left_frame['borderwidth'] = 10
+        right_frame['borderwidth'] = 10
+        combat_log['borderwidth'] = 10
+        combat_action['borderwidth'] = 10
 
         left_frame.grid(row = 0, column= 0)
         right_frame.grid(row = 0, column= 1)
-        combat_action.grid(row = 1, column=0)
-        combat_log.grid(row = 1, column= 1)
-
-        # left_frame.place(x=0, y= 0)
-        # right_frame.place(x = 400, y = 0)
-        # combat_action.place(relx = 0.15, rely = 0.8)
-        # combat_log.place(relx = 0.5, rely = 0.7)
+        combat_action.grid(row = 1, columnspan=2)
+        combat_log.grid(row = 2, columnspan=2)
         
         self.set_combat_log(combat_log)
         self.set_combat_action(combat_action, hero)
@@ -449,7 +442,14 @@ class DungeonBrawler(BaseFrame):
 
     def set_combat_log(self, parent, event = None):
         canvas = parent
-        text = Label(canvas, text = "Combat Log").grid(row=0)
+        text = Label(canvas, text = "Combat Log")
+        text_log = Listbox(canvas)
+        
+        text_log.insert(1, "HEY THERE!")
+        text_log.insert(2, "This is Sample Text")
+        
+        text.grid(row=0)
+        text_log.grid(row=1)
 
     def set_combat_action(self, parent, hero):
         canvas = parent
@@ -458,17 +458,17 @@ class DungeonBrawler(BaseFrame):
         attack = Button(
             canvas, 
             text="Attack", 
-            command= lambda: self.controller.set_move("attack"))
+            command= lambda: self.controller.set_action("attack"))
         
         special = Button(
             canvas, 
             text=f"{special_move}", 
-            command= lambda: self.controller.set_move("special"))
+            command= lambda: self.controller.set_action("special"))
         
         health_potion = Button(
             canvas, 
             text= "Use Health Potion", 
-            command= lambda: self.controller.update_adv_bag())
+            command= lambda: self.controller.set_potion("health"))
 
         end_combat = Button(
             canvas,
