@@ -1,11 +1,10 @@
 from tkinter import *
 import tkinter as tk
 import os
-
 # TODO: Readable pillars in the bag view        - Done
-# TODO: Ability to use items in the bag view    - Bug
-# TODO: Item number not updating after use      - Bug
-# TODO: Controller saving                       - Bug
+# TODO: Ability to use items in the bag view    - Done
+# TODO: Item number not updating after use      - Done
+# TODO: Controller saving                       - DONE
 
 class BaseFrame(tk.Frame):
     def __init__(self):
@@ -210,7 +209,6 @@ class DungeonCrawler(BaseFrame):
         """
 
         def update_counter(label, button, potion_type):
-
             if potion_type == "Health":
                 curr_count = self.controller.get_health_pots()
             elif potion_type == "Vision":
@@ -351,75 +349,144 @@ class DungeonCrawler(BaseFrame):
         close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
         close_map_window.place(relx=1.0, rely=1.0, anchor=SE)
 
+# TODO: Load frame with hero and monster information (health, attack speed, block chance)
+# TODO: Get attack buttons working
+# TODO: Get special move to load correctly
+
 class DungeonBrawler(BaseFrame):
     def __init__(self):
         super(DungeonBrawler, self).__init__()
 
-    def setup(self):
-        self.dungeon_brawl_frame = Frame(self.root, width = 800, height = 600, bg = "black")
+    def setup(self, controller, hero, monster):
         self.root.title("Dungeon Adventure 2.0 - DungeonCrawler")
+        self.dungeon_brawl_frame = Frame(self.root)
+        self.controller = controller
+        # self.hero = hero
+        # self.monster = monster
+        
         left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
         right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
         combat_log = Frame(self.dungeon_brawl_frame, width = 400, height = 200, bg = "blue")
         combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
+
+        left_frame['relief'] = SUNKEN
+        right_frame['relief'] = SUNKEN
+        combat_log['relief'] = SUNKEN
+        combat_action['relief'] = SUNKEN
+
+        left_frame['borderwidth'] = 5
+        right_frame['borderwidth'] = 5
+        combat_log['borderwidth'] = 5
+        combat_action['borderwidth'] = 5
+
+        left_frame.grid(row = 0, column= 0)
+        right_frame.grid(row = 0, column= 1)
+        combat_action.grid(row = 1, column=0)
+        combat_log.grid(row = 1, column= 1)
+
+        # left_frame.place(x=0, y= 0)
+        # right_frame.place(x = 400, y = 0)
+        # combat_action.place(relx = 0.15, rely = 0.8)
+        # combat_log.place(relx = 0.5, rely = 0.7)
         
-
-        # self.create_hero_frame(left_frame, "hello")
-        self.set_combat_action(combat_action)
         self.set_combat_log(combat_log)
-
-        # left_frame.grid(row = 0, column= 0)
-        # right_frame.grid(row = 0, column= 1)
-        # combat_action.grid(row = 1, column=0)
-        # combat_log.grid(row = 1, column= 1)
-
-
-        # left_frame.pack(fill='both', side='left', expand='True')
-        # right_frame.pack(fill='both', side='right', expand='True')
-
-        left_frame.place(x=0, y= 0)
-        right_frame.place(x = 400, y = 0)
-        #
-        combat_action.place(relx = 0.15, rely = 0.8)
-        combat_log.place(relx = 0.5, rely = 0.7)
+        self.set_combat_action(combat_action, hero)
+        self.create_hero_frame(left_frame, hero)
+        self.create_monster_frame(right_frame, monster)
 
         self.dungeon_brawl_frame.pack()
-    def create_hero_frame(self, parent, hero = None):
-        hero_frame = Frame(parent)
-        hero_label = Label(hero_frame, text = f"{hero}", bg="white")
-        hero_frame.pack(side = TOP)
-        hero_label.grid(row = 0, column=0)
+    
+    def create_hero_frame(self, parent, hero):
+        
+        def update_labels(group):
+            for label in group:
+                new_hp = self.controller.get_hero_curr_hp()
+                new_max = self.controller.get_hero_max_hp()
+                new_pots = self.controller.get_vision_pots()
+                print(new_hp, new_max, new_pots)
 
-    def set_monster(self, monster = None):
-        monster_frame = Frame(self.right_frame)
-        monster_label = Label(monster_frame, text = f"{monster}")
-        monster_label.pack()
+        hero_label = Label(
+            parent, 
+            text = f"{hero.name}")
+        
+        health_label = Label(
+            parent, 
+            text = f"HP:{hero.current_hitpoints}/{hero.max_hitpoints}")
 
-    def set_combat_log(self, parent_frame, event = None):
-        canvas = parent_frame
-        text = Text(canvas, height=10, width=55)
-        text.grid(row=0, column=0, sticky='ew')
-        scrollbar = Scrollbar(canvas, orient='vertical', command= text.yview)
-        scrollbar.grid(row=0, column=0, sticky='ns')
+        health_pot = Label(
+            parent,
+            text = f"Health Potions: {hero.health_pots}"
+        )
 
-    def set_combat_action(self, parent_frame):
-        canvas = parent_frame
+        label_group = (health_label, health_pot)
+        
+        hero_label.grid(row=0, column=0)
+        health_label.grid(row=1, column=0)
+        health_pot.grid(row=2, column=0)
 
-        attack = Button(canvas, text="Attack", command= lambda: self.controller.set_move("n"))
-        special = Button(canvas, text="Special", command= lambda: self.controller.set_move("s"))
-        bag = Button(canvas, text="Bag", command= lambda: self.controller.set_move("w"))
+        # parent.after(5000, update_health(label_group))
 
-        attack.grid(row=0, column=1)
-        special.grid(row=0, column=2)
-        bag.grid(row=0, column=3)
+    def create_monster_frame(self, parent, monster):
+        monster_label = Label(
+            parent, 
+            text = f"Monster Type: {monster.name}")
+        
+        monster_hp = Label(
+            parent,
+            text = f"HP:{monster.current_hitpoints} / {monster.max_hitpoints}"
+            )
 
-        # return canvas
+        monster_hit_chance = Label (
+            parent,
+            text = f"Hit Chance: {monster.hit_chance}"
+        )
 
-    def update_monster(self, controller):
-        pass
+        monster_label.grid(row=0, column=0)
+        monster_hp.grid(row=1, column=0, rowspan=1)
+        monster_hit_chance.grid(row=2, column=0)
+
+        label_group = (monster_label, monster_hp)
+
+    def set_combat_log(self, parent, event = None):
+        canvas = parent
+        text = Label(canvas, text = "Combat Log").grid(row=0)
+
+    def set_combat_action(self, parent, hero):
+        canvas = parent
+        special_move = hero.special
+
+        attack = Button(
+            canvas, 
+            text="Attack", 
+            command= lambda: self.controller.set_move("attack"))
+        
+        special = Button(
+            canvas, 
+            text=f"{special_move}", 
+            command= lambda: self.controller.set_move("special"))
+        
+        health_potion = Button(
+            canvas, 
+            text= "Use Health Potion", 
+            command= lambda: self.controller.update_adv_bag())
+
+        end_combat = Button(
+            canvas,
+            text="DO NOT PRESS",
+            bg="red",
+            command= lambda: self.controller.end_combat()
+        )
+
+        attack.grid(row=0, column=0)
+        special.grid(row=0, column=1)
+        health_potion.grid(row=0, column=2)
+        end_combat.grid(row=0, column=3)
+
+    def update_monster(self):
+        return self.controller.get_monster
 
     def update_hero(self, controller):
-        pass
+        return self.controller.get_hero
 
     def update_combat_action(self, controller):
         pass
@@ -428,6 +495,13 @@ class DungeonBrawler(BaseFrame):
         pass
 
 if __name__ == "__main__":
+    hero = {
+        "name"      : "Test_Hero",
+    }
+    hero.special = "Run Away"
+    monster = {
+        "name" : "Test_Monster"
+    }
     test = DungeonBrawler()
-    test.setup()
+    test.setup(hero, monster)
     test.start_main_loop()

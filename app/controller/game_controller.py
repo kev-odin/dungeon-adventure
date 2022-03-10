@@ -9,8 +9,8 @@ from app.view.load_view import LoadView
 # TODO: Update adventurer bag when entering a room  - Done
 # TODO: Update view with room contents              - Done
 # TODO: Save Game                                   - Done
-# TODO: Room Dungeon Canvas                         - WIP
-# TODO: Dungeon Map Canvas                          - WIP
+# TODO: Room Dungeon Canvas                         - Done
+# TODO: Dungeon Map Canvas                          - Done
 # TODO: DungeonBrawler                              - WIP
 # TODO: Start New                                   - WIP
 # TODO: Load Game                                   - WIP
@@ -106,9 +106,9 @@ class GameController:
     def game_start(self):
         """Switches over to the DungeonCrawler view after the dungeon has been created.
         """
+        global crawl
         self.window_destroy()
         crawl = DungeonCrawler()
-        # brawl = DungeonBrawler()
         self.__view = crawl
         self.frame_setup()
 
@@ -168,6 +168,12 @@ class GameController:
 
     def start_combat(self, hero = None, monster = None):
         print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
+        # self.window_destroy()
+        self.__view.forget
+        brawl = DungeonBrawler()
+        brawl.setup(self, hero, monster)
+        # brawl.start_main_loop()
+
         # Change over to the DungeonBrawler view
         # while the hero and monster is alive ensure that the event loop continues
             # Update health of both adventurer and monster at the start of each round
@@ -182,6 +188,12 @@ class GameController:
                 # Update hero information within DungeonCrawler
             # if hero dies:
                 # Prompt a Game Over frame, with options to start a new game or quit.
+
+    def end_combat(self):
+        # self.window_destroy()
+        self.__view.forget
+        self.__view = crawl
+        self.frame_setup()
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
