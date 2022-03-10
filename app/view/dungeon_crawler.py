@@ -99,12 +99,39 @@ class DungeonCrawler(BaseFrame):
         canvas.pack()
 
     def dungeon_navigation(self):
+        """Displays the navigation buttons for the DungeonCrawler view. Buttons are greyed out if a door is not present.
+        """
         canvas = self.dungeon_crawl_canvas
+        active_doors = self.controller.get_current_doors()
 
-        travel_north = Button(canvas, text="North", command= lambda: [self.controller.set_move("n"), self.controller.update_dungeon_display()])
-        travel_south = Button(canvas, text="South", command= lambda: [self.controller.set_move("s"), self.controller.update_dungeon_display()])
-        travel_west = Button(canvas, text="West", command= lambda: [self.controller.set_move("w"), self.controller.update_dungeon_display()])
-        travel_east = Button(canvas, text="East", command= lambda: [self.controller.set_move("e"), self.controller.update_dungeon_display()])
+        def update_navigation(buttons, doors):
+            for button in buttons:
+                current_dir = button["text"].lower()
+                
+                if doors[current_dir]:
+                    button["state"] = ACTIVE
+                else:
+                    button["state"] = DISABLED
+
+        travel_north = Button(
+            canvas,
+            text="North",
+            command= lambda: [self.controller.set_move("n"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+        travel_south = Button(
+            canvas, 
+            text="South", 
+            command= lambda: [self.controller.set_move("s"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+        travel_west = Button(
+            canvas,
+            text="West", 
+            command= lambda: [self.controller.set_move("w"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+        travel_east = Button(
+            canvas, 
+            text="East", 
+            command= lambda: [self.controller.set_move("e"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+
+        nav_group = (travel_north, travel_south, travel_west, travel_east)
+        update_navigation(nav_group, active_doors)
 
         travel_north.grid(row=1, column=2)
         travel_south.grid(row=3, column=2)
