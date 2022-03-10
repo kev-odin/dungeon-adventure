@@ -19,9 +19,9 @@ class TestDungeon(unittest.TestCase):
     def create_2d_bool_list(dungeon):  # Defaults to entrance and exit and pillars
         bool_list = []
         print_me = ["i", "O", "A", "P", "I", "E"]
-        for row in range(0, dungeon._Dungeon__row_count):
+        for row in range(0, dungeon.total_rows):
             bool_list.append([])
-            for col in range(0, dungeon._Dungeon__col_count):
+            for col in range(0, dungeon.total_columns):
                 bool_list[row].append([])
                 if dungeon.dungeon[row][col].contents in print_me:
                     bool_list[row][col] = True
@@ -275,3 +275,8 @@ class TestDungeon(unittest.TestCase):
                 actual = True
         expected = True
         self.assertEqual(expected, actual, "Expected to find entrance, exit, and A P I E in partial string.")
+
+    def test_json_dict(self):
+        dungeon = self.init_dungeon("Easy")
+        check = type(dungeon.json_dict)
+        self.assertEqual(dict, check, "Failed to make a dictionary of dictionary rooms.")

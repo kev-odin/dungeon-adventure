@@ -48,14 +48,27 @@ class DungeonBuilder:
         Passes dungeon over to dungeon and all settings then stores it as a complete_dungeon.
         :return: None
         """
-        self.__complete_dungeon = Dungeon(self.__dungeon, self.__settings["difficulty"], self.__entrance, self.__exit)
+        dungeon_dict = {"dungeon": self.__dungeon, "difficulty": self.__settings["difficulty"],
+                        "rows": self.__settings["row"], "cols": self.__settings["col"],
+                        "pillars": self.__pillars, "entrance": self.__entrance, "exit": self.__exit,
+                        "adventurer_location": self.__entrance}
+        self.__complete_dungeon = Dungeon(dungeon_dict)
 
     def __set_map(self):
         """
-        Sets a map as part of the build dungeon routine.  Sets visited rooms to the entranc elocation.
+        Sets a map as part of the build dungeon routine.  Sets visited rooms to the entrance location.
+        Visited rooms are set to True (the entrance), unvisited set to False (all other locations).
         :return: None
         """
-        self.__complete_map = Map(self.__settings["row"], self.__settings["col"])
+        dungeon = self.__complete_dungeon.dungeon_dict
+        visited_array = []
+        for row in range(dungeon["rows"]):
+            visited_array.append([])
+            for col in range(dungeon["cols"]):
+                visited_array[row].append([])
+                visited_array[row][col] = False
+        map_dict = {"rows": dungeon["rows"], "cols": dungeon["cols"], "visited_array": visited_array}
+        self.__complete_map = Map(map_dict)
         self.__complete_map.set_visited_room(self.__entrance[0], self.__entrance[1])
 
     def __set_adventurer(self):
@@ -174,7 +187,8 @@ class DungeonBuilder:
             empty_rooms.remove(current)  # Suspicion is this isn't properly removing the room.
             room = self.__get_room(current)  # Uses coordinates to access room
             room.contents = pillars.pop()  # Sets the pillar to the current room.
-            room.monster = self._build_monster(True)
+            boss = True
+            room.monster = self._build_monster(boss)
 
     def __is_traversable(self, row: int, col: int):
         """

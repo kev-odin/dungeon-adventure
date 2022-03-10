@@ -29,7 +29,7 @@ class DungeonCharacter(ABC):
         :return: name of adventurer
         :rtype: str
         """
-        return self.__char_dict["name"]
+        return self.char_dict["name"]
 
     @name.setter
     def name(self, value):
@@ -39,7 +39,7 @@ class DungeonCharacter(ABC):
         :type value: str
         """
         if isinstance(value, str):
-            self.__char_dict["name"] = value
+            self.char_dict["name"] = value
 
     @property
     def max_hitpoints(self):
@@ -48,7 +48,7 @@ class DungeonCharacter(ABC):
         :return: health remaining of adventurer
         :rtype: int
         """
-        return self.__char_dict["max_hp"]
+        return self.char_dict["max_hp"]
 
     @max_hitpoints.setter
     def max_hitpoints(self, value):
@@ -58,7 +58,7 @@ class DungeonCharacter(ABC):
         :type value: int
         """
         if isinstance(value, int):
-            self.__char_dict["max_hp"] = value
+            self.char_dict["max_hp"] = value
 
     @property
     def current_hitpoints(self):
@@ -67,7 +67,7 @@ class DungeonCharacter(ABC):
         :return: value of the current hitpoints for adventurer
         :rtype: int
         """
-        return self.__char_dict["current_hp"]
+        return self.char_dict["current_hp"]
 
     @current_hitpoints.setter
     def current_hitpoints(self, value):
@@ -77,17 +77,17 @@ class DungeonCharacter(ABC):
         """
         if isinstance(value, int):
             if value >= 0:
-                self.__char_dict["current_hp"] = value
+                self.char_dict["current_hp"] = value
             else:
                 raise ValueError("Cannot set current hitpoints to a negative value.")
 
     @property
     def attack_speed(self):
-        return self.__char_dict["attack_speed"]
+        return self.char_dict["attack_speed"]
 
     @property
     def hit_chance(self):
-        return self.__char_dict["hit_chance"]
+        return self.char_dict["hit_chance"]
 
     def attack(self, hit_chance=None, min_dmg=None, max_dmg=None):
         """
@@ -100,11 +100,19 @@ class DungeonCharacter(ABC):
         if hit_chance is None:  # Implemented this way for overriding with Warrior skill.
             hit_chance = self.hit_chance
         if min_dmg is None:
-            min_dmg = self.__char_dict["min_dmg"]
+            min_dmg = self.char_dict["min_dmg"]
         if max_dmg is None:
-            max_dmg = self.__char_dict["max_dmg"]
+            max_dmg = self.char_dict["max_dmg"]
 
         if random.randint(0, 100) <= (hit_chance * 100):
             return random.randint(min_dmg, max_dmg)
         else:
             return 0
+
+    @property
+    def char_dict(self):
+        """
+        Getter for char_dict.  Returns dictionary representing the character stats.
+        :return: dict representing character stats and attributes.
+        """
+        return self.__char_dict
