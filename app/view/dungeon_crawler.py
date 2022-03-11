@@ -599,7 +599,7 @@ class DungeonBrawler(BaseFrame):
             command= lambda: [
                 self.controller.set_potion("health"),
                 potion_state(health_potion),
-                self.update_labels(self.health_pot)
+                self.update_labels(self.hero_hp, self.health_pot)
                 ])
 
         end_game = Button(
