@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk
 import os
+from turtle import right
 # TODO: Readable pillars in the bag view        - Done
 # TODO: Ability to use items in the bag view    - Done
 # TODO: Item number not updating after use      - Done
@@ -258,15 +259,35 @@ class DungeonCrawler(BaseFrame):
             potion_frame.pack(side=TOP)
 
             if bag_stuff["health"]:
-                health_lbl = Label(potion_frame, text = f"Health Potion Count: {bag_stuff['health']}", padx = 10)
-                use_health = Button(potion_frame, text="Use Health Potion", command = lambda: [self.controller.set_potion("health"), update_counter(health_lbl, use_health, "Health")])
+                health_lbl = Label(
+                    potion_frame,
+                    text = f"Health Potion Count: {bag_stuff['health']}",
+                    padx = 10
+                    )
+
+                use_health = Button(
+                    potion_frame,
+                    text="Use Health Potion",
+                    command = lambda: [
+                        self.controller.set_potion("health"),
+                        update_counter(health_lbl, use_health, "Health")
+                        ])
 
                 health_lbl.grid(row=0, column=0)
                 use_health.grid(row=0, column=1)
 
             if bag_stuff["vision"]:
-                vision_lbl = Label(potion_frame, text = f"Vision Potion Count: {bag_stuff['vision']}", padx = 10)
-                use_vision = Button(potion_frame, text="Use Vision Potion", command = lambda: [self.controller.set_potion("vision"), update_counter(vision_lbl, use_vision, "Vision")])
+                vision_lbl = Label(
+                    potion_frame,
+                    text = f"Vision Potion Count: {bag_stuff['vision']}",
+                    padx = 10
+                    )
+                use_vision = Button(
+                    potion_frame,
+                    text="Use Vision Potion",
+                    command = lambda: [
+                        self.controller.set_potion("vision"),
+                        update_counter(vision_lbl, use_vision, "Vision")])
 
                 vision_lbl.grid(row=1, column=0)
                 use_vision.grid(row=1, column=1)
@@ -395,56 +416,66 @@ class DungeonBrawler(BaseFrame):
         super(DungeonBrawler, self).__init__()
 
     def setup(self, controller, hero, monster):
-        self.root.title("Dungeon Adventure 2.0 - DungeonCrawler")
+        """Builds the basic frames for combat between the hero and the monster.
+
+        :param controller: _description_
+        :type controller: _type_
+        :param hero: _description_
+        :type hero: _type_
+        :param monster: _description_
+        :type monster: _type_
+        """
+        self.root.title("Dungeon Adventure 2.0 - DungeonBrawler")
         self.dungeon_brawl_frame = Frame(self.root)
         self.controller = controller
-
-        left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
-        right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
+        
+        self.left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
+        self.right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
         combat_log = Frame(self.dungeon_brawl_frame, width = 800, height = 200, bg = "blue")
         combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
 
-        left_frame['relief'] = SUNKEN
-        right_frame['relief'] = SUNKEN
+        self.left_frame['relief'] = SUNKEN
+        self.right_frame['relief'] = SUNKEN
         combat_log['relief'] = SUNKEN
         combat_action['relief'] = SUNKEN
 
-        left_frame['borderwidth'] = 10
-        right_frame['borderwidth'] = 10
+        self.left_frame['borderwidth'] = 10
+        self.right_frame['borderwidth'] = 10
         combat_log['borderwidth'] = 10
         combat_action['borderwidth'] = 10
 
-        left_frame.grid(row = 0, column= 0)
-        right_frame.grid(row = 0, column= 1)
+        self.left_frame.grid(row = 0, column= 0)
+        self.right_frame.grid(row = 0, column= 1)
         combat_action.grid(row = 1, columnspan=2)
         combat_log.grid(row = 2, columnspan=2)
-
+        
         self.set_combat_log(combat_log)
-        self.set_combat_action(combat_action, hero)
-        self.create_hero_frame(left_frame, hero)
-        self.create_monster_frame(right_frame, monster)
+        self.set_combat_action(combat_action, hero, monster)
+        self.create_hero_frame(self.left_frame, hero)
+        self.create_monster_frame(self.right_frame, monster)
 
         self.dungeon_brawl_frame.pack()
-
+    
     def create_hero_frame(self, parent, hero):
-
+        
         def update_labels(group):
+            print("DEBUG - Updating Hero Frame")
             for label in group:
                 if label is hero_hp:
                     new_max = self.controller.get_hero_max_hp()
                     new_hp = self.controller.get_hero_curr_hp()
-                    label["text"] = f"HP:{new_hp}/{new_max}"
+                    label["text"] = f"Health:{new_hp}/{new_max}"
 
                 if label is health_pot:
                     new_pots = self.controller.get_health_pots()
                     label["text"] = f"Health Potions: {new_pots}"
 
         hero_label = Label(
-            parent,
+            parent, 
             text = f"{hero.name}")
-
+        
         hero_hp = Label(
-            parent,
+            parent, 
             text = None)
 
         health_pot = Label(
@@ -452,26 +483,39 @@ class DungeonBrawler(BaseFrame):
             text = None
         )
 
+        attack_sp = Label(
+            parent,
+            text = f"Attack Speed: {hero.attack_speed}"
+        )
+
+        hit_chance = Label(
+            parent,
+            text = f"Hit Chance: {hero.hit_chance}"
+        )
+
         label_group = (hero_hp, health_pot)
         update_labels(label_group)
-
+        
         hero_label.grid(row=0, column=0)
         hero_hp.grid(row=1, column=0)
         health_pot.grid(row=2, column=0)
+        attack_sp.grid(row=3, column=0)
+        hit_chance.grid(row=4, column=0)
 
     def create_monster_frame(self, parent, monster):
+        print("DEBUG - Updating Monster Frame")
+
         def update_labels(group):
             for label in group:
-
                 if label is monster_hp:
                     new_hp = self.controller.get_monster().current_hitpoints
                     max_hp = self.controller.get_monster().max_hitpoints
-                    label["text"] = f"HP:{new_hp} / {max_hp}"
-
+                    label["text"] = f"Health:{new_hp} / {max_hp}"
+        
         monster_label = Label(
-            parent,
+            parent, 
             text = f"Monster Type: {monster.name}")
-
+        
         monster_hp = Label(
             parent,
             text = None
@@ -482,12 +526,25 @@ class DungeonBrawler(BaseFrame):
             text = f"Hit Chance: {monster.hit_chance}"
         )
 
+        attack_sp = Label(
+            parent,
+            text = f"Attack Speed: {monster.attack_speed}"
+        )
+
+        hit_chance = Label(
+            parent,
+            text = f"Hit Chance: {monster.hit_chance}"
+        )
+
         label_group = (monster_label, monster_hp)
         update_labels(label_group)
 
         monster_label.grid(row=0, column=0)
-        monster_hp.grid(row=1, column=0, rowspan=1)
+        monster_hp.grid(row=1, column=0)
         monster_hit_chance.grid(row=2, column=0)
+        attack_sp.grid(row=3, column=0)
+        hit_chance.grid(row=4, column=0)
+
 
     def set_combat_log(self, parent, event_list = None):
         canvas = parent
@@ -500,31 +557,52 @@ class DungeonBrawler(BaseFrame):
         text.grid(row=0)
         text_log.grid(row=1)
 
-    def set_combat_action(self, parent, hero):
+    def set_combat_action(self, parent, hero, monster):
         canvas = parent
         special_move = hero.special
+
+        def potion_state(button):
+            current_potion = self.controller.get_health_pots()
+            if current_potion == 0:
+                button["state"] = DISABLED
+            else:
+                button["state"] = ACTIVE
 
         attack = Button(
             canvas, 
             text="Attack", 
-            command= lambda: self.controller.set_action("attack"))
+            command= lambda: [
+                self.controller.set_action("attack"),
+                self.create_hero_frame(self.left_frame, hero),
+                self.create_monster_frame(self.right_frame, monster)
+                ])
         
         special = Button(
             canvas, 
             text=f"{special_move}", 
-            command= lambda: self.controller.set_action("special"))
+            command= lambda: [
+                self.controller.set_action("special"),
+                self.create_hero_frame(self.left_frame, hero),
+                self.create_monster_frame(self.right_frame, monster)
+                ])
         
         health_potion = Button(
             canvas, 
             text= "Use Health Potion", 
-            command= lambda: self.controller.set_potion("health"))
+            command= lambda: [
+                self.controller.set_potion("health"),
+                potion_state(health_potion),
+                self.create_hero_frame(self.left_frame, hero)
+                ])
 
         end_combat = Button(
             canvas,
-            text="DO NOT PRESS",
+            text="DEBUG - ESCAPE COMBAT",
             bg="red",
             command= lambda: [self.controller.end_combat(), self.controller.update_lose_message()]
         )
+
+        potion_state(health_potion)
 
         attack.grid(row=0, column=0)
         special.grid(row=0, column=1)
@@ -542,4 +620,3 @@ class DungeonBrawler(BaseFrame):
 
     def update_combat_log(self, controller):
         pass
-

@@ -196,9 +196,12 @@ class GameController:
     def set_action(self, action : str):
         if action == "attack":
             print(f"DEBUG - ATTACKING")
+            self.__model["hero"].take_damage(15)
 
         if action == "special":
             print(f"DEBUG - USING SPECIAL")
+            self.__model["hero"].take_damage(25)
+
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
