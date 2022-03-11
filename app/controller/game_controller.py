@@ -200,19 +200,32 @@ class GameController:
             
             if action == "attack":
                 print(f"DEBUG - ATTACKING")
-                monster_healed = target.take_damage(hero_dmg)
+                monster_heal = target.take_damage(hero_dmg)
                 actual = hero.take_damage(monster_dmg)
-                
-                print(f"{hero.name} inflicted {hero_dmg - monster_healed} to {target.name}")
-                print(f"{target.name} inflicted {actual} to {hero.name}")
+
+                if actual == 0:
+                    print(f"{hero.name} negated the incoming damage from {target.name}!")
+                else:
+                    print(f"{target.name} inflicted {actual} to {hero.name}")
+
+                print(f"{hero.name} inflicted {hero_dmg} to {target.name}, but {target.name} healed for {monster_heal} HP")
 
             if action == "special":
                 print(f"DEBUG - USING SPECIAL")
-                hero_special = hero.use_special()
-                target.take_damage(hero_special)
-                hero.take_damage(monster_dmg)
                 
-                print(f"{hero.name} inflicted {hero_special} to {target.name}")
+                if hero.adv_class == "Priestess":
+                    pass
+                else:
+                    hero_special = hero.use_special()
+                    target.take_damage(hero_special)
+                    hero.take_damage(monster_dmg)
+                    print(f"{hero.name} inflicted {hero_special} to {target.name}")
+
+            if target.current_hitpoints <= 0:
+                print(f"{hero.name} defeated {target.name}")
+
+            if hero.current_hitpoints <= 0:
+                print(f"{target.name} defeated {hero.name}")
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
