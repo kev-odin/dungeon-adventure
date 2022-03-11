@@ -612,11 +612,18 @@ class DungeonBrawler(BaseFrame):
                 self.create_hero_frame(self.left_frame, hero)
                 ])
 
-        end_combat = Button(
+        end_game = Button(
             canvas,
-            text="DEBUG - ESCAPE COMBAT",
+            text="DEBUG - END GAME",
             bg="red",
             command= lambda: [self.controller.end_combat(), self.controller.update_lose_message()]
+        )
+
+        end_combat = Button(
+            canvas,
+            text="DEBUG - SKIP COMBAT",
+            bg="orange",
+            command= lambda: [self.controller.end_combat()]
         )
 
         potion_state(health_potion)
@@ -624,7 +631,8 @@ class DungeonBrawler(BaseFrame):
         attack.grid(row=0, column=0)
         special.grid(row=0, column=1)
         health_potion.grid(row=0, column=2)
-        end_combat.grid(row=0, column=3)
+        end_game.grid(row= 0, column=3)
+        end_combat.grid(row=0, column=4)
 
     def update_monster(self):
         return self.controller.get_monster()
