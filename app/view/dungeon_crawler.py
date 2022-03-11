@@ -425,7 +425,6 @@ class DungeonBrawler(BaseFrame):
     def create_monster_frame(self, parent, monster):
         def update_labels(group):
             for label in group:
-                
                 if label is monster_hp:
                     new_hp = self.controller.get_monster().current_hitpoints
                     max_hp = self.controller.get_monster().max_hitpoints
@@ -452,8 +451,7 @@ class DungeonBrawler(BaseFrame):
         monster_hp.grid(row=1, column=0, rowspan=1)
         monster_hit_chance.grid(row=2, column=0)
 
-
-    def set_combat_log(self, parent, event = None):
+    def set_combat_log(self, parent, event_list = None):
         canvas = parent
         text = Label(canvas, text = "Combat Log")
         text_log = Listbox(canvas)
@@ -496,10 +494,10 @@ class DungeonBrawler(BaseFrame):
         end_combat.grid(row=0, column=3)
 
     def update_monster(self):
-        return self.controller.get_monster
+        return self.controller.get_monster()
 
-    def update_hero(self, controller):
-        return self.controller.get_hero
+    def update_hero(self):
+        return self.controller.get_hero()
 
     def update_combat_action(self, controller):
         pass
@@ -507,14 +505,3 @@ class DungeonBrawler(BaseFrame):
     def update_combat_log(self, controller):
         pass
 
-if __name__ == "__main__":
-    hero = {
-        "name"      : "Test_Hero",
-    }
-    hero.special = "Run Away"
-    monster = {
-        "name" : "Test_Monster"
-    }
-    test = DungeonBrawler()
-    test.setup(hero, monster)
-    test.start_main_loop()
