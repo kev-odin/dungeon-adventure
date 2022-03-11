@@ -553,13 +553,16 @@ class DungeonBrawler(BaseFrame):
         attack_sp.grid(row=3, column=0)
         hit_chance.grid(row=4, column=0)
 
-    def set_combat_log(self, parent, event_list = None):
+    def set_combat_log(self, parent, event_list = []):
         canvas = parent
         text = Label(canvas, text = "Combat Log")
         text_log = Listbox(canvas)
         
-        text_log.insert(1, "HEY THERE!")
-        text_log.insert(2, "This is Sample Text")
+        self.event_list = event_list
+        self.event_list = ["HEY THERE!", "This is Sample Text"]
+
+        for idx, event in enumerate(self.event_list, start = 1):
+            text_log.insert(idx, event)
         
         text.grid(row=0)
         text_log.grid(row=1)
@@ -579,16 +582,16 @@ class DungeonBrawler(BaseFrame):
             canvas, 
             text="Attack", 
             command= lambda: [
-                self.controller.set_action("attack"),
-                self.update_labels(self.hero_hp, self.health_pot, self.monster_hp)
+                self.controller.set_action("attack", hero, monster),
+                self.update_labels(self.hero_hp, self.monster_hp)
                 ])
         
         special = Button(
             canvas, 
             text=f"{special_move}", 
             command= lambda: [
-                self.controller.set_action("special"),
-                self.update_labels(self.hero_hp, self.health_pot, self.monster_hp)
+                self.controller.set_action("special", hero, monster),
+                self.update_labels(self.hero_hp, self.monster_hp)
                 ])
         
         health_potion = Button(
@@ -597,7 +600,7 @@ class DungeonBrawler(BaseFrame):
             command= lambda: [
                 self.controller.set_potion("health"),
                 potion_state(health_potion),
-                self.create_hero_frame(self.left_frame, hero)
+                self.update_labels(self.health_pot)
                 ])
 
         end_game = Button(

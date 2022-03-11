@@ -193,15 +193,26 @@ class GameController:
         self.__brawl.destruct()
         self.update_adv_info()
 
-    def set_action(self, action : str):
-        if action == "attack":
-            print(f"DEBUG - ATTACKING")
-            self.__model["hero"].take_damage(50)
+    def set_action(self, action : str, hero, target):
+        if self.still_playing():
+            hero_dmg = hero.attack()
+            monster_dmg = target.attack()
+            
+            if action == "attack":
+                print(f"DEBUG - ATTACKING")
+                monster_healed = target.take_damage(hero_dmg)
+                actual = hero.take_damage(monster_dmg)
+                
+                print(f"{hero.name} inflicted {hero_dmg - monster_healed} to {target.name}")
+                print(f"{target.name} inflicted {actual} to {hero.name}")
 
-        if action == "special":
-            print(f"DEBUG - USING SPECIAL")
-            self.__model["hero"].take_damage(50)
-
+            if action == "special":
+                print(f"DEBUG - USING SPECIAL")
+                hero_special = hero.use_special()
+                target.take_damage(hero_special)
+                hero.take_damage(monster_dmg)
+                
+                print(f"{hero.name} inflicted {hero_special} to {target.name}")
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
