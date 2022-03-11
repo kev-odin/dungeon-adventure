@@ -473,31 +473,37 @@ class DungeonBrawler(BaseFrame):
 
         self.dungeon_brawl_frame.pack()
     
-    def create_hero_frame(self, parent, hero):
-        
-        def update_labels(group):
-            print("DEBUG - Updating Hero Frame")
-            for label in group:
-                if label is hero_hp:
-                    new_max = self.controller.get_hero_max_hp()
-                    new_hp = self.controller.get_hero_curr_hp()
-                    label["text"] = f"Health:{new_hp}/{new_max}"
+    def update_labels(self, *args):
+        print("DEBUG - Updating Labels")
+        for label in args:
+            if label is self.hero_hp:
+                new_max = self.controller.get_hero_max_hp()
+                new_hp = self.controller.get_hero_curr_hp()
+                label["text"] = f"Health: {new_hp}/{new_max}"
 
-                if label is health_pot:
-                    new_pots = self.controller.get_health_pots()
-                    label["text"] = f"Health Potions: {new_pots}"
+            if label is self.health_pot:
+                new_pots = self.controller.get_health_pots()
+                label["text"] = f"Health Potions: {new_pots}"
 
+            if label is self.monster_hp:
+                new_hp = self.controller.get_monster().current_hitpoints
+                max_hp = self.controller.get_monster().max_hitpoints
+                label["text"] = f"Health: {new_hp} / {max_hp}"
+
+    def create_hero_frame(self, parent, hero):            
         hero_label = Label(
             parent, 
-            text = f"{hero.name}")
+            text = f"Name: {hero.name}"
+            )
         
-        hero_hp = Label(
+        self.hero_hp = Label(
             parent, 
-            text = None)
+            text = f"Health: {hero.current_hitpoints}/{hero.max_hitpoints}"
+            )
 
-        health_pot = Label(
+        self.health_pot = Label(
             parent,
-            text = None
+            text = f"Health Potions: {hero.health_pots}"
         )
 
         attack_sp = Label(
@@ -509,33 +515,21 @@ class DungeonBrawler(BaseFrame):
             parent,
             text = f"Hit Chance: {hero.hit_chance}"
         )
-
-        label_group = (hero_hp, health_pot)
-        update_labels(label_group)
         
         hero_label.grid(row=0, column=0)
-        hero_hp.grid(row=1, column=0)
-        health_pot.grid(row=2, column=0)
+        self.hero_hp.grid(row=1, column=0)
+        self.health_pot.grid(row=2, column=0)
         attack_sp.grid(row=3, column=0)
         hit_chance.grid(row=4, column=0)
 
-    def create_monster_frame(self, parent, monster):
-        print("DEBUG - Updating Monster Frame")
-
-        def update_labels(group):
-            for label in group:
-                if label is monster_hp:
-                    new_hp = self.controller.get_monster().current_hitpoints
-                    max_hp = self.controller.get_monster().max_hitpoints
-                    label["text"] = f"Health:{new_hp} / {max_hp}"
-        
+    def create_monster_frame(self, parent, monster):                
         monster_label = Label(
             parent, 
             text = f"Monster Type: {monster.name}")
         
-        monster_hp = Label(
+        self.monster_hp = Label(
             parent,
-            text = None
+            text = f"Health: {monster.current_hitpoints} / {monster.max_hitpoints}"
             )
 
         monster_hit_chance = Label (
@@ -553,15 +547,11 @@ class DungeonBrawler(BaseFrame):
             text = f"Hit Chance: {monster.hit_chance}"
         )
 
-        label_group = (monster_label, monster_hp)
-        update_labels(label_group)
-
         monster_label.grid(row=0, column=0)
-        monster_hp.grid(row=1, column=0)
+        self.monster_hp.grid(row=1, column=0)
         monster_hit_chance.grid(row=2, column=0)
         attack_sp.grid(row=3, column=0)
         hit_chance.grid(row=4, column=0)
-
 
     def set_combat_log(self, parent, event_list = None):
         canvas = parent
@@ -590,8 +580,7 @@ class DungeonBrawler(BaseFrame):
             text="Attack", 
             command= lambda: [
                 self.controller.set_action("attack"),
-                self.create_hero_frame(self.left_frame, hero),
-                self.create_monster_frame(self.right_frame, monster)
+                self.update_labels(self.hero_hp, self.health_pot, self.monster_hp)
                 ])
         
         special = Button(
@@ -599,8 +588,7 @@ class DungeonBrawler(BaseFrame):
             text=f"{special_move}", 
             command= lambda: [
                 self.controller.set_action("special"),
-                self.create_hero_frame(self.left_frame, hero),
-                self.create_monster_frame(self.right_frame, monster)
+                self.update_labels(self.hero_hp, self.health_pot, self.monster_hp)
                 ])
         
         health_potion = Button(

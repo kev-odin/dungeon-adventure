@@ -196,11 +196,11 @@ class GameController:
     def set_action(self, action : str):
         if action == "attack":
             print(f"DEBUG - ATTACKING")
-            self.__model["hero"].take_damage(15)
+            self.__model["hero"].take_damage(50)
 
         if action == "special":
             print(f"DEBUG - USING SPECIAL")
-            self.__model["hero"].take_damage(25)
+            self.__model["hero"].take_damage(50)
 
 
     def set_bag(self, room):
