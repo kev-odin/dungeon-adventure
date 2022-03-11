@@ -166,16 +166,13 @@ class GameController:
         except KeyError:
             return f"An error occured. Please verify the {move} is a valid option."
 
-    def start_combat(self, hero = None, monster = None):
+    def start_combat(self, hero, monster):
         print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
-        self.__view.forget
         brawl = DungeonBrawler()
         self.__brawl = brawl
         self.__brawl.setup(self, hero, monster)
 
         # brawl.start_main_loop()
-
-        # Change over to the DungeonBrawler view
         # while the hero and monster is alive ensure that the event loop continues
             # Update health of both adventurer and monster at the start of each round
             # Compare the attack speed of both the monster and adventurer
@@ -194,6 +191,7 @@ class GameController:
         """After Combat Ends, the player should be back into the DungeonCrawler view
         """
         self.__brawl.destruct()
+        self.update_adv_info()
 
     def set_action(self, action : str):
         if action == "attack":
@@ -201,7 +199,6 @@ class GameController:
 
         if action == "special":
             print(f"DEBUG - USING SPECIAL")
-
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.

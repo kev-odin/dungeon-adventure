@@ -489,15 +489,14 @@ class DungeonBrawler(BaseFrame):
         monster_hp.grid(row=1, column=0, rowspan=1)
         monster_hit_chance.grid(row=2, column=0)
 
-
-    def set_combat_log(self, parent, event = None):
+    def set_combat_log(self, parent, event_list = None):
         canvas = parent
         text = Label(canvas, text = "Combat Log")
         text_log = Listbox(canvas)
-
+        
         text_log.insert(1, "HEY THERE!")
         text_log.insert(2, "This is Sample Text")
-
+        
         text.grid(row=0)
         text_log.grid(row=1)
 
@@ -506,18 +505,18 @@ class DungeonBrawler(BaseFrame):
         special_move = hero.special
 
         attack = Button(
-            canvas,
-            text="Attack",
+            canvas, 
+            text="Attack", 
             command= lambda: self.controller.set_action("attack"))
-
+        
         special = Button(
-            canvas,
-            text=f"{special_move}",
+            canvas, 
+            text=f"{special_move}", 
             command= lambda: self.controller.set_action("special"))
-
+        
         health_potion = Button(
-            canvas,
-            text= "Use Health Potion",
+            canvas, 
+            text= "Use Health Potion", 
             command= lambda: self.controller.set_potion("health"))
 
         end_combat = Button(
@@ -533,10 +532,10 @@ class DungeonBrawler(BaseFrame):
         end_combat.grid(row=0, column=3)
 
     def update_monster(self):
-        return self.controller.get_monster
+        return self.controller.get_monster()
 
-    def update_hero(self, controller):
-        return self.controller.get_hero
+    def update_hero(self):
+        return self.controller.get_hero()
 
     def update_combat_action(self, controller):
         pass
@@ -544,14 +543,3 @@ class DungeonBrawler(BaseFrame):
     def update_combat_log(self, controller):
         pass
 
-if __name__ == "__main__":
-    hero = {
-        "name"      : "Test_Hero",
-    }
-    hero.special = "Run Away"
-    monster = {
-        "name" : "Test_Monster"
-    }
-    test = DungeonBrawler()
-    test.setup(hero, monster)
-    test.start_main_loop()
