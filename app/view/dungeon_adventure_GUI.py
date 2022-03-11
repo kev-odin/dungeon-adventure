@@ -154,9 +154,9 @@ class dungeon_adventure_GUI:
         load_game_btn = Button(canvas, text="Load Game", command = lambda: self.load_existing_game_window(controller))
         quit_game_btn = Button(canvas, text="Quit Game", command = self.destruct)
 
-        new_game_btn.place(relx=0.5,rely=0.5)
-        load_game_btn.place(relx=0.5, rely=0.6)
-        quit_game_btn.place(relx=0.5, rely=0.7)
+        new_game_btn.place(relx=0.5,rely=0.5, anchor = CENTER)
+        load_game_btn.place(relx=0.5, rely=0.6, anchor = CENTER)
+        quit_game_btn.place(relx=0.5, rely=0.7, anchor = CENTER)
 
         global img
         base_dir = os.path.dirname(os.path.abspath(__file__))

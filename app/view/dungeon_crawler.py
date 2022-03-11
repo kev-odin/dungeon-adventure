@@ -391,13 +391,19 @@ class DungeonCrawler(BaseFrame):
                         widget.destroy()
                     win_message = Message(self.root, text="Congrats, you win!", aspect=500)
                     win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
-                    win_message.pack(side=tk.BOTTOM)
-        else:
-            for widget in self.adventurer_canvas.winfo_children():
-                widget.destroy()
-            win_message = Message(self.root, text="Sorry, you lost!", aspect=500)
-            win_message.config(bg='red', font=('times', 50, 'italic'))
-            win_message.pack(side=tk.BOTTOM)
+                    win_message.pack(side=tk.TOP)
+
+
+                    # Show three possible options, also need to implement for the lose_message function
+                    canvas = self.root
+
+                    new_game_btn = Button(canvas, text="New Game", command="")
+                    load_game_btn = Button(canvas, text="Load Game", command="")
+                    quit_game_btn = Button(canvas, text="Quit Game", command=self.destruct)
+
+                    new_game_btn.place(relx=0.5, rely=0.5, anchor = CENTER)
+                    load_game_btn.place(relx=0.5, rely=0.6, anchor = CENTER)
+                    quit_game_btn.place(relx=0.5, rely=0.7, anchor = CENTER)
 
     def set_lose_message(self, hero):
         # if hero.current_hitpoints < 0:
@@ -405,7 +411,18 @@ class DungeonCrawler(BaseFrame):
             widget.destroy()
         win_message = Message(self.root, text="Sorry, you lost!", aspect=500)
         win_message.config(bg='red', font=('times', 50, 'italic'))
-        win_message.pack(side=tk.BOTTOM)
+        win_message.pack(side=tk.TOP)
+
+        # Show three possible options, also need to implement for the lose_message function
+        canvas = self.root
+
+        new_game_btn = Button(canvas, text="New Game", command="")
+        load_game_btn = Button(canvas, text="Load Game", command="")
+        quit_game_btn = Button(canvas, text="Quit Game", command=self.destruct)
+
+        new_game_btn.place(relx=0.5, rely=0.5, anchor=CENTER)
+        load_game_btn.place(relx=0.5, rely=0.6, anchor=CENTER)
+        quit_game_btn.place(relx=0.5, rely=0.7, anchor=CENTER)
 
 # TODO: Load frame with hero and monster information (health, attack speed, block chance)
 # TODO: Get attack buttons working
