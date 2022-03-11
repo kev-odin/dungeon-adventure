@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter as tk
 import os
-from turtle import right
 # TODO: Readable pillars in the bag view        - Done
 # TODO: Ability to use items in the bag view    - Done
 # TODO: Item number not updating after use      - Done

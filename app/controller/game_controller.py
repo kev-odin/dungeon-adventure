@@ -208,7 +208,7 @@ class GameController:
                 else:
                     print(f"{target.name} inflicted {actual} to {hero.name}")
 
-                print(f"{hero.name} inflicted {hero_dmg} to {target.name}, but {target.name} healed for {monster_heal} HP")
+                print(f"{hero.name} inflicted {hero_dmg} to {target.name}, but {target.name} healed.")
 
             if action == "special":
                 print(f"DEBUG - USING SPECIAL")
