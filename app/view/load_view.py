@@ -24,6 +24,6 @@ class LoadView:
                 return controller.load_game_to_model(x)
             button_dict[timestamp] = Button(load_screen, text=button_text[timestamp], command=func)
             button_dict[timestamp].place(relx=curr_x, rely=curr_y)
-            curr_y += 0.05
+            curr_y += 0.08
         btn3 = Button(load_screen, text="Cancel", command=lambda: load_screen.destroy())
         btn3.place(relx=0.75, rely=0.9)
