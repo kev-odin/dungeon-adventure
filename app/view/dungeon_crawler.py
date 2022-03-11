@@ -116,19 +116,19 @@ class DungeonCrawler(BaseFrame):
         travel_north = Button(
             canvas,
             text="North",
-            command= lambda: [self.controller.update_win_lose(), self.controller.set_move("n"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+            command= lambda: [ self.controller.set_move("n"), self.controller.update_win_lose(), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
         travel_south = Button(
             canvas, 
             text="South", 
-            command= lambda: [self.controller.update_win_lose(), self.controller.set_move("s"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+            command= lambda: [ self.controller.set_move("s"), self.controller.update_win_lose(), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
         travel_west = Button(
             canvas,
             text="West", 
-            command= lambda: [self.controller.update_win_lose(), self.controller.set_move("w"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+            command= lambda: [ self.controller.set_move("w"), self.controller.update_win_lose(), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
         travel_east = Button(
             canvas, 
             text="East", 
-            command= lambda: [self.controller.update_win_lose(), self.controller.set_move("e"), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
+            command= lambda: [ self.controller.set_move("e"), self.controller.update_win_lose(), self.controller.update_dungeon_display(), update_navigation(nav_group, self.controller.get_current_doors())])
 
         nav_group = (travel_north, travel_south, travel_west, travel_east)
         update_navigation(nav_group, active_doors)
@@ -352,20 +352,20 @@ class DungeonCrawler(BaseFrame):
         close_map_window.place(relx=1.0, rely=1.0, anchor=SE)
 
     def set_win_lose(self, map, dungeon, hero):
-
-
-        # if hero.health > 0: hero is alive
-            # if hero.loc() == map.exit():  hero at the exit location
-                # if hero.pillor.count == 4: hero collected all the pillars
-        # else:
-            # show the lose message
-
-        print("DEBUG - should see this when you win or lose the game.")
-        for widget in self.adventurer_canvas.winfo_children():
-            widget.destroy()
-        win_message = Message(self.root, text="Congrats, you win!", aspect=500)
-        win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
-        win_message.pack(side=tk.BOTTOM)
+        if hero.current_hitpoints > 0:
+            if dungeon.adventurer_loc == dungeon.exit:
+                if hero.has_all_pillars():
+                    for widget in self.adventurer_canvas.winfo_children():
+                        widget.destroy()
+                    win_message = Message(self.root, text="Congrats, you win!", aspect=500)
+                    win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
+                    win_message.pack(side=tk.BOTTOM)
+        else:
+            for widget in self.adventurer_canvas.winfo_children():
+                widget.destroy()
+            win_message = Message(self.root, text="Sorry, you lost!", aspect=500)
+            win_message.config(bg='red', font=('times', 50, 'italic'))
+            win_message.pack(side=tk.BOTTOM)
 
 class DungeonBrawler(BaseFrame):
     def __init__(self):
