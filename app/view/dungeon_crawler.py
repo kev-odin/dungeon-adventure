@@ -116,27 +116,27 @@ class DungeonCrawler(BaseFrame):
         travel_north = Button(
             canvas,
             text="North",
-            command= lambda: [ self.controller.set_move("n"),
-                               self.controller.update_dungeon_display(), update_navigation(nav_group,
-                               self.controller.get_current_doors()), self.controller.update_win_message()])
+            command= lambda: [ self.controller.set_move("n"),self.controller.update_dungeon_display(),
+                               update_navigation(nav_group,self.controller.get_current_doors()),
+                               self.controller.update_win_message()])
         travel_south = Button(
             canvas, 
             text="South", 
-            command= lambda: [ self.controller.set_move("s"),
-                               self.controller.update_dungeon_display(), update_navigation(nav_group,
-                               self.controller.get_current_doors()), self.controller.update_win_message()])
+            command= lambda: [ self.controller.set_move("s"),self.controller.update_dungeon_display(),
+                               update_navigation(nav_group,self.controller.get_current_doors()),
+                               self.controller.update_win_message()])
         travel_west = Button(
             canvas,
             text="West", 
-            command= lambda: [ self.controller.set_move("w"),
-                               self.controller.update_dungeon_display(), update_navigation(nav_group,
-                               self.controller.get_current_doors()), self.controller.update_win_message()])
+            command= lambda: [ self.controller.set_move("w"),self.controller.update_dungeon_display(),
+                               update_navigation(nav_group,self.controller.get_current_doors()),
+                               self.controller.update_win_message()])
         travel_east = Button(
             canvas, 
             text="East", 
-            command= lambda: [ self.controller.set_move("e"),
-                               self.controller.update_dungeon_display(), update_navigation(nav_group,
-                               self.controller.get_current_doors()), self.controller.update_win_message()])
+            command= lambda: [ self.controller.set_move("e"),self.controller.update_dungeon_display(),
+                               update_navigation(nav_group,self.controller.get_current_doors()),
+                               self.controller.update_win_message()])
 
         nav_group = (travel_north, travel_south, travel_west, travel_east)
         update_navigation(nav_group, active_doors)
