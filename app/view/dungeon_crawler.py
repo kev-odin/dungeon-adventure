@@ -283,8 +283,9 @@ class DungeonCrawler(BaseFrame):
             for j in range(cols):
                 # print(dungeon.get_room([i,j]))
                 # print(type(dungeon.get_room([i, j])))
-                if (dungeon.get_room([i, j]).monster):
-                    print(dungeon.get_room([i, j]).monster.char_dict)
+
+                # if (dungeon.get_room([i, j]).monster):
+                    # print(dungeon.get_room([i, j]).monster.char_dict) #DEBUG
 
                 # (box_width)*j+2 to make sure the very left and top boarder is also printed
                 map_canvas.create_rectangle(box_width * j + 2, box_height * i + 2, box_width * (j + 1), box_height * (i + 1), width=3)
@@ -352,6 +353,11 @@ class DungeonCrawler(BaseFrame):
         close_map_window.place(relx=1.0, rely=1.0, anchor=SE)
 
     def set_win_lose(self, map, dungeon, hero):
+        '''display the winning message or lost message
+        :para map map of the whole dungeon
+        :para dungeon
+        :para hero the adventurer
+        '''
         if hero.current_hitpoints > 0:
             if dungeon.adventurer_loc == dungeon.exit:
                 if hero.has_all_pillars():
