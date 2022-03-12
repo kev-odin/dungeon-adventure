@@ -198,7 +198,7 @@ class Adventurer(DungeonCharacter, ABC):
         :param always_hits: if True, cannot block.  If false, can block.
         :return: int, 0 if they blocked the damage, damage if taken.
         """
-        if not always_hits and self.block_chance <= random.random():
+        if not always_hits and self.block_chance >= random.random():
             return 0
 
         elif self.pillars_collected["I"]:

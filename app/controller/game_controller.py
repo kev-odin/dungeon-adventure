@@ -152,8 +152,9 @@ class GameController:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
             print(f"{new_room}")
-            moving = self.get_dungeon() # DEBUG
+            moving = self.get_dungeon()  # DEBUG
             print(f"{moving}")
+            print(f"Exit: {self.__model['dungeon'].exit}, Current: {self.__model['dungeon'].adventurer_loc}")
 
             if new_room.monster:
                 hero = self.get_hero()
@@ -193,7 +194,7 @@ class GameController:
         self.__brawl.destruct()
         self.update_adv_info()
 
-    def set_action(self, action : str, hero, target):
+    def set_action(self, action: str, hero, target):
         if self.still_playing():
             hero_dmg = hero.attack()
             monster_dmg = target.attack()
@@ -207,8 +208,10 @@ class GameController:
                     print(f"{hero.name} negated the incoming damage from {target.name}!")
                 else:
                     print(f"{target.name} inflicted {actual} to {hero.name}")
-
-                print(f"{hero.name} inflicted {hero_dmg} to {target.name}, but {target.name} healed.")
+                dmg_dealt_string = f"{hero.name} inflicted {hero_dmg} to {target.name}"
+                if monster_heal > 0:
+                    dmg_dealt_string += f", but {target.name} healed for {monster_heal}."
+                print(dmg_dealt_string)
 
             if action == "special":
                 print(f"DEBUG - USING SPECIAL")
@@ -223,9 +226,12 @@ class GameController:
 
             if target.current_hitpoints <= 0:
                 print(f"{hero.name} defeated {target.name}")
+                self.end_combat()
 
             if hero.current_hitpoints <= 0:
                 print(f"{target.name} defeated {hero.name}")
+                self.__view.set_lose_message(hero, self.__view.root)
+                self.end_combat()
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
@@ -318,14 +324,14 @@ class GameController:
         dungeon = self.__model["dungeon"]
         hero = self.__model["hero"]
 
-        self.__view.set_win_message(dungeon, hero)
+        self.__view.set_win_message(dungeon, hero, self.__view.root)
 
     def update_lose_message(self):
         '''
         Display the corresponding message immediately after lose the game
         '''
         hero = self.__model["hero"]
-        self.__view.set_lose_message(hero)
+        self.__view.set_lose_message(hero, self.__view.root)
 
     def get_hero(self):
         """Hero getter for the model.

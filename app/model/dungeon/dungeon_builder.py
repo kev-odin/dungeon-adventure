@@ -325,6 +325,9 @@ class DungeonBuilder:
                     monster = Monster(room["monster"])
                     room["monster"] = monster
                 game["dungeon"]["dungeon"][row][col] = Room(room_dict=room)
+        game["dungeon"]["entrance"] = tuple(game["dungeon"]["entrance"])
+        game["dungeon"]["exit"] = tuple(game["dungeon"]["exit"])
+        game["dungeon"]["adventurer_location"] = tuple(game["dungeon"]["adventurer_location"])
         self.__complete_dungeon = Dungeon(game["dungeon"])
         game["dungeon"] = self.__complete_dungeon
         return game
