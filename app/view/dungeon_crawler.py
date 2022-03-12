@@ -80,8 +80,6 @@ class DungeonCrawler(BaseFrame):
         bag.grid(row=2, column=0, sticky="nswe")
         map.grid(row=3, column=0, sticky="nswe")
 
-        canvas.pack()
-
     def set_adventurer_info(self, adv_name, curr_hp, max_hp):
         """Display base adventurer information to be displayed during dungeon crawl.
 
@@ -96,8 +94,6 @@ class DungeonCrawler(BaseFrame):
 
         health = Label(canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
         health.grid(row = 1, column = 0)
-
-        canvas.pack()
 
     def dungeon_navigation(self):
         """Displays the navigation buttons for the DungeonCrawler view. Buttons are greyed out if a door is not present.
@@ -567,8 +563,8 @@ class DungeonBrawler(BaseFrame):
         self.text_log.grid_forget()
         text_box_width = len(max(event, key=len))
 
-        for idx, event in enumerate(event, start = 1):
-            self.text_log.insert(idx, event)        
+        for idx, event in enumerate(event[::-1], start = 1):
+            self.text_log.insert(idx, event)
         
         self.text_log["width"] = text_box_width
         self.text_log.grid(row=1)
