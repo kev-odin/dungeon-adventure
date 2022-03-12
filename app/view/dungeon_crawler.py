@@ -1,13 +1,7 @@
-from audioop import reverse
 from tkinter import *
 import tkinter as tk
 import os
-# TODO: Readable pillars in the bag view        - Done
-# TODO: Ability to use items in the bag view    - Done
-# TODO: Item number not updating after use      - Done
-# TODO: Controller saving                       - DONE
-
-
+# TODO: About, Directions, Some clean-up with view components.
 class BaseFrame(tk.Frame):
     def __init__(self):
         self.root = Tk()
@@ -420,10 +414,6 @@ class DungeonCrawler(BaseFrame):
         new_game_btn.place(relx=0.5, rely=0.5, anchor=CENTER)
         load_game_btn.place(relx=0.5, rely=0.6, anchor=CENTER)
         quit_game_btn.place(relx=0.5, rely=0.7, anchor=CENTER)
-
-# TODO: Load frame with hero and monster information (health, attack speed, block chance)
-# TODO: Get attack buttons working
-# TODO: Get special move to load correctly
 
 class DungeonBrawler(BaseFrame):
     def __init__(self):
