@@ -198,6 +198,7 @@ class GameController:
         if self.still_playing():
             hero_dmg = hero.attack()
             monster_dmg = target.attack()
+            monster_heal = []
             
             if action == "attack":
                 print(f"DEBUG - ATTACKING")
@@ -214,16 +215,20 @@ class GameController:
                     heal_amount = hero.use_special()
                     action_string += f" healed for {heal_amount}."
                 else:
+                    monster_heal, monster_heal2 = 0, 0
                     hero_special = hero.use_special()
                     if type(hero_special) is tuple:
-                        monster_heal1 = target.take_damage(hero_special[0])
+                        monster_heal = target.take_damage(hero_special[0])
                         monster_heal2 = target.take_damage(hero_special[1])
                         action_string += f" dealt {hero_special[0]} and {hero_special[1]}"
                     else:
-                        target.take_damage(hero_special)
+                        monster_heal = target.take_damage(hero_special)
                         action_string += f" dealt {hero_special}"
-                    action_string += f" to {target.name} using {hero.special}!"
-                    actual = hero.take_damage(monster_dmg)
+                    action_string += f" to {target.name} using {hero.special}"
+                    if monster_heal:
+                        action_string += f", and {target.name} healed for {monster_heal}"
+                    if monster_heal2:
+                        action_string += f", and {target.name} healed for {monster_heal2}"
                 print(action_string)
             actual = hero.take_damage(monster_dmg)
             if actual == 0:
