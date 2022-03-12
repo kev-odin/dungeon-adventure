@@ -192,6 +192,8 @@ class GameController:
         """After Combat Ends, the player should be back into the DungeonCrawler view
         """
         self.__brawl.destruct()
+        room = self.__model["dungeon"].get_room(self.__model["dungeon"].adventurer_loc)
+        room.clear_room()
         self.update_adv_info()
 
     def set_action(self, action: str, hero, target):
