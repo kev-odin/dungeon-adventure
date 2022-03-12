@@ -273,6 +273,8 @@ class GameController:
         if potion == "health" and self.__model["hero"].has_health_potion():
             heal = PotionFactory().create_potion("health")
             self.__model["hero"].heal_adventurer(heal)
+            hero = self.__model["hero"]
+            self.__view.set_adventurer_info(hero.name, hero.current_hitpoints, hero.max_hitpoints)
             print("DEBUG - Should be using a health potion")
 
         if potion == "vision" and self.__model["hero"].has_vision_potion():
