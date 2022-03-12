@@ -202,12 +202,6 @@ class GameController:
             if action == "attack":
                 print(f"DEBUG - ATTACKING")
                 monster_heal = target.take_damage(hero_dmg)
-                actual = hero.take_damage(monster_dmg)
-
-                if actual == 0:
-                    print(f"{hero.name} negated the incoming damage from {target.name}!")
-                else:
-                    print(f"{target.name} inflicted {actual} to {hero.name}")
                 dmg_dealt_string = f"{hero.name} inflicted {hero_dmg} to {target.name}"
                 if monster_heal > 0:
                     dmg_dealt_string += f", but {target.name} healed for {monster_heal}."
@@ -215,14 +209,27 @@ class GameController:
 
             if action == "special":
                 print(f"DEBUG - USING SPECIAL")
-                
+                action_string = f"{hero.name}"
                 if hero.adv_class == "Priestess":
-                    pass
+                    heal_amount = hero.use_special()
+                    action_string += f" healed for {heal_amount}."
                 else:
                     hero_special = hero.use_special()
-                    target.take_damage(hero_special)
-                    hero.take_damage(monster_dmg)
-                    print(f"{hero.name} inflicted {hero_special} to {target.name}")
+                    if type(hero_special) is tuple:
+                        monster_heal1 = target.take_damage(hero_special[0])
+                        monster_heal2 = target.take_damage(hero_special[1])
+                        action_string += f" dealt {hero_special[0]} and {hero_special[1]}"
+                    else:
+                        target.take_damage(hero_special)
+                        action_string += f" dealt {hero_special}"
+                    action_string += f" to {target.name} using {hero.special}!"
+                    actual = hero.take_damage(monster_dmg)
+                print(action_string)
+            actual = hero.take_damage(monster_dmg)
+            if actual == 0:
+                print(f"{hero.name} negated the incoming damage from {target.name}!")
+            else:
+                print(f"{target.name} inflicted {actual} to {hero.name}")
 
             if target.current_hitpoints <= 0:
                 print(f"{hero.name} defeated {target.name}")
