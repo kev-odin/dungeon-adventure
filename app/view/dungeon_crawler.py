@@ -1,3 +1,4 @@
+from audioop import reverse
 from tkinter import *
 import tkinter as tk
 import os
@@ -553,19 +554,24 @@ class DungeonBrawler(BaseFrame):
         attack_sp.grid(row=3, column=0)
         hit_chance.grid(row=4, column=0)
 
-    def set_combat_log(self, parent, event_list = []):
+    def set_combat_log(self, parent):
         canvas = parent
         text = Label(canvas, text = "Combat Log")
-        text_log = Listbox(canvas)
-        
-        self.event_list = event_list
-        self.event_list = ["HEY THERE!", "This is Sample Text"]
+        self.text_log = Listbox(canvas)
 
-        for idx, event in enumerate(self.event_list, start = 1):
-            text_log.insert(idx, event)
-        
         text.grid(row=0)
-        text_log.grid(row=1)
+        self.text_log.grid(row=1)
+
+    def update_combat_log(self, event):
+        self.text_log.delete(0, END)
+        self.text_log.grid_forget()
+        text_box_width = len(max(event, key=len))
+
+        for idx, event in enumerate(event, start = 1):
+            self.text_log.insert(idx, event)        
+        
+        self.text_log["width"] = text_box_width
+        self.text_log.grid(row=1)
 
     def set_combat_action(self, parent, hero, monster):
         canvas = parent
@@ -631,8 +637,3 @@ class DungeonBrawler(BaseFrame):
     def update_hero(self):
         return self.controller.get_hero()
 
-    def update_combat_action(self, controller):
-        pass
-
-    def update_combat_log(self, controller):
-        pass
