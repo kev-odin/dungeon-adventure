@@ -19,8 +19,9 @@ class DungeonCharacter(ABC):
                 self.current_hitpoints = 0
             else:
                 self.current_hitpoints = new_health
-
             return damage
+        else:
+            raise TypeError(f"{damage} is not type int.")
 
     @property
     def name(self):

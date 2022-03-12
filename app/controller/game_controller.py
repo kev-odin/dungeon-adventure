@@ -13,8 +13,8 @@ from app.view.load_view import LoadView
 # TODO: Dungeon Map Canvas                          - Done
 # TODO: DungeonBrawler                              - WIP
 # TODO: Start New                                   - WIP
-# TODO: Load Game                                   - WIP
-# TODO: Quit Game                                   - WIP
+# TODO: Load Game                                   - Done
+# TODO: Quit Game                                   - Done
 
 # Controller methods are accessed by the view because we are passing the reference to Controller.
 
@@ -44,7 +44,7 @@ class GameController:
         self.__view = view                              # View
         self.__base = view
 
-    def start_new(self):
+    def start_new(self, parent):
         """Function to restart game from the start.
         """
         print(f"Starting new game...")
@@ -54,7 +54,7 @@ class GameController:
         gui = dungeon_adventure_GUI()
         self.__model = db
         self.__view = gui
-        self.frame_setup()
+        self.__view.setup(self, parent)
 
     def load_game(self, view_root):
         """
@@ -152,8 +152,9 @@ class GameController:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
             print(f"{new_room}")
-            moving = self.get_dungeon() # DEBUG
+            moving = self.get_dungeon()  # DEBUG
             print(f"{moving}")
+            print(f"Exit: {self.__model['dungeon'].exit}, Current: {self.__model['dungeon'].adventurer_loc}")
 
             if new_room.monster:
                 hero = self.get_hero()
@@ -193,7 +194,7 @@ class GameController:
         self.__brawl.destruct()
         self.update_adv_info()
 
-    def set_action(self, action : str, hero, target):
+    def set_action(self, action: str, hero, target):
         if self.still_playing():
             hero_dmg = hero.attack()
             monster_dmg = target.attack()
@@ -201,31 +202,43 @@ class GameController:
             if action == "attack":
                 print(f"DEBUG - ATTACKING")
                 monster_heal = target.take_damage(hero_dmg)
-                actual = hero.take_damage(monster_dmg)
-
-                if actual == 0:
-                    print(f"{hero.name} negated the incoming damage from {target.name}!")
-                else:
-                    print(f"{target.name} inflicted {actual} to {hero.name}")
-
-                print(f"{hero.name} inflicted {hero_dmg} to {target.name}, but {target.name} healed.")
+                dmg_dealt_string = f"{hero.name} inflicted {hero_dmg} to {target.name}"
+                if monster_heal > 0:
+                    dmg_dealt_string += f", but {target.name} healed for {monster_heal}."
+                print(dmg_dealt_string)
 
             if action == "special":
                 print(f"DEBUG - USING SPECIAL")
-                
+                action_string = f"{hero.name}"
                 if hero.adv_class == "Priestess":
-                    pass
+                    heal_amount = hero.use_special()
+                    action_string += f" healed for {heal_amount}."
                 else:
                     hero_special = hero.use_special()
-                    target.take_damage(hero_special)
-                    hero.take_damage(monster_dmg)
-                    print(f"{hero.name} inflicted {hero_special} to {target.name}")
+                    if type(hero_special) is tuple:
+                        monster_heal1 = target.take_damage(hero_special[0])
+                        monster_heal2 = target.take_damage(hero_special[1])
+                        action_string += f" dealt {hero_special[0]} and {hero_special[1]}"
+                    else:
+                        target.take_damage(hero_special)
+                        action_string += f" dealt {hero_special}"
+                    action_string += f" to {target.name} using {hero.special}!"
+                    actual = hero.take_damage(monster_dmg)
+                print(action_string)
+            actual = hero.take_damage(monster_dmg)
+            if actual == 0:
+                print(f"{hero.name} negated the incoming damage from {target.name}!")
+            else:
+                print(f"{target.name} inflicted {actual} to {hero.name}")
 
             if target.current_hitpoints <= 0:
                 print(f"{hero.name} defeated {target.name}")
+                self.end_combat()
 
             if hero.current_hitpoints <= 0:
                 print(f"{target.name} defeated {hero.name}")
+                self.__view.set_lose_message(hero, self.__view.root)
+                self.end_combat()
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
@@ -318,14 +331,14 @@ class GameController:
         dungeon = self.__model["dungeon"]
         hero = self.__model["hero"]
 
-        self.__view.set_win_message(dungeon, hero)
+        self.__view.set_win_message(dungeon, hero, self.__view.root)
 
     def update_lose_message(self):
         '''
         Display the corresponding message immediately after lose the game
         '''
         hero = self.__model["hero"]
-        self.__view.set_lose_message(hero)
+        self.__view.set_lose_message(hero, self.__view.root)
 
     def get_hero(self):
         """Hero getter for the model.

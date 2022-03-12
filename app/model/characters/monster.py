@@ -14,7 +14,10 @@ class Monster(DungeonCharacter, HealAble):
         :return: int reflecting amount monster healed if any
         """
         super().take_damage(damage)
-        healed = self._heal()
+        if damage > 0:
+            healed = self._heal()
+        else:
+            healed = 0
         return healed
 
     def _heal(self):
@@ -23,7 +26,7 @@ class Monster(DungeonCharacter, HealAble):
         :return: int amount healed or 0 if not healed at all.
         """
         monster = self.char_dict
-        if monster["heal_chance"] < random():
+        if monster["heal_chance"] >= random():
             heal_amount = self.heal(self.char_dict)
             self.current_hitpoints += heal_amount
             return heal_amount

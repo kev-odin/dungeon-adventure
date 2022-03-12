@@ -6,6 +6,7 @@ import os
 # TODO: Item number not updating after use      - Done
 # TODO: Controller saving                       - DONE
 
+
 class BaseFrame(tk.Frame):
     def __init__(self):
         self.root = Tk()
@@ -28,10 +29,10 @@ class BaseFrame(tk.Frame):
         menubar = Menu()
 
         filemenu = Menu(menubar, tearoff = 0)
-        filemenu.add_command(label = "New game", command= lambda: self.controller.start_new())
+        filemenu.add_command(label = "New game", command= lambda: self.controller.start_new(self.root))
         filemenu.add_command(label = "Save game", command= lambda: self.controller.save_game())
         filemenu.add_command(label = "Load game", command= lambda: self.controller.load_game(self.root))
-        filemenu.add_command(label = "Quit game", command= self.root.destroy)
+        filemenu.add_command(label = "Quit game", command= lambda: self.destruct())
 
         menubar.add_cascade(label = "File", menu = filemenu)
 
@@ -378,7 +379,7 @@ class DungeonCrawler(BaseFrame):
         close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
         close_map_window.place(relx=1.0, rely=1.0, anchor=SE)
 
-    def set_win_message(self, dungeon, hero):
+    def set_win_message(self, dungeon, hero, parent):
         '''display the winning message or lost message
         :para dungeon
         :para hero the adventurer
@@ -388,7 +389,7 @@ class DungeonCrawler(BaseFrame):
                 if hero.has_all_pillars():
                     for widget in self.root.winfo_children():
                         widget.destroy()
-                    win_message = Message(self.root, text="Congrats, you win!", aspect=500)
+                    win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", aspect=500)
                     win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
                     win_message.pack(side=tk.TOP)
 
@@ -396,28 +397,28 @@ class DungeonCrawler(BaseFrame):
                     # Show three possible options, also need to implement for the lose_message function
                     canvas = self.root
 
-                    new_game_btn = Button(canvas, text="New Game", command="")
-                    load_game_btn = Button(canvas, text="Load Game", command="")
-                    quit_game_btn = Button(canvas, text="Quit Game", command=self.destruct)
+                    new_game_btn = Button(canvas, text="New Game", command=lambda: self.controller.start_new(self.root))
+                    load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
+                    quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
                     new_game_btn.place(relx=0.5, rely=0.5, anchor = CENTER)
                     load_game_btn.place(relx=0.5, rely=0.6, anchor = CENTER)
                     quit_game_btn.place(relx=0.5, rely=0.7, anchor = CENTER)
 
-    def set_lose_message(self, hero):
+    def set_lose_message(self, hero, parent):
         # if hero.current_hitpoints < 0:
-        for widget in self.root.winfo_children():
+        for widget in parent.winfo_children():
             widget.destroy()
-        win_message = Message(self.root, text="Sorry, you lost!", aspect=500)
-        win_message.config(bg='red', font=('times', 50, 'italic'))
-        win_message.pack(side=tk.TOP)
+        lose_message = Message(parent, text=f"Sorry, you lost, {hero.name}!", aspect=500)
+        lose_message.config(bg='red', font=('times', 50, 'italic'))
+        lose_message.pack(side=tk.TOP)
 
         # Show three possible options, also need to implement for the lose_message function
-        canvas = self.root
+        canvas = parent
 
-        new_game_btn = Button(canvas, text="New Game", command="")
-        load_game_btn = Button(canvas, text="Load Game", command="")
-        quit_game_btn = Button(canvas, text="Quit Game", command=self.destruct)
+        new_game_btn = Button(canvas, text="New Game", command=lambda: self.controller.start_new(self.root))
+        load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
+        quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
         new_game_btn.place(relx=0.5, rely=0.5, anchor=CENTER)
         load_game_btn.place(relx=0.5, rely=0.6, anchor=CENTER)
