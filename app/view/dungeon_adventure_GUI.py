@@ -4,10 +4,15 @@ from tkinter import *
 from app.view.load_view import LoadView
 import os.path
 
-class dungeon_adventure_GUI:
 
-    def setup(self, controller):
-        self.root = Tk()  # create the root window
+class dungeon_adventure_GUI:
+    def setup(self, controller, root=None):
+        if root is None:
+            self.root = Tk()  # create the root window
+        else:
+            for widget in root.winfo_children():  # Clears screen
+                widget.destroy()
+            self.root = root
         self.root.resizable(width=False, height=False) # fixed size
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
         self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="white") # canvas within that frame
@@ -29,7 +34,7 @@ class dungeon_adventure_GUI:
 
     def send_settings(self):
         return self.settings
-    
+
     def send_to_controller(self, controller):
         controller.set_model()
 
@@ -115,7 +120,7 @@ class dungeon_adventure_GUI:
         hero_frame = Frame(pop1)
 
         def get_player_entered_name(): # we need this function because Entry widget requires storing the name in a functions.
-                                        # we tried to just use .get(), but it seems that did not work. this is a work around.
+            # we tried to just use .get(), but it seems that did not work. this is a work around.
             self.settings["name"] = hero_name.get()
 
         def display_selected_hero(selected):
@@ -139,7 +144,7 @@ class dungeon_adventure_GUI:
         display_selected_hero(clicked.get())    # display the default hero type description.
 
         btn = Button(pop1, text="Start Game", command = lambda: [get_player_entered_name(), self.send_to_controller(controller)])
-                                                                # bind multiple command in one click
+        # bind multiple command in one click
         btn.place(relx=0.75,rely=0.9)
 
     def load_existing_game_window(self, controller):
@@ -152,7 +157,7 @@ class dungeon_adventure_GUI:
 
         new_game_btn = Button(canvas, text="New Game", command = lambda: self.create_new_game_window(controller))
         load_game_btn = Button(canvas, text="Load Game", command = lambda: self.load_existing_game_window(controller))
-        quit_game_btn = Button(canvas, text="Quit Game", command = self.destruct)
+        quit_game_btn = Button(canvas, text="Quit Game", command = lambda: self.destruct())
 
         new_game_btn.place(relx=0.5,rely=0.5, anchor = CENTER)
         load_game_btn.place(relx=0.5, rely=0.6, anchor = CENTER)

@@ -13,8 +13,8 @@ from app.view.load_view import LoadView
 # TODO: Dungeon Map Canvas                          - Done
 # TODO: DungeonBrawler                              - WIP
 # TODO: Start New                                   - WIP
-# TODO: Load Game                                   - WIP
-# TODO: Quit Game                                   - WIP
+# TODO: Load Game                                   - Done
+# TODO: Quit Game                                   - Done
 
 # Controller methods are accessed by the view because we are passing the reference to Controller.
 
@@ -44,7 +44,7 @@ class GameController:
         self.__view = view                              # View
         self.__base = view
 
-    def start_new(self):
+    def start_new(self, parent):
         """Function to restart game from the start.
         """
         print(f"Starting new game...")
@@ -54,7 +54,7 @@ class GameController:
         gui = dungeon_adventure_GUI()
         self.__model = db
         self.__view = gui
-        self.frame_setup()
+        self.__view.setup(self, parent)
 
     def load_game(self, view_root):
         """

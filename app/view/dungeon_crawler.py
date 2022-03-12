@@ -6,6 +6,7 @@ import os
 # TODO: Item number not updating after use      - Done
 # TODO: Controller saving                       - DONE
 
+
 class BaseFrame(tk.Frame):
     def __init__(self):
         self.root = Tk()
@@ -28,10 +29,10 @@ class BaseFrame(tk.Frame):
         menubar = Menu()
 
         filemenu = Menu(menubar, tearoff = 0)
-        filemenu.add_command(label = "New game", command= lambda: self.controller.start_new())
+        filemenu.add_command(label = "New game", command= lambda: self.controller.start_new(self.root))
         filemenu.add_command(label = "Save game", command= lambda: self.controller.save_game())
         filemenu.add_command(label = "Load game", command= lambda: self.controller.load_game(self.root))
-        filemenu.add_command(label = "Quit game", command= self.root.destroy)
+        filemenu.add_command(label = "Quit game", command= lambda: self.destruct())
 
         menubar.add_cascade(label = "File", menu = filemenu)
 
@@ -388,7 +389,7 @@ class DungeonCrawler(BaseFrame):
                 if hero.has_all_pillars():
                     for widget in self.root.winfo_children():
                         widget.destroy()
-                    win_message = Message(self.root, text="Congrats, you win!", aspect=500)
+                    win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", aspect=500)
                     win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
                     win_message.pack(side=tk.TOP)
 
@@ -396,7 +397,7 @@ class DungeonCrawler(BaseFrame):
                     # Show three possible options, also need to implement for the lose_message function
                     canvas = self.root
 
-                    new_game_btn = Button(canvas, text="New Game", command="")
+                    new_game_btn = Button(canvas, text="New Game", command=lambda: self.controller.start_new(self.root))
                     load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
                     quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
@@ -408,14 +409,14 @@ class DungeonCrawler(BaseFrame):
         # if hero.current_hitpoints < 0:
         for widget in parent.winfo_children():
             widget.destroy()
-        win_message = Message(parent, text="Sorry, you lost!", aspect=500)
-        win_message.config(bg='red', font=('times', 50, 'italic'))
-        win_message.pack(side=tk.TOP)
+        lose_message = Message(parent, text=f"Sorry, you lost, {hero.name}!", aspect=500)
+        lose_message.config(bg='red', font=('times', 50, 'italic'))
+        lose_message.pack(side=tk.TOP)
 
         # Show three possible options, also need to implement for the lose_message function
         canvas = parent
 
-        new_game_btn = Button(canvas, text="New Game", command="")
+        new_game_btn = Button(canvas, text="New Game", command=lambda: self.controller.start_new(self.root))
         load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
         quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
