@@ -18,7 +18,6 @@ class Monster(DungeonCharacter, HealAble):
             healed = self._heal()
         else:
             healed = 0
-        print(f"DEBUG in Monster, damage: {damage}, healed: {healed}")
         return healed
 
     def _heal(self):
