@@ -192,12 +192,15 @@ class GameController:
         """After Combat Ends, the player should be back into the DungeonCrawler view
         """
         self.__brawl.destruct()
+        room = self.__model["dungeon"].get_room(self.__model["dungeon"].adventurer_loc)
+        room.clear_room()
         self.update_adv_info()
 
     def set_action(self, action: str, hero, target):
         if self.still_playing():
             hero_dmg = hero.attack()
             monster_dmg = target.attack()
+            monster_heal = []
             
             if action == "attack":
                 print(f"DEBUG - ATTACKING")
@@ -214,16 +217,20 @@ class GameController:
                     heal_amount = hero.use_special()
                     action_string += f" healed for {heal_amount}."
                 else:
+                    monster_heal, monster_heal2 = 0, 0
                     hero_special = hero.use_special()
                     if type(hero_special) is tuple:
-                        monster_heal1 = target.take_damage(hero_special[0])
+                        monster_heal = target.take_damage(hero_special[0])
                         monster_heal2 = target.take_damage(hero_special[1])
                         action_string += f" dealt {hero_special[0]} and {hero_special[1]}"
                     else:
-                        target.take_damage(hero_special)
+                        monster_heal = target.take_damage(hero_special)
                         action_string += f" dealt {hero_special}"
-                    action_string += f" to {target.name} using {hero.special}!"
-                    actual = hero.take_damage(monster_dmg)
+                    action_string += f" to {target.name} using {hero.special}"
+                    if monster_heal:
+                        action_string += f", and {target.name} healed for {monster_heal}"
+                    if monster_heal2:
+                        action_string += f", and {target.name} healed for {monster_heal2}"
                 print(action_string)
             actual = hero.take_damage(monster_dmg)
             if actual == 0:
@@ -266,6 +273,8 @@ class GameController:
         if potion == "health" and self.__model["hero"].has_health_potion():
             heal = PotionFactory().create_potion("health")
             self.__model["hero"].heal_adventurer(heal)
+            hero = self.__model["hero"]
+            self.__view.set_adventurer_info(hero.name, hero.current_hitpoints, hero.max_hitpoints)
             print("DEBUG - Should be using a health potion")
 
         if potion == "vision" and self.__model["hero"].has_vision_potion():
