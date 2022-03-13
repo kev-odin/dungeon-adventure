@@ -160,6 +160,13 @@ class DungeonCrawler(BaseFrame):
         # use the adventurer's loc to try the doors, if there is a door then print white room to that direction
         x_adv_loc = adv_telemetry.adventurer_loc[0]
         y_adv_loc = adv_telemetry.adventurer_loc[1]
+
+        # update the map's visited rooms, so that we can use to print the traveled room
+        map.set_visited_room(x_adv_loc, y_adv_loc)
+
+        print('map.visited_array() in the set_dungeon_display()')
+        print(map.visited_array())
+
         for try_door in ['north', 'south', 'east', 'west']:
             if adv_telemetry.get_room([x_adv_loc, y_adv_loc]).get_door(try_door):
                 if try_door == 'north':
@@ -184,8 +191,7 @@ class DungeonCrawler(BaseFrame):
                                                            box_height * (2), width=3, fill='white')
 
 
-        print('map.visited 2d array:')
-        print(map.visited_array())
+
 
         # print a hero image at the center of the 3x3 grid, potentially we can print different types of hero
         global img
@@ -290,7 +296,10 @@ class DungeonCrawler(BaseFrame):
         canvas_width = "400"
         canvas_height = "400"
         map_canvas = Canvas(map_window, width=canvas_width, height=canvas_height)
-        # print(map.visited_array()) # we can use this to display or cover the rooms
+
+        print("map.visited_array() in set_map_display()")
+        print(map.visited_array()) # we can use this to display or cover the rooms
+
         rows = map.get_rows()
         box_width = int(canvas_width)/rows
         cols = map.get_cols()
