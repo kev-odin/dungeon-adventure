@@ -1,12 +1,7 @@
 from tkinter import *
 import tkinter as tk
 import os
-# TODO: Readable pillars in the bag view        - Done
-# TODO: Ability to use items in the bag view    - Done
-# TODO: Item number not updating after use      - Done
-# TODO: Controller saving                       - DONE
-
-
+# TODO: About, Directions, Some clean-up with view components.
 class BaseFrame(tk.Frame):
     def __init__(self):
         self.root = Tk()
@@ -79,8 +74,6 @@ class DungeonCrawler(BaseFrame):
         bag.grid(row=2, column=0, sticky="nswe")
         map.grid(row=3, column=0, sticky="nswe")
 
-        canvas.pack()
-
     def set_adventurer_info(self, adv_name, curr_hp, max_hp):
         """Display base adventurer information to be displayed during dungeon crawl.
 
@@ -95,8 +88,6 @@ class DungeonCrawler(BaseFrame):
 
         health = Label(canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
         health.grid(row = 1, column = 0)
-
-        canvas.pack()
 
     def dungeon_navigation(self):
         """Displays the navigation buttons for the DungeonCrawler view. Buttons are greyed out if a door is not present.
@@ -424,10 +415,6 @@ class DungeonCrawler(BaseFrame):
         load_game_btn.place(relx=0.5, rely=0.6, anchor=CENTER)
         quit_game_btn.place(relx=0.5, rely=0.7, anchor=CENTER)
 
-# TODO: Load frame with hero and monster information (health, attack speed, block chance)
-# TODO: Get attack buttons working
-# TODO: Get special move to load correctly
-
 class DungeonBrawler(BaseFrame):
     def __init__(self):
         super(DungeonBrawler, self).__init__()
@@ -553,19 +540,24 @@ class DungeonBrawler(BaseFrame):
         attack_sp.grid(row=3, column=0)
         hit_chance.grid(row=4, column=0)
 
-    def set_combat_log(self, parent, event_list = []):
+    def set_combat_log(self, parent):
         canvas = parent
         text = Label(canvas, text = "Combat Log")
-        text_log = Listbox(canvas)
-        
-        self.event_list = event_list
-        self.event_list = ["HEY THERE!", "This is Sample Text"]
+        self.text_log = Listbox(canvas)
 
-        for idx, event in enumerate(self.event_list, start = 1):
-            text_log.insert(idx, event)
-        
         text.grid(row=0)
-        text_log.grid(row=1)
+        self.text_log.grid(row=1)
+
+    def update_combat_log(self, event):
+        self.text_log.delete(0, END)
+        self.text_log.grid_forget()
+        text_box_width = len(max(event, key=len))
+
+        for idx, event in enumerate(event[::-1], start = 1):
+            self.text_log.insert(idx, event)
+        
+        self.text_log["width"] = text_box_width
+        self.text_log.grid(row=1)
 
     def set_combat_action(self, parent, hero, monster):
         canvas = parent
@@ -631,8 +623,3 @@ class DungeonBrawler(BaseFrame):
     def update_hero(self):
         return self.controller.get_hero()
 
-    def update_combat_action(self, controller):
-        pass
-
-    def update_combat_log(self, controller):
-        pass

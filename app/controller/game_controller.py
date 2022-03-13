@@ -168,12 +168,17 @@ class GameController:
             return f"An error occured. Please verify the {move} is a valid option."
 
     def start_combat(self, hero, monster):
-        print(f"Hey {hero.name} encountered a {monster.name}. Run away!")
+        print(f"Hey {hero.name} encountered a {monster.name}.")
+        action_string = f"{hero.name} encountered a {monster.name}."
+        
         brawl = DungeonBrawler()
+        self.actions_capture = []
+        self.actions_capture.append(action_string)
+        
         self.__brawl = brawl
         self.__brawl.setup(self, hero, monster)
+        self.__brawl.update_combat_log(self.actions_capture)
 
-        # brawl.start_main_loop()
         # while the hero and monster is alive ensure that the event loop continues
             # Update health of both adventurer and monster at the start of each round
             # Compare the attack speed of both the monster and adventurer
@@ -191,12 +196,15 @@ class GameController:
     def end_combat(self):
         """After Combat Ends, the player should be back into the DungeonCrawler view
         """
+        del self.actions_capture
         self.__brawl.destruct()
         room = self.__model["dungeon"].get_room(self.__model["dungeon"].adventurer_loc)
         room.clear_room()
         self.update_adv_info()
 
     def set_action(self, action: str, hero, target):
+        action_string = ""
+
         if self.still_playing():
             hero_dmg = hero.attack()
             monster_dmg = target.attack()
@@ -208,7 +216,8 @@ class GameController:
                 dmg_dealt_string = f"{hero.name} inflicted {hero_dmg} to {target.name}"
                 if monster_heal > 0:
                     dmg_dealt_string += f", but {target.name} healed for {monster_heal}."
-                print(dmg_dealt_string)
+                print(f"DEBUG - {dmg_dealt_string}")
+                self.actions_capture.append(dmg_dealt_string)
 
             if action == "special":
                 print(f"DEBUG - USING SPECIAL")
@@ -216,6 +225,7 @@ class GameController:
                 if hero.adv_class == "Priestess":
                     heal_amount = hero.use_special()
                     action_string += f" healed for {heal_amount}."
+                    # self.actions_capture.append(action_string)
                 else:
                     monster_heal, monster_heal2 = 0, 0
                     hero_special = hero.use_special()
@@ -232,14 +242,24 @@ class GameController:
                     if monster_heal2:
                         action_string += f", and {target.name} healed for {monster_heal2}"
                 print(action_string)
+                self.actions_capture.append(action_string)
+                action_string = ""
+
             actual = hero.take_damage(monster_dmg)
+            
             if actual == 0:
+                action_string += f"{hero.name} negated the incoming damage from {target.name}!"
                 print(f"{hero.name} negated the incoming damage from {target.name}!")
             else:
+                action_string += f"{target.name} inflicted {actual} to {hero.name}"
                 print(f"{target.name} inflicted {actual} to {hero.name}")
+            self.actions_capture.append(action_string)
+
+            self.__brawl.update_combat_log(self.actions_capture)
 
             if target.current_hitpoints <= 0:
                 print(f"{hero.name} defeated {target.name}")
+                self.actions_capture.clear()
                 self.end_combat()
 
             if hero.current_hitpoints <= 0:
@@ -276,6 +296,11 @@ class GameController:
             hero = self.__model["hero"]
             self.__view.set_adventurer_info(hero.name, hero.current_hitpoints, hero.max_hitpoints)
             print("DEBUG - Should be using a health potion")
+
+            if self.actions_capture:
+                potion_str = f"{hero.name} used {heal.name} and increased {heal.heal_amount} HP"
+                self.actions_capture.append(potion_str)
+                self.__brawl.update_combat_log(self.actions_capture)
 
         if potion == "vision" and self.__model["hero"].has_vision_potion():
             print(f"DEBUG - Should be using a vision potion")
@@ -328,8 +353,8 @@ class GameController:
         """Update the frame with map information from the model.
         """
         print("DEBUG - Pressing the Map Button")
-        map = self.__model["map"]  # follow Kevin's example of update_adv_info and update_adv_bag, we get the pillar from the model and send it back to the view
-        dungeon = self.__model["dungeon"]  # and then view is going to use this info to prepare the display
+        map = self.__model["map"]           # follow Kevin's example of update_adv_info and update_adv_bag, we get the pillar from the model and send it back to the view
+        dungeon = self.__model["dungeon"]   # and then view is going to use this info to prepare the display
 
         self.__view.set_map_display(map, dungeon)
 
