@@ -174,6 +174,8 @@ class GameController:
         brawl = DungeonBrawler()
         self.actions_capture = []
         self.actions_capture.append(action_string)
+
+        self.determine_attacks_per_round(hero, monster)
         
         self.__brawl = brawl
         self.__brawl.setup(self, hero, monster)
@@ -193,12 +195,30 @@ class GameController:
             # if hero dies:
                 # Prompt a Game Over frame, with options to start a new game or quit.
 
+    def determine_attacks_per_round(self, hero, monster):
+        hero_order = [hero.attack_speed * x for x in range(1, 10)]
+        monster_order = [monster.attack_speed * x for x in range(1, 10)]
+        
+        match = min(set(hero_order).intersection(monster_order))
+
+        hero_strike = hero_order.index(match)
+        monster_strike = monster_order.index(match)
+
+        if hero_strike <= monster_strike:
+            turn_order = [hero for _ in range(monster_strike + 1)]
+            turn_order.append(monster)
+        else:
+            turn_order = [monster for _ in range(hero_strike + 1)]
+            turn_order.append(hero)
+
+        return turn_order
+        
     def end_combat(self):
         """After Combat Ends, the player should be back into the DungeonCrawler view
         """
         del self.actions_capture
         self.__brawl.destruct()
-        room = self.__model["dungeon"].get_room(self.__model["dungeon"].adventurer_loc)
+        room = self.get_room(self.get_hero_location())
         room.clear_room()
         self.update_adv_info()
 
