@@ -323,6 +323,9 @@ class DungeonCrawler(BaseFrame):
         for i in range(rows):
             for j in range(cols):
 
+                # # We only print the rooms that is already traveled. Or we get get rid of it by printing everything of the dungeon.
+                # if map.visited_array()[i][j]:
+
                 # create rectangle to represent doors
                 for try_door in ['north', 'east', 'west', 'south']:
                     if dungeon.get_room([i,j]).get_door(try_door):
