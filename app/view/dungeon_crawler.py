@@ -323,50 +323,50 @@ class DungeonCrawler(BaseFrame):
         for i in range(rows):
             for j in range(cols):
 
-                # # We only print the rooms that is already traveled. Or we get get rid of it by printing everything of the dungeon.
-                # if map.visited_array()[i][j]:
+                # We only print the rooms that is already traveled. Or we get get rid of it by printing everything of the dungeon.
+                if map.visited_array()[i][j]:
 
-                # create rectangle to represent doors
-                for try_door in ['north', 'east', 'west', 'south']:
-                    if dungeon.get_room([i,j]).get_door(try_door):
-                        if try_door == 'east':
-                            map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1),
-                                                   box_height * (i + 3 / 4), width=10, fill='white')
-                        if try_door == 'west':
-                            map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j),
-                                                   box_height * (i + 3 / 4), width=10, fill='white')
-                        if try_door == 'north':
-                            map_canvas.create_line(box_width * (j+1/4), box_height * (i), box_width * (j+3/4),
-                                                   box_height * (i), width=10, fill='white')
-                        if try_door == 'south':
-                            map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
-                                                   box_height * (i + 1), width=10, fill='white')
+                    # create rectangle to represent doors
+                    for try_door in ['north', 'east', 'west', 'south']:
+                        if dungeon.get_room([i,j]).get_door(try_door):
+                            if try_door == 'east':
+                                map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1),
+                                                       box_height * (i + 3 / 4), width=10, fill='white')
+                            if try_door == 'west':
+                                map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j),
+                                                       box_height * (i + 3 / 4), width=10, fill='white')
+                            if try_door == 'north':
+                                map_canvas.create_line(box_width * (j+1/4), box_height * (i), box_width * (j+3/4),
+                                                       box_height * (i), width=10, fill='white')
+                            if try_door == 'south':
+                                map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
+                                                       box_height * (i + 1), width=10, fill='white')
 
-                # create letter represent the contents
-                abbreviation_to_symbols = {
-                    'i':('En','green'),
-                    'O':('Ex','green'),
-                    'H':('H','red'),
-                    'V':('V','blue'),
-                    'M':('M','orange'),
-                    'A':('A','purple'),
-                    'P':('P','purple'),
-                    'I':('I','purple'),
-                    'E':('E','purple'),
-                }
-                if dungeon.get_room([i, j]).contents in abbreviation_to_symbols.keys():
-                    text = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][0] # get the key value from the dictionary
-                    color = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][1] # get the key value from the dictionary
-                    map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
-                                           text=text,
-                                           fill=color, font=('Helvetica', str(int(100/rows)), 'bold'))
-                                            # "str(int(100/rows))" is used to adjust the font size according to the rows
+                    # create letter represent the contents
+                    abbreviation_to_symbols = {
+                        'i':('En','green'),
+                        'O':('Ex','green'),
+                        'H':('H','red'),
+                        'V':('V','blue'),
+                        'M':('M','orange'),
+                        'A':('A','purple'),
+                        'P':('P','purple'),
+                        'I':('I','purple'),
+                        'E':('E','purple'),
+                    }
+                    if dungeon.get_room([i, j]).contents in abbreviation_to_symbols.keys():
+                        text = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][0] # get the key value from the dictionary
+                        color = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][1] # get the key value from the dictionary
+                        map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
+                                               text=text,
+                                               fill=color, font=('Helvetica', str(int(100/rows)), 'bold'))
+                                                # "str(int(100/rows))" is used to adjust the font size according to the rows
 
-                # create letter mstr to represent monsters in the room
-                if (dungeon.get_room([i, j]).monster):
-                    map_canvas.create_text(box_width * (j + 3 / 4), box_height * (i + 3 / 4),
-                                           text='mstr',
-                                           fill='red', font=('Helvetica', str(int(100 / rows))))
+                    # create letter mstr to represent monsters in the room
+                    if (dungeon.get_room([i, j]).monster):
+                        map_canvas.create_text(box_width * (j + 3 / 4), box_height * (i + 3 / 4),
+                                               text='mstr',
+                                               fill='red', font=('Helvetica', str(int(100 / rows))))
 
 
         # create purple dot to represent adventurer

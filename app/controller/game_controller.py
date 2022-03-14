@@ -323,6 +323,8 @@ class GameController:
                 self.__brawl.update_combat_log(self.actions_capture)
 
         if potion == "vision" and self.__model["hero"].has_vision_potion():
+            hero_loc = self.__model["dungeon"].adventurer_loc
+            self.__model["map"].use_vision_potion(hero_loc[0],hero_loc[1])
             print(f"DEBUG - Should be using a vision potion")
 
     def create_adventurer(self, name: str, class_name: str):
