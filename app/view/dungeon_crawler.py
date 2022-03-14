@@ -634,4 +634,3 @@ class DungeonBrawler(BaseFrame):
 
     def update_hero(self):
         return self.controller.get_hero()
-
