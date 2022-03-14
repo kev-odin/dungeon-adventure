@@ -396,6 +396,9 @@ class DungeonCrawler(BaseFrame):
                     win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
                     win_message.pack(side=tk.TOP)
 
+                    stats_message = Message(self.root, text=f"Game stats", aspect=500)
+                    stats_message.config(bg='blue', font=('times', 50, 'italic'))
+                    stats_message.pack()
 
                     # Show three possible options, also need to implement for the lose_message function
                     canvas = self.root
