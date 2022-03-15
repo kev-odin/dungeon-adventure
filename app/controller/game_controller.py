@@ -216,7 +216,6 @@ class GameController:
     def end_combat(self):
         """After Combat Ends, the player should be back into the DungeonCrawler view
         """
-        del self.actions_capture
         self.__brawl.destruct()
         room = self.get_room(self.get_hero_location())
         room.clear_room()
@@ -232,28 +231,27 @@ class GameController:
                 for turn in self.turn_list:
                     hero_dmg = hero.attack()
                     monster_dmg = target.attack()
-                    monster_heal = target.take_damage(hero_dmg)
                     
                     if turn is hero:
-                        action_string = f"{hero.name} inflicted {hero_dmg} to {target.name}"
+                        monster_heal = target.take_damage(hero_dmg)
+                        action_string = f"{hero.name} inflicted {hero_dmg} to the {target.name}"
                         if hero_dmg == 0:
-                            action_string = f"{hero.name} attack bounced off {target.name}!"
+                            action_string = f"{hero.name} attack bounced off the {target.name}!"
                         if monster_heal > 0:
-                            action_string += f", but {target.name} healed for {monster_heal}."
+                            action_string += f", but the {target.name} healed for {monster_heal}."
 
                     else:
                         action_string = ""
-                        actual = hero.take_damage(monster_dmg)
-                        
-                        if actual == 0:
-                            action_string += f"{hero.name} negated the incoming damage from {target.name}!"
+                        total_monster_dmg = hero.take_damage(monster_dmg)
+
+                        if total_monster_dmg == 0:
+                            action_string += f"{hero.name} negated the incoming damage from the {target.name}!"
                         else:
-                            action_string = f"{target.name} inflicted {actual} to {hero.name}"
+                            action_string = f"{target.name} inflicted {total_monster_dmg} to {hero.name}"
                         
                     self.actions_capture.append(action_string)
 
             if action == "special":
-                print(f"DEBUG - USING SPECIAL")
                 action_string = f"{hero.name}"
                 if hero.adv_class == "Priestess":
                     heal_amount = hero.use_special()
@@ -268,36 +266,39 @@ class GameController:
                     else:
                         monster_heal = target.take_damage(hero_special)
                         action_string += f" dealt {hero_special}"
+                    
                     action_string += f" to {target.name} using {hero.special}"
+                    
                     if monster_heal:
                         action_string += f", and {target.name} healed for {monster_heal}"
                     if monster_heal2:
                         action_string += f", and {target.name} healed for {monster_heal2}"
-                print(action_string)
+                
                 self.actions_capture.append(action_string)
                 action_string = ""
+                
+                monster_dmg = target.attack()
+                total_monster_dmg = hero.take_damage(monster_dmg)
 
-            # actual = hero.take_damage(monster_dmg)
-            
-            # if actual == 0:
-            #     action_string += f"{hero.name} negated the incoming damage from {target.name}!"
-            #     print(f"{hero.name} negated the incoming damage from {target.name}!")
-            # else:
-            #     action_string += f"{target.name} inflicted {actual} to {hero.name}"
-            #     print(f"{target.name} inflicted {actual} to {hero.name}")
-            # self.actions_capture.append(action_string)
-
-            self.__brawl.update_combat_log(self.actions_capture)
+                if total_monster_dmg == 0:
+                    action_string += f"{hero.name} negated the incoming damage from {target.name}!"
+                else:
+                    action_string += f"{target.name} inflicted {total_monster_dmg} to {hero.name}"
+                
+                self.actions_capture.append(action_string)
 
             if target.current_hitpoints <= 0:
-                print(f"{hero.name} defeated {target.name}")
-                self.actions_capture.clear()
-                self.end_combat()
+                self.actions_capture.append(f"{hero.name} defeated the {target.name}")
+                self.__brawl.update_combat_log(self.actions_capture)                
+                # self.end_combat()
 
             if hero.current_hitpoints <= 0:
-                print(f"{target.name} defeated {hero.name}")
+                self.actions_capture.append(f"{target.name} defeated {hero.name}.")
+                self.__brawl.update_combat_log(self.actions_capture)
                 self.__view.set_lose_message(hero, self.__view.root)
-                self.end_combat()
+                # self.end_combat()
+
+        self.__brawl.update_combat_log(self.actions_capture)
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
