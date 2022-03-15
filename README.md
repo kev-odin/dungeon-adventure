@@ -1,33 +1,67 @@
-Purpose
+# Dungeon Adventure 2.0: The Spoony Bard Returns
 
-The purpose of this assignment is to apply all you have learned throughout the quarter to built a robust,
-object-oriented solution to a medium sized programming problem. You will have the opportunity to work in 
-teams, refactor code, version your code, and maybe apply algorithms you have learned in TCSS 501. 
-Successful completion of this program verifies your preparedness for TCSS 504.
+### Project Synopsis
+Dungeon Adventure 2.0: The Spoony Bard Returns (bards not yet included) is an expansion of the original Dungeon Adventure game from the previous class.  Most aspects of the game were designed per the specs provided by Tom, as well as some minor modifications with the hopes and dreams of extra credit.  It is a pure python game dependent on TKinter.
 
-This assignment satisfies all 10 course objectives! Fitting of a final assignment for the course :-)
+#### Responsibilities:
+# TODO Please check this to see if I missed any of your contributions!
+Kevin Chung
+1) game_controller.py code
+2) BaseView
+3) DungeonCrawler
+4) DungeonBrawler
+5) SRS
+6) UML
 
-    C1: Use fundamental concepts of object-oriented design to write modular, extensible code
-    C2: Use common design patterns to increase testability, readability, and maintainability of code
-    C3: Apply skills to systematically test and debug applications
-    C4: Recognize code smells and refactor code accordingly
-    C5: Use data structures and algorithms from TCSS 501 in programming applications
-    C6: Use the space time/characteristics of different search and sorting algorithms learned in 
-    TCSS 501 to choose the appropriate methods to implement.
-    C7: Design, implement, document and debug a medium complexity program with an object hierarchy 
-    that includes interfaces and/or abstract classes and a graphical user interface, given some guidance 
-    on the design.
-    C8: Design and implement unit tests for a medium complexity program with an object hierarchy 
-    that includes interfaces and/or abstract classes.
-    C9: Utilize modern software engineering tools (e.g., IDEs, static checkers, unit testing frameworks,
-    revision control systems) during the implementation of a medium complexity program.
-    C10: Correctly employ programming language features by reading and interpreting the associated published API documentation.
+Xingguo Huang
+1) DungeonAdventureGUI
+   1) New Game (character and difficulty)
+   2) Start menu
+2) Map
+3) Some modifications for colors on DungeonCrawler
+4) Some modifications of window divide on DungeonBrawler
 
-Specifics
+Stephanie Liu
+1) Model & DB code (including refactoring Kevin's adventurer code from last quarter to match the needs of this quarter)
+2) app\view\load_view.py in all its ugly glory, and refactoring of views to call supers to allow load_view to be opened from relevant views.
+3) Save and Load methods in controller/game_controller.py
+4) Debugging of view / controller / model integration prior to project demo
+5) This document!
+6) UML
+7) SRS
 
-    For your final assignment in this course you will work in your teams to write a very small game.
-    Details of the assignment are given in the pdf below.
-    While it is not required, it is highly recommended you use git/GitHub to help 
-    coordinate your code base with your team members.
-    We may try and do informal demonstrations of your project a day or two before the due date. 
-    If it is feasible, we can meet the Wednesday evening before all materials are due and each team can show off what they did.
+#### Extra Credit Hopefuls:
+1) Classes stored in database.
+2) Dungeon difficulty stored in database.
+3) Pillar unique powers included in game (double health potion collection, double vision potion collection, reduced damage, improved potion potency that allows increasing maximum health).
+4) Health potions usable in combat.
+5) Really well documented, human-readable code.
+6) Great test coverage and OOP implentation with mocks for abstract classes (app\unit_tests\character_tests\abstract_classes\tests)
+7) Fleeing implemented in demo version!
+
+### To run project:
+0) Verify Python 3.something is installed:
+   1) https://www.python.org/downloads/
+1) Verify PIP is installed:
+   1) https://pip.pypa.io/en/stable/installation/
+2) in terminal in main directory (same as where setup.py is located), run following command:
+   1) pip install -e .  
+3) Verify TKinter installed:
+   1) https://www.tutorialspoint.com/how-to-install-tkinter-in-python
+4) Run main.py in app\main.py
+
+### Dependencies:
+1) Python 3.something
+2) PIP
+3) TKinter
+4) SQLite
+
+### Project design docs:
+assignment_documents\The_Spoony_Bard_Returns_UML.pdf
+assignment_documents\SRS.pdf
+
+### Pivotal Tracker
+# TODO INCLUDE ME
+
+### Git History
+# TODO INCLUDE ME TOO
