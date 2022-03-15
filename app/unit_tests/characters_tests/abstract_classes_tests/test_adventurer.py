@@ -5,7 +5,7 @@ Otherwise the abstract class says nope.
 
 
 import unittest
-from app.model.characters.adventurer import Adventurer
+from app.unit_tests.characters_tests.abstract_classes_tests.adventurer_mock import AdventurerMock
 from app.model.items.health_potion import HealthPotion
 from app.model.db.query_helper import QueryHelper
 
@@ -16,8 +16,17 @@ class AdventurerTest(unittest.TestCase):
         hero_dict = self.__qh.query("Warrior")
         hero_dict["current_hp"] = hero_dict["max_hp"]
         hero_dict["name"] = name
+        if "health_pots" not in hero_dict:  # Checks for new creation of adventurerer or load of adventurer
+            hero_dict["health_pots"] = 0
+            hero_dict["vision_pots"] = 0
+            hero_dict["pillars_collected"] = {
+                "A": False,
+                "P": False,
+                "I": False,
+                "E": False
+            }
         self.__adv_dict = hero_dict
-        self.__hero = Adventurer(self.__adv_dict)
+        self.__hero = AdventurerMock(self.__adv_dict)
 
     def test_init(self):
         try:
@@ -31,7 +40,7 @@ class AdventurerTest(unittest.TestCase):
 
     def test_init_name_int(self):
         try:
-            hero = Adventurer(101, "Warrior")
+            hero = AdventurerMock(101, "Warrior")
         except TypeError:
             self.assertRaises(TypeError, "Integers are not valid names.")
 
