@@ -175,7 +175,7 @@ class GameController:
         self.actions_capture = []
         self.actions_capture.append(action_string)
 
-        self.determine_attacks_per_round(hero, monster)
+        self.turn_list = self.determine_attacks_per_round(hero, monster)
         
         self.__brawl = brawl
         self.__brawl.setup(self, hero, monster)
@@ -226,18 +226,31 @@ class GameController:
         action_string = ""
 
         if self.still_playing():
-            hero_dmg = hero.attack()
-            monster_dmg = target.attack()
             monster_heal = []
             
             if action == "attack":
-                print(f"DEBUG - ATTACKING")
-                monster_heal = target.take_damage(hero_dmg)
-                dmg_dealt_string = f"{hero.name} inflicted {hero_dmg} to {target.name}"
-                if monster_heal > 0:
-                    dmg_dealt_string += f", but {target.name} healed for {monster_heal}."
-                print(f"DEBUG - {dmg_dealt_string}")
-                self.actions_capture.append(dmg_dealt_string)
+                for turn in self.turn_list:
+                    hero_dmg = hero.attack()
+                    monster_dmg = target.attack()
+                    monster_heal = target.take_damage(hero_dmg)
+                    
+                    if turn is hero:
+                        action_string = f"{hero.name} inflicted {hero_dmg} to {target.name}"
+                        if hero_dmg == 0:
+                            action_string = f"{hero.name} attack bounced off {target.name}!"
+                        if monster_heal > 0:
+                            action_string += f", but {target.name} healed for {monster_heal}."
+
+                    else:
+                        action_string = ""
+                        actual = hero.take_damage(monster_dmg)
+                        
+                        if actual == 0:
+                            action_string += f"{hero.name} negated the incoming damage from {target.name}!"
+                        else:
+                            action_string = f"{target.name} inflicted {actual} to {hero.name}"
+                        
+                    self.actions_capture.append(action_string)
 
             if action == "special":
                 print(f"DEBUG - USING SPECIAL")
@@ -245,7 +258,6 @@ class GameController:
                 if hero.adv_class == "Priestess":
                     heal_amount = hero.use_special()
                     action_string += f" healed for {heal_amount}."
-                    # self.actions_capture.append(action_string)
                 else:
                     monster_heal, monster_heal2 = 0, 0
                     hero_special = hero.use_special()
@@ -265,15 +277,15 @@ class GameController:
                 self.actions_capture.append(action_string)
                 action_string = ""
 
-            actual = hero.take_damage(monster_dmg)
+            # actual = hero.take_damage(monster_dmg)
             
-            if actual == 0:
-                action_string += f"{hero.name} negated the incoming damage from {target.name}!"
-                print(f"{hero.name} negated the incoming damage from {target.name}!")
-            else:
-                action_string += f"{target.name} inflicted {actual} to {hero.name}"
-                print(f"{target.name} inflicted {actual} to {hero.name}")
-            self.actions_capture.append(action_string)
+            # if actual == 0:
+            #     action_string += f"{hero.name} negated the incoming damage from {target.name}!"
+            #     print(f"{hero.name} negated the incoming damage from {target.name}!")
+            # else:
+            #     action_string += f"{target.name} inflicted {actual} to {hero.name}"
+            #     print(f"{target.name} inflicted {actual} to {hero.name}")
+            # self.actions_capture.append(action_string)
 
             self.__brawl.update_combat_log(self.actions_capture)
 
