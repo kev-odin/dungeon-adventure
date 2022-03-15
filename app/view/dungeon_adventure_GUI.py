@@ -56,10 +56,10 @@ class dungeon_adventure_GUI:
             "Inhumane"
         ]
         level_options_description = {
-            "Easy":"This is the easy mode.....",
-            "Medium":"This is the medium mode.....",
-            "Hard":"This is the hard mode.....",
-            "Inhumane": "This is the Inhumane mode....."
+            "Easy":"This is the easy mode. Your hero will be traveling through a 5x5 dungeon.",
+            "Medium":"This is the medium mode. Your hero will be traveling through a 8x8 dungeon.",
+            "Hard":"This is the hard mode.Your hero will be traveling through a 10x10 dungeon.",
+            "Inhumane": "This is the Inhumane mode.Your hero will be traveling through a 20x20 dungeon."
         }
 
         clicked = StringVar()
@@ -109,9 +109,9 @@ class dungeon_adventure_GUI:
             "Thief"
         ]
         hero_options_description = {
-            "Warrior": "This is the Warrior description.",
-            "Priestess": "This is the Priestess description.",
-            "Thief": "This is the Thief description."
+            "Warrior": "As the name suggests, this hero is so powerful and has a large hit points.",
+            "Priestess": "Who doesn't want to be immune from all the attacks? This hero can heal herself with her special ability.",
+            "Thief": "Special ability of this hero is to use sneak attack.  40% chance of doing two attacks.  20% chance of no attacks.  40% chance of normal attack"
         }
 
         clicked = StringVar()

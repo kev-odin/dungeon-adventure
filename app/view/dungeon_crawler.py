@@ -11,6 +11,23 @@ class BaseFrame(tk.Frame):
         self.controller = None
         self.basic_menu_bar()
 
+        # add a dictionary for the end of game summary
+        self.player_stats = {
+                "game difficulty setting"       : "",#
+                "health potions collected"      : 0,#
+                "health potions used"           : 0,#
+                "health recovered"              : 0,#
+                "potential health recovered"    : 0,#
+                "vision potions collected"      : 0,#
+                "vision potions used"           : 0,#
+                "heroic falls"                  : 0,#
+                "pit damage received"           : 0,#
+                "moves to exit"                 : 0,#
+                "map opened"                    : 0,#
+                "pillars collected"             : 0,#
+                "cheat counter"                 : 0 #
+            }
+
     def destruct(self):
         self.root.destroy()
 
@@ -107,27 +124,27 @@ class DungeonCrawler(BaseFrame):
         travel_north = Button(
             canvas,
             text="North",
-            command= lambda: [ self.controller.set_move("n"),
-                               self.controller.update_dungeon_display(), update_navigation(nav_group,
-                               self.controller.get_current_doors()), self.controller.update_win_message()])
+            command= lambda: [ self.controller.set_move("n"),self.controller.update_dungeon_display(),
+                               update_navigation(nav_group,self.controller.get_current_doors()),
+                               self.controller.update_win_message()])
         travel_south = Button(
             canvas, 
             text="South", 
-            command= lambda: [ self.controller.set_move("s"),
-                               self.controller.update_dungeon_display(), update_navigation(nav_group,
-                               self.controller.get_current_doors()), self.controller.update_win_message()])
+            command= lambda: [ self.controller.set_move("s"),self.controller.update_dungeon_display(),
+                               update_navigation(nav_group,self.controller.get_current_doors()),
+                               self.controller.update_win_message()])
         travel_west = Button(
             canvas,
             text="West", 
-            command= lambda: [ self.controller.set_move("w"),
-                               self.controller.update_dungeon_display(), update_navigation(nav_group,
-                               self.controller.get_current_doors()), self.controller.update_win_message()])
+            command= lambda: [ self.controller.set_move("w"),self.controller.update_dungeon_display(),
+                               update_navigation(nav_group,self.controller.get_current_doors()),
+                               self.controller.update_win_message()])
         travel_east = Button(
             canvas, 
             text="East", 
-            command= lambda: [ self.controller.set_move("e"),
-                               self.controller.update_dungeon_display(), update_navigation(nav_group,
-                               self.controller.get_current_doors()), self.controller.update_win_message()])
+            command= lambda: [ self.controller.set_move("e"),self.controller.update_dungeon_display(),
+                               update_navigation(nav_group,self.controller.get_current_doors()),
+                               self.controller.update_win_message()])
 
         nav_group = (travel_north, travel_south, travel_west, travel_east)
         update_navigation(nav_group, active_doors)
@@ -160,6 +177,13 @@ class DungeonCrawler(BaseFrame):
         # use the adventurer's loc to try the doors, if there is a door then print white room to that direction
         x_adv_loc = adv_telemetry.adventurer_loc[0]
         y_adv_loc = adv_telemetry.adventurer_loc[1]
+
+        # update the map's visited rooms, so that we can use to print the traveled room
+        map.set_visited_room(x_adv_loc, y_adv_loc)
+
+        print('map.visited_array() in the set_dungeon_display()')
+        print(map.visited_array())
+
         for try_door in ['north', 'south', 'east', 'west']:
             if adv_telemetry.get_room([x_adv_loc, y_adv_loc]).get_door(try_door):
                 if try_door == 'north':
@@ -184,8 +208,7 @@ class DungeonCrawler(BaseFrame):
                                                            box_height * (2), width=3, fill='white')
 
 
-        print('map.visited 2d array:')
-        print(map.visited_array())
+
 
         # print a hero image at the center of the 3x3 grid, potentially we can print different types of hero
         global img
@@ -284,13 +307,17 @@ class DungeonCrawler(BaseFrame):
                 use_vision.grid(row=1, column=1)
 
     def set_map_display(self, map, dungeon):
+        self.player_stats['map opened'] += 1 # update how many times map was opened for the end game summary
         map_window = Toplevel(self.root)
         map_window.title("Dungeon complete map")
         map_window.geometry("420x420")  # window dimension 20 pixel greater than canvas, for the display purpose
         canvas_width = "400"
         canvas_height = "400"
         map_canvas = Canvas(map_window, width=canvas_width, height=canvas_height)
-        # print(map.visited_array()) # we can use this to display or cover the rooms
+
+        print("map.visited_array() in set_map_display()")
+        print(map.visited_array()) # we can use this to display or cover the rooms
+
         rows = map.get_rows()
         box_width = int(canvas_width)/rows
         cols = map.get_cols()
@@ -314,47 +341,50 @@ class DungeonCrawler(BaseFrame):
         for i in range(rows):
             for j in range(cols):
 
-                # create rectangle to represent doors
-                for try_door in ['north', 'east', 'west', 'south']:
-                    if dungeon.get_room([i,j]).get_door(try_door):
-                        if try_door == 'east':
-                            map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1),
-                                                   box_height * (i + 3 / 4), width=10, fill='white')
-                        if try_door == 'west':
-                            map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j),
-                                                   box_height * (i + 3 / 4), width=10, fill='white')
-                        if try_door == 'north':
-                            map_canvas.create_line(box_width * (j+1/4), box_height * (i), box_width * (j+3/4),
-                                                   box_height * (i), width=10, fill='white')
-                        if try_door == 'south':
-                            map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
-                                                   box_height * (i + 1), width=10, fill='white')
+                # We only print the rooms that is already traveled. Or we get get rid of it by printing everything of the dungeon.
+                if map.visited_array()[i][j]:
 
-                # create letter represent the contents
-                abbreviation_to_symbols = {
-                    'i':('En','green'),
-                    'O':('Ex','green'),
-                    'H':('H','red'),
-                    'V':('V','blue'),
-                    'M':('M','orange'),
-                    'A':('A','purple'),
-                    'P':('P','purple'),
-                    'I':('I','purple'),
-                    'E':('E','purple'),
-                }
-                if dungeon.get_room([i, j]).contents in abbreviation_to_symbols.keys():
-                    text = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][0] # get the key value from the dictionary
-                    color = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][1] # get the key value from the dictionary
-                    map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
-                                           text=text,
-                                           fill=color, font=('Helvetica', str(int(100/rows)), 'bold'))
-                                            # "str(int(100/rows))" is used to adjust the font size according to the rows
+                    # create rectangle to represent doors
+                    for try_door in ['north', 'east', 'west', 'south']:
+                        if dungeon.get_room([i,j]).get_door(try_door):
+                            if try_door == 'east':
+                                map_canvas.create_line(box_width * (j + 1), box_height * (i + 1 / 4), box_width * (j + 1),
+                                                       box_height * (i + 3 / 4), width=10, fill='white')
+                            if try_door == 'west':
+                                map_canvas.create_line(box_width * (j), box_height * (i + 1 / 4), box_width * (j),
+                                                       box_height * (i + 3 / 4), width=10, fill='white')
+                            if try_door == 'north':
+                                map_canvas.create_line(box_width * (j+1/4), box_height * (i), box_width * (j+3/4),
+                                                       box_height * (i), width=10, fill='white')
+                            if try_door == 'south':
+                                map_canvas.create_line(box_width * (j + 1 / 4), box_height * (i+1), box_width * (j + 3 / 4),
+                                                       box_height * (i + 1), width=10, fill='white')
 
-                # create letter mstr to represent monsters in the room
-                if (dungeon.get_room([i, j]).monster):
-                    map_canvas.create_text(box_width * (j + 3 / 4), box_height * (i + 3 / 4),
-                                           text='mstr',
-                                           fill='red', font=('Helvetica', str(int(100 / rows))))
+                    # create letter represent the contents
+                    abbreviation_to_symbols = {
+                        'i':('En','green'),
+                        'O':('Ex','green'),
+                        'H':('H','red'),
+                        'V':('V','blue'),
+                        'M':('M','orange'),
+                        'A':('A','purple'),
+                        'P':('P','purple'),
+                        'I':('I','purple'),
+                        'E':('E','purple'),
+                    }
+                    if dungeon.get_room([i, j]).contents in abbreviation_to_symbols.keys():
+                        text = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][0] # get the key value from the dictionary
+                        color = abbreviation_to_symbols[dungeon.get_room([i, j]).contents][1] # get the key value from the dictionary
+                        map_canvas.create_text(box_width * (j + 1 / 4), box_height * (i + 1 / 4),
+                                               text=text,
+                                               fill=color, font=('Helvetica', str(int(100/rows)), 'bold'))
+                                                # "str(int(100/rows))" is used to adjust the font size according to the rows
+
+                    # create letter mstr to represent monsters in the room
+                    if (dungeon.get_room([i, j]).monster):
+                        map_canvas.create_text(box_width * (j + 3 / 4), box_height * (i + 3 / 4),
+                                               text='mstr',
+                                               fill='red', font=('Helvetica', str(int(100 / rows))))
 
 
         # create purple dot to represent adventurer
@@ -380,10 +410,15 @@ class DungeonCrawler(BaseFrame):
                 if hero.has_all_pillars():
                     for widget in self.root.winfo_children():
                         widget.destroy()
-                    win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", aspect=500)
+                    win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", width=800)
                     win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
                     win_message.pack(side=tk.TOP)
 
+                    description_frame = LabelFrame(self.root, text = "Game stats")
+                    stats_message = Message(description_frame, text=self.player_stats, width=800)
+                    stats_message.config(bg='yellow', font=('times', 20, 'italic'))
+                    stats_message.pack()
+                    description_frame.pack()
 
                     # Show three possible options, also need to implement for the lose_message function
                     canvas = self.root
@@ -392,15 +427,15 @@ class DungeonCrawler(BaseFrame):
                     load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
                     quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
-                    new_game_btn.place(relx=0.5, rely=0.5, anchor = CENTER)
-                    load_game_btn.place(relx=0.5, rely=0.6, anchor = CENTER)
-                    quit_game_btn.place(relx=0.5, rely=0.7, anchor = CENTER)
+                    new_game_btn.place(relx=0.5, rely=0.82, anchor = CENTER)
+                    load_game_btn.place(relx=0.5, rely=0.86, anchor = CENTER)
+                    quit_game_btn.place(relx=0.5, rely=0.9, anchor = CENTER)
 
     def set_lose_message(self, hero, parent):
         # if hero.current_hitpoints < 0:
         for widget in parent.winfo_children():
             widget.destroy()
-        lose_message = Message(parent, text=f"Sorry, you lost, {hero.name}!", aspect=500)
+        lose_message = Message(parent, text=f"Sorry, you lost, {hero.name}!", width=800)
         lose_message.config(bg='red', font=('times', 50, 'italic'))
         lose_message.pack(side=tk.TOP)
 
@@ -411,9 +446,9 @@ class DungeonCrawler(BaseFrame):
         load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
         quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
-        new_game_btn.place(relx=0.5, rely=0.5, anchor=CENTER)
-        load_game_btn.place(relx=0.5, rely=0.6, anchor=CENTER)
-        quit_game_btn.place(relx=0.5, rely=0.7, anchor=CENTER)
+        new_game_btn.place(relx=0.5, rely=0.82, anchor=CENTER)
+        load_game_btn.place(relx=0.5, rely=0.86, anchor=CENTER)
+        quit_game_btn.place(relx=0.5, rely=0.9, anchor=CENTER)
 
 class DungeonBrawler(BaseFrame):
     def __init__(self):
