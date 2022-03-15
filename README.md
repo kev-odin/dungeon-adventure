@@ -57,7 +57,7 @@ Stephanie Liu
 4) SQLite
 
 ### Project design docs:
-assignment_documents\The_Spoony_Bard_Returns_UML.pdf
+assignment_documents\the_spoony_bard_returns_uml.pdf
 assignment_documents\SRS.pdf
 
 ### Pivotal Tracker
