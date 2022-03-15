@@ -16,20 +16,6 @@ from app.view.load_view import LoadView
 # TODO: Load Game                                   - Done
 # TODO: Quit Game                                   - Done
 
-# Controller methods are accessed by the view because we are passing the reference to Controller.
-
-# From here everything you need from the dungeon and adventurer can be accessed via dungeon builder.
-# Depending on how you want to receive information, may translate it into a different format.
-# The idea is that the view has no idea who it is talking to or what, and aside from function calls,
-# keep non-visual code out of the view as much as possible.  Logic goes in the controller.
-# The controller can talk to as many things as its specific view needs it to, be it adventurers, potions, etc.
-# The view only cares about what it's showing.
-# The controller cares about manipulating data from the model so the view can see it and manipulating
-# data from the view so that model can process it.
-# Onclick listeners will usually listen for an event then pull the data in those fields in the view out.
-# Hope this helps!  I'm not familiar enough with TKinter to go into too many specific examples!
-# I should go read your code, ahaha.
-
 class GameController:
     def __init__(self, model, view):
         """Controller for Dungeon Adventure. Main purpose to pass data from view to set changes
@@ -115,7 +101,6 @@ class GameController:
     def window_destroy(self):
         """Specific call from controller to close the current view to user.
         """
-        print(f"DEBUG - Destroyed by Controller! {self}")
         self.__view.destruct()
 
     def set_model(self, game=None):
@@ -133,8 +118,6 @@ class GameController:
         else:
             dungeon, dungeon_map, hero = game["dungeon"], game["map"], game["adventurer"]
 
-        print(f"DEBUG - Dungeon created successfully. Passing off to DungeonCrawler")
-
         self.__model = {
             "dungeon": dungeon,
             "map": dungeon_map,
@@ -151,9 +134,6 @@ class GameController:
         try:
             print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
-            print(f"{new_room}")
-            moving = self.get_dungeon()  # DEBUG
-            print(f"{moving}")
             print(f"Exit: {self.__model['dungeon'].exit}, Current: {self.__model['dungeon'].adventurer_loc}")
 
             if new_room.monster:
@@ -168,34 +148,28 @@ class GameController:
             return f"An error occured. Please verify the {move} is a valid option."
 
     def start_combat(self, hero, monster):
-        print(f"Hey {hero.name} encountered a {monster.name}.")
-        action_string = f"{hero.name} encountered a {monster.name}."
+        """Function to begin DungeonBrawler, turn based combat is determined by the user.
+
+        :param hero: Hero that the user is using to fight.
+        :param monster: Monster that is engaged in combat with the hero.
+        """
         
         brawl = DungeonBrawler()
         self.actions_capture = []
-        self.actions_capture.append(action_string)
-
+        self.actions_capture.append(f"{hero.name} encountered a {monster.name}.")
         self.turn_list = self.determine_attacks_per_round(hero, monster)
         
         self.__brawl = brawl
         self.__brawl.setup(self, hero, monster)
         self.__brawl.update_combat_log(self.actions_capture)
 
-        # while the hero and monster is alive ensure that the event loop continues
-            # Update health of both adventurer and monster at the start of each round
-            # Compare the attack speed of both the monster and adventurer
-            # higher attack speed goes first
-            # example: hero - as(5); monster - as(4)
-            # Since, we can based on attacks per round we will go with hero / monster
-            # hero_attacks = 1.25, so every 4 turns, we get an extra attack.
-            # Update DungeonBrawler with relevant information at the start of each round.
-            # if monster dies:
-                # Collect items, then go back to DungeonCrawler
-                # Update hero information within DungeonCrawler
-            # if hero dies:
-                # Prompt a Game Over frame, with options to start a new game or quit.
-
     def determine_attacks_per_round(self, hero, monster):
+        """Function to provide a list for combat order.
+
+        :param hero: Hero that the user is using to fight.
+        :param monster: Monster that is engaged in combat with the hero.
+        :return: A list containing the attacks per turn during an encounter.
+        """
         hero_order = [hero.attack_speed * x for x in range(1, 10)]
         monster_order = [monster.attack_speed * x for x in range(1, 10)]
         
@@ -216,13 +190,19 @@ class GameController:
     def end_combat(self):
         """After Combat Ends, the player should be back into the DungeonCrawler view
         """
-        del self.actions_capture
         self.__brawl.destruct()
         room = self.get_room(self.get_hero_location())
         room.clear_room()
         self.update_adv_info()
 
     def set_action(self, action: str, hero, target):
+        """Function to apply changes to the model and capture actions that occur during combat.
+
+        :param action: Either "attack" or "special"
+        :type action: str
+        :param hero: Hero that the user is using to fight.
+        :param monster: Monster that is engaged in combat with the hero.
+        """
         action_string = ""
 
         if self.still_playing():
@@ -232,28 +212,27 @@ class GameController:
                 for turn in self.turn_list:
                     hero_dmg = hero.attack()
                     monster_dmg = target.attack()
-                    monster_heal = target.take_damage(hero_dmg)
                     
                     if turn is hero:
-                        action_string = f"{hero.name} inflicted {hero_dmg} to {target.name}"
+                        monster_heal = target.take_damage(hero_dmg)
+                        action_string = f"{hero.name} inflicted {hero_dmg} to the {target.name}"
                         if hero_dmg == 0:
-                            action_string = f"{hero.name} attack bounced off {target.name}!"
+                            action_string = f"{hero.name} attack bounced off the {target.name}!"
                         if monster_heal > 0:
-                            action_string += f", but {target.name} healed for {monster_heal}."
+                            action_string += f", but the {target.name} healed for {monster_heal}."
 
                     else:
                         action_string = ""
-                        actual = hero.take_damage(monster_dmg)
-                        
-                        if actual == 0:
-                            action_string += f"{hero.name} negated the incoming damage from {target.name}!"
+                        total_monster_dmg = hero.take_damage(monster_dmg)
+
+                        if total_monster_dmg == 0:
+                            action_string += f"{hero.name} negated the incoming damage from the {target.name}!"
                         else:
-                            action_string = f"{target.name} inflicted {actual} to {hero.name}"
+                            action_string = f"{target.name} inflicted {total_monster_dmg} to {hero.name}"
                         
                     self.actions_capture.append(action_string)
 
             if action == "special":
-                print(f"DEBUG - USING SPECIAL")
                 action_string = f"{hero.name}"
                 if hero.adv_class == "Priestess":
                     heal_amount = hero.use_special()
@@ -268,36 +247,39 @@ class GameController:
                     else:
                         monster_heal = target.take_damage(hero_special)
                         action_string += f" dealt {hero_special}"
+                    
                     action_string += f" to {target.name} using {hero.special}"
+                    
                     if monster_heal:
                         action_string += f", and {target.name} healed for {monster_heal}"
                     if monster_heal2:
                         action_string += f", and {target.name} healed for {monster_heal2}"
-                print(action_string)
+                
                 self.actions_capture.append(action_string)
                 action_string = ""
+                
+                monster_dmg = target.attack()
+                total_monster_dmg = hero.take_damage(monster_dmg)
 
-            # actual = hero.take_damage(monster_dmg)
-            
-            # if actual == 0:
-            #     action_string += f"{hero.name} negated the incoming damage from {target.name}!"
-            #     print(f"{hero.name} negated the incoming damage from {target.name}!")
-            # else:
-            #     action_string += f"{target.name} inflicted {actual} to {hero.name}"
-            #     print(f"{target.name} inflicted {actual} to {hero.name}")
-            # self.actions_capture.append(action_string)
-
-            self.__brawl.update_combat_log(self.actions_capture)
+                if total_monster_dmg == 0:
+                    action_string += f"{hero.name} negated the incoming damage from {target.name}!"
+                else:
+                    action_string += f"{target.name} inflicted {total_monster_dmg} to {hero.name}"
+                
+                self.actions_capture.append(action_string)
 
             if target.current_hitpoints <= 0:
-                print(f"{hero.name} defeated {target.name}")
-                self.actions_capture.clear()
-                self.end_combat()
+                self.actions_capture.append(f"{hero.name} defeated the {target.name}")
+                self.__brawl.update_combat_log(self.actions_capture)                
+                # self.end_combat()
 
             if hero.current_hitpoints <= 0:
-                print(f"{target.name} defeated {hero.name}")
+                self.actions_capture.append(f"{target.name} defeated {hero.name}.")
+                self.__brawl.update_combat_log(self.actions_capture)
                 self.__view.set_lose_message(hero, self.__view.root)
-                self.end_combat()
+                # self.end_combat()
+
+        self.__brawl.update_combat_log(self.actions_capture)
 
     def set_bag(self, room):
         """Function that sets the bag for the adventurer when a collectable potion or pillar is encountered.
@@ -327,7 +309,6 @@ class GameController:
             self.__model["hero"].heal_adventurer(heal)
             hero = self.__model["hero"]
             self.__view.set_adventurer_info(hero.name, hero.current_hitpoints, hero.max_hitpoints)
-            print("DEBUG - Should be using a health potion")
 
             if self.actions_capture:
                 potion_str = f"{hero.name} used {heal.name} and increased {heal.heal_amount} HP"
@@ -362,7 +343,6 @@ class GameController:
     def update_dungeon_display(self):
         """Update the DungeonCrawler frame with map information from the model.
         """
-        print("DEBUG - Retrieving the hero position")
         map = self.__model["map"]
         adv_telemetry = self.__model["dungeon"]
         self.__view.set_dungeon_display(map, adv_telemetry)
@@ -370,7 +350,6 @@ class GameController:
     def update_adv_bag(self):
         """Update the DungeonCrawler frame with hero inventory information from the model.
         """
-        print("DEBUG - Pressing the Bag Button")
         pillars = self.get_collected_pillars()
         health_pots = self.get_health_pots()
         vision_pots = self.get_vision_pots()
@@ -380,16 +359,13 @@ class GameController:
             "health": health_pots,
             "vision": vision_pots
         }
-        print(f"DEBUG - {bag}")
         self.__view.set_bag_display(bag)
 
     def update_adv_map(self):
         """Update the frame with map information from the model.
         """
-        print("DEBUG - Pressing the Map Button")
-        map = self.__model["map"]           # follow Kevin's example of update_adv_info and update_adv_bag, we get the pillar from the model and send it back to the view
-        dungeon = self.__model["dungeon"]   # and then view is going to use this info to prepare the display
-
+        map = self.__model["map"]           
+        dungeon = self.__model["dungeon"]
         self.__view.set_map_display(map, dungeon)
 
     def update_win_message(self):
