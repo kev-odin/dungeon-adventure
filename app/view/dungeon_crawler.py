@@ -13,17 +13,15 @@ class BaseFrame(tk.Frame):
 
         # add a dictionary for the end of game summary
         self.player_stats = {
-                "game difficulty setting"       : "",#
-                "health potions collected"      : 0,# done
+                "game difficulty setting"       : "", #done
+                # "health potions collected"      : 0,#
                 "health potions used"           : 0,#
-                "health recovered"              : 0,#
-                "potential health recovered"    : 0,#
-                "vision potions collected"      : 0,# done
+                # "vision potions collected"      : 0,#
                 "vision potions used"           : 0,#
                 "moves to exit"                 : -1,# done
                 "map opened"                    : 0,# done
-                "pillars collected"             : 0,#
-                "cheat counter"                 : 0 #
+                "pillars collected"             : 0,# done
+                # "cheat counter"                 : 0 #
             }
 
     def destruct(self):
@@ -245,12 +243,10 @@ class DungeonCrawler(BaseFrame):
         def update_counter(label, button, potion_type):
             if potion_type == "Health":
                 curr_count = self.controller.get_health_pots()
-                # # If health potion collected
-                # self.player_stats["health potions collected"] += 1
+                self.player_stats["health potions used"] += 1
             elif potion_type == "Vision":
                 curr_count = self.controller.get_vision_pots()
-                # # If vision potion collected
-                # self.player_stats["vision potions collected"] += 1
+                self.player_stats["vision potions used"] += 1
 
             if curr_count == 0:
                 button["state"] = DISABLED
@@ -423,6 +419,7 @@ class DungeonCrawler(BaseFrame):
         if hero.current_hitpoints > 0:
             if dungeon.adventurer_loc == dungeon.exit:
                 if hero.has_all_pillars():
+                    self.player_stats["pillars collected"] = True # update if all pillars collected for the end game summary
                     for widget in self.root.winfo_children():
                         widget.destroy()
                     win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", width=800)
