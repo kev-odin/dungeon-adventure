@@ -61,7 +61,7 @@ assignment_documents\the_spoony_bard_returns_uml.pdf
 assignment_documents\SRS.pdf
 
 ### Pivotal Tracker
-# TODO INCLUDE ME
+assignment_documents\pivotal_tracker.pdf
 
 ### Git History
 # TODO INCLUDE ME TOO
