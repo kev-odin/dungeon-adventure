@@ -11,6 +11,23 @@ class BaseFrame(tk.Frame):
         self.controller = None
         self.basic_menu_bar()
 
+        # add a dictionary for the end of game summary
+        self.player_stats = {
+                "game difficulty setting"       : "",#
+                "health potions collected"      : 0,#
+                "health potions used"           : 0,#
+                "health recovered"              : 0,#
+                "potential health recovered"    : 0,#
+                "vision potions collected"      : 0,#
+                "vision potions used"           : 0,#
+                "heroic falls"                  : 0,#
+                "pit damage received"           : 0,#
+                "moves to exit"                 : 0,#
+                "map opened"                    : 0,#
+                "pillars collected"             : 0,#
+                "cheat counter"                 : 0 #
+            }
+
     def destruct(self):
         self.root.destroy()
 
@@ -290,6 +307,7 @@ class DungeonCrawler(BaseFrame):
                 use_vision.grid(row=1, column=1)
 
     def set_map_display(self, map, dungeon):
+        self.player_stats['map opened'] += 1 # update how many times map was opened for the end game summary
         map_window = Toplevel(self.root)
         map_window.title("Dungeon complete map")
         map_window.geometry("420x420")  # window dimension 20 pixel greater than canvas, for the display purpose
@@ -392,13 +410,15 @@ class DungeonCrawler(BaseFrame):
                 if hero.has_all_pillars():
                     for widget in self.root.winfo_children():
                         widget.destroy()
-                    win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", aspect=500)
+                    win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", width=800)
                     win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
                     win_message.pack(side=tk.TOP)
 
-                    stats_message = Message(self.root, text=f"Game stats", aspect=500)
-                    stats_message.config(bg='blue', font=('times', 50, 'italic'))
+                    description_frame = LabelFrame(self.root, text = "Game stats")
+                    stats_message = Message(description_frame, text=self.player_stats, width=800)
+                    stats_message.config(bg='yellow', font=('times', 20, 'italic'))
                     stats_message.pack()
+                    description_frame.pack()
 
                     # Show three possible options, also need to implement for the lose_message function
                     canvas = self.root
@@ -407,15 +427,15 @@ class DungeonCrawler(BaseFrame):
                     load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
                     quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
-                    new_game_btn.place(relx=0.5, rely=0.5, anchor = CENTER)
-                    load_game_btn.place(relx=0.5, rely=0.6, anchor = CENTER)
-                    quit_game_btn.place(relx=0.5, rely=0.7, anchor = CENTER)
+                    new_game_btn.place(relx=0.5, rely=0.82, anchor = CENTER)
+                    load_game_btn.place(relx=0.5, rely=0.86, anchor = CENTER)
+                    quit_game_btn.place(relx=0.5, rely=0.9, anchor = CENTER)
 
     def set_lose_message(self, hero, parent):
         # if hero.current_hitpoints < 0:
         for widget in parent.winfo_children():
             widget.destroy()
-        lose_message = Message(parent, text=f"Sorry, you lost, {hero.name}!", aspect=500)
+        lose_message = Message(parent, text=f"Sorry, you lost, {hero.name}!", width=800)
         lose_message.config(bg='red', font=('times', 50, 'italic'))
         lose_message.pack(side=tk.TOP)
 
@@ -426,9 +446,9 @@ class DungeonCrawler(BaseFrame):
         load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
         quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
-        new_game_btn.place(relx=0.5, rely=0.5, anchor=CENTER)
-        load_game_btn.place(relx=0.5, rely=0.6, anchor=CENTER)
-        quit_game_btn.place(relx=0.5, rely=0.7, anchor=CENTER)
+        new_game_btn.place(relx=0.5, rely=0.82, anchor=CENTER)
+        load_game_btn.place(relx=0.5, rely=0.86, anchor=CENTER)
+        quit_game_btn.place(relx=0.5, rely=0.9, anchor=CENTER)
 
 class DungeonBrawler(BaseFrame):
     def __init__(self):
