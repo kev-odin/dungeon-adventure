@@ -507,25 +507,25 @@ class DungeonBrawler(BaseFrame):
         self.left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
         self.right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
         combat_log = Frame(self.dungeon_brawl_frame, width = 800, height = 200, bg = "blue")
-        combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
+        self.combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
 
         self.left_frame['relief'] = SUNKEN
         self.right_frame['relief'] = SUNKEN
         combat_log['relief'] = SUNKEN
-        combat_action['relief'] = SUNKEN
+        self.combat_action['relief'] = SUNKEN
 
         self.left_frame['borderwidth'] = 10
         self.right_frame['borderwidth'] = 10
         combat_log['borderwidth'] = 10
-        combat_action['borderwidth'] = 10
+        self.combat_action['borderwidth'] = 10
 
         self.left_frame.grid(row = 0, column= 0)
         self.right_frame.grid(row = 0, column= 1)
-        combat_action.grid(row = 1, columnspan=2)
+        self.combat_action.grid(row = 1, columnspan=2)
         combat_log.grid(row = 2, columnspan=2)
         
         self.set_combat_log(combat_log)
-        self.set_combat_action(combat_action, hero, monster)
+        self.set_combat_action(self.combat_action, hero, monster)
         self.create_hero_frame(self.left_frame, hero)
         self.create_monster_frame(self.right_frame, monster)
 
@@ -666,13 +666,6 @@ class DungeonBrawler(BaseFrame):
                 self.update_labels(self.hero_hp, self.health_pot)
                 ])
 
-        end_game = Button(
-            canvas,
-            text="DEBUG - END GAME",
-            bg="red",
-            command= lambda: [self.controller.end_combat(), self.controller.update_lose_message()]
-        )
-
         end_combat = Button(
             canvas,
             text="DEBUG - SKIP COMBAT",
@@ -685,11 +678,16 @@ class DungeonBrawler(BaseFrame):
         attack.grid(row=0, column=0)
         special.grid(row=0, column=1)
         health_potion.grid(row=0, column=2)
-        end_game.grid(row= 0, column=3)
-        end_combat.grid(row=0, column=4)
+        end_combat.grid(row=0, column=3)
 
-    def update_monster(self):
-        return self.controller.get_monster()
-
-    def update_hero(self):
-        return self.controller.get_hero()
+    def set_crawler_update(self):
+        self.combat_action.grid_forget()
+        self.crawler = Frame(self.dungeon_brawl_frame)
+        back_to_crawler = Button(
+            self.crawler,
+            text="Return to Dungeon",
+            bg="green",
+            command= lambda: [self.controller.end_combat()]
+        )
+        back_to_crawler.grid(row=0)
+        self.crawler.grid(row=3)
