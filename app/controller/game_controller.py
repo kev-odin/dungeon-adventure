@@ -128,7 +128,6 @@ class GameController:
         move_dict = {"n": "north", "w": "west", "s": "south", "e": "east"}
         try:
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
-            print(f"Exit: {self.__model['dungeon'].exit}, Current: {self.__model['dungeon'].adventurer_loc}")
 
             if new_room.monster:
                 hero = self.get_hero()
