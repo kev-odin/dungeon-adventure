@@ -435,7 +435,7 @@ class DungeonCrawler(BaseFrame):
                     win_message.pack(side=tk.TOP)
 
                     description_frame = LabelFrame(self.root, text = "Game stats")
-                    stats_message = Message(description_frame, text=self.player_stats, width=700)
+                    stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
                     stats_message.config(bg='yellow', font=('times', 20, 'italic'))
                     stats_message.pack()
                     description_frame.pack()
@@ -460,7 +460,7 @@ class DungeonCrawler(BaseFrame):
         lose_message.pack(side=tk.TOP)
 
         description_frame = LabelFrame(self.root, text="Game stats")
-        stats_message = Message(description_frame, text=self.player_stats, width=700)
+        stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
         stats_message.config(bg='yellow', font=('times', 20, 'italic'))
         stats_message.pack()
         description_frame.pack()
@@ -475,6 +475,16 @@ class DungeonCrawler(BaseFrame):
         new_game_btn.place(relx=0.5, rely=0.82, anchor=CENTER)
         load_game_btn.place(relx=0.5, rely=0.86, anchor=CENTER)
         quit_game_btn.place(relx=0.5, rely=0.9, anchor=CENTER)
+
+    def print_win_lose_summary(self):
+        win_lose_summary = ""
+        for key, value in self.player_stats.items():
+            if key != "pillars collected":
+                curr = str(key).capitalize() + ' : ' + str(value) + "\n"
+            else:
+                curr = str(key).capitalize() + ' : ' + str(value)
+            win_lose_summary += curr
+        return win_lose_summary
 
 class DungeonBrawler(BaseFrame):
     def __init__(self):
