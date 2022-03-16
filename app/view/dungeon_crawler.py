@@ -72,11 +72,11 @@ class DungeonCrawler(BaseFrame):
 
         self.dungeon_crawl_frame.pack()
 
-    def update_display(self, controller):
-        canvas = self.root
-        dungeon = LabelFrame(canvas, width = 600, height = 400, bg = "White")
-        text = Label(dungeon, text = f"{controller}", bg = "White")
-        text.place(relx = 0.5, rely = 0.5, anchor = N)
+    # def update_display(self, controller):
+    #     canvas = self.root
+    #     dungeon = LabelFrame(canvas, width = 600, height = 400, bg = "White")
+    #     text = Label(dungeon, text = f"{controller}", bg = "White")
+    #     text.place(relx = 0.5, rely = 0.5, anchor = N)
 
     def adventurer_action(self):
         """Display base actions such as map and bag inventory
@@ -225,7 +225,7 @@ class DungeonCrawler(BaseFrame):
         img = img.subsample(9)
         adjacent_rooms_canvas.create_image(151, 151, image=img)
 
-        # # print a purple circle at the center of the 3x3 grid to represent the hero
+        # print a purple circle at the center of the 3x3 grid to represent the hero
         # adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
 
         adjacent_rooms_canvas.pack()

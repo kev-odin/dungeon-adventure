@@ -178,7 +178,6 @@ class GameController:
         else:
             turn_order = [monster for _ in range(hero_strike + 1)]
             turn_order.append(hero)
-
         return turn_order
         
     def end_combat(self):
@@ -198,72 +197,70 @@ class GameController:
         :param monster: Monster that is engaged in combat with the hero.
         """
         action_string = ""
+        monster_heal = []
+        
+        if action == "attack":
+            for turn in self.turn_list:
+                if self.still_playing() and monster.current_hitpoints > 0:
+                    hero_dmg = hero.attack()
+                    monster_dmg = monster.attack()
+                    
+                    if turn is hero:
+                        monster_heal = monster.take_damage(hero_dmg)
+                        action_string = f"{hero.name} inflicted {hero_dmg} points of damage to the {monster.name}"
+                        if hero_dmg == 0:
+                            action_string = f"{hero.name}'s attack bounced off the {monster.name}!"
+                        if monster_heal > 0:
+                            action_string += f", but the {monster.name} healed for {monster_heal} health points."
 
-        if self.still_playing():
-            monster_heal = []
-            
-            if action == "attack":
-                for turn in self.turn_list:
-                    if self.still_playing():
-                        hero_dmg = hero.attack()
-                        monster_dmg = monster.attack()
-                        
-                        if turn is hero:
-                            monster_heal = monster.take_damage(hero_dmg)
-                            action_string = f"{hero.name} inflicted {hero_dmg} to the {monster.name}"
-                            if hero_dmg == 0:
-                                action_string = f"{hero.name} attack bounced off the {monster.name}!"
-                            if monster_heal > 0:
-                                action_string += f", but the {monster.name} healed for {monster_heal}."
-
-                        else:
-                            action_string = ""
-                            total_monster_dmg = hero.take_damage(monster_dmg)
-
-                            if total_monster_dmg == 0:
-                                action_string += f"{hero.name} negated the incoming damage from the {monster.name}!"
-                            else:
-                                action_string = f"{monster.name} inflicted {total_monster_dmg} to {hero.name}"
-                            
-                        self.actions_capture.append(action_string)
-                        self.update_combat_outcome(hero, monster)
-
-            if action == "special":
-                action_string = f"{hero.name}"
-                if hero.adv_class == "Priestess":
-                    heal_amount = hero.use_special()
-                    action_string += f" healed for {heal_amount}."
-                else:
-                    monster_heal, monster_heal2 = 0, 0
-                    hero_special = hero.use_special()
-                    if type(hero_special) is tuple:
-                        monster_heal = monster.take_damage(hero_special[0])
-                        monster_heal2 = monster.take_damage(hero_special[1])
-                        action_string += f" dealt {hero_special[0]} and {hero_special[1]}"
                     else:
-                        monster_heal = monster.take_damage(hero_special)
-                        action_string += f" dealt {hero_special}"
-                    
-                    action_string += f" to {monster.name} using {hero.special}"
-                    
-                    if monster_heal:
-                        action_string += f", and {monster.name} healed for {monster_heal}"
-                    if monster_heal2:
-                        action_string += f", and {monster.name} healed for {monster_heal2}"
-                
-                self.actions_capture.append(action_string)
-                action_string = ""
-                
-                monster_dmg = monster.attack()
-                total_monster_dmg = hero.take_damage(monster_dmg)
+                        action_string = ""
+                        total_monster_dmg = hero.take_damage(monster_dmg)
 
-                if total_monster_dmg == 0:
-                    action_string += f"{hero.name} negated the incoming damage from {monster.name}!"
+                        if total_monster_dmg == 0:
+                            action_string += f"{hero.name} negated the incoming damage from the {monster.name}!"
+                        else:
+                            action_string = f"{monster.name} inflicted {total_monster_dmg} to {hero.name}"
+                        
+                    self.actions_capture.append(action_string)
+                    self.update_combat_outcome(hero, monster)
+
+        if action == "special":
+            action_string = f"{hero.name}"
+            monster_dmg = monster.attack()
+            
+            if hero.adv_class == "Priestess":
+                heal_amount = hero.use_special()
+                action_string += f" healed for {heal_amount}."
+            else:
+                monster_heal, monster_heal2 = 0, 0
+                hero_special = hero.use_special()
+                if type(hero_special) is tuple:
+                    monster_heal = monster.take_damage(hero_special[0])
+                    monster_heal2 = monster.take_damage(hero_special[1])
+                    action_string += f" dealt {hero_special[0]} and {hero_special[1]}"
                 else:
-                    action_string += f"{monster.name} inflicted {total_monster_dmg} to {hero.name}"
+                    monster_heal = monster.take_damage(hero_special)
+                    action_string += f" dealt {hero_special}"
                 
-                self.actions_capture.append(action_string)
-                self.update_combat_outcome(hero, monster)
+                action_string += f" to {monster.name} using {hero.special}"
+                
+                if monster_heal:
+                    action_string += f", and {monster.name} healed for {monster_heal}"
+                if monster_heal2:
+                    action_string += f", and {monster.name} healed for {monster_heal2}"
+            
+            self.actions_capture.append(action_string)
+            action_string = ""
+            total_monster_dmg = hero.take_damage(monster_dmg)
+
+            if total_monster_dmg == 0:
+                action_string += f"{hero.name} negated the incoming damage from {monster.name}!"
+            else:
+                action_string += f"{monster.name} inflicted {total_monster_dmg} damage points to {hero.name}!"
+            
+            self.actions_capture.append(action_string)
+            self.update_combat_outcome(hero, monster)
 
         self.__brawl.update_combat_log(self.actions_capture)
 
@@ -308,11 +305,11 @@ class GameController:
             hero = self.__model["hero"]
             self.__view.set_adventurer_info(hero.name, hero.current_hitpoints, hero.max_hitpoints)
 
-            if self.actions_capture:
+            if not self.actions_capture:
                 potion_str = f"{hero.name} used {heal.name} and increased {heal.heal_amount} HP"
                 self.actions_capture.append(potion_str)
                 self.__brawl.update_combat_log(self.actions_capture)
-
+    
         if potion == "vision" and self.__model["hero"].has_vision_potion():
             hero_loc = self.__model["dungeon"].adventurer_loc
             self.__model["map"].use_vision_potion(hero_loc[0],hero_loc[1])
