@@ -8,11 +8,11 @@ from app.view.load_view import LoadView
 # TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
 # TODO: Update adventurer bag when entering a room  - Done
 # TODO: Update view with room contents              - Done
-# TODO: Save Game                                   - Done
+# TODO: Save Game                                   - Bug
 # TODO: Room Dungeon Canvas                         - Done
 # TODO: Dungeon Map Canvas                          - Done
-# TODO: DungeonBrawler                              - WIP
-# TODO: Start New                                   - WIP
+# TODO: DungeonBrawler                              - Done
+# TODO: Start New                                   - Done
 # TODO: Load Game                                   - Done
 # TODO: Quit Game                                   - Done
 
@@ -50,7 +50,6 @@ class GameController:
         """
         load_view = LoadView()
         load_view.setup(controller=self, parent=view_root)
-        print(f"Launching load menu...")
 
     def get_saved_games(self):
         """
@@ -59,7 +58,6 @@ class GameController:
         :return: List of dictionaries representing all the saves games basic information.
         """
         games = SaveManager.get_saved_games()
-        print("Games retrieved.")
         return games
 
     def load_game_to_model(self, timestamp: str):
@@ -71,7 +69,6 @@ class GameController:
         db = DungeonBuilder()
         game = db.load_game(game)
         self.set_model(game)
-        print("Game loaded.")
 
     def save_game(self, game):
         """
@@ -80,7 +77,6 @@ class GameController:
         """
         dungeon, adventurer, map = game["dungeon"], game["hero"], game["map"]
         dungeon, adventurer, map = dungeon.json_dict, adventurer.char_dict, map.map_dict
-        print(f"Game saved.")
         return SaveManager.save(dungeon, adventurer, map)
 
     def frame_setup(self):
@@ -132,7 +128,6 @@ class GameController:
         """
         move_dict = {"n": "north", "w": "west", "s": "south", "e": "east"}
         try:
-            print(f"DEBUG - Moving Adventurer {move_dict[move]}")
             new_room = self.__model["dungeon"].move_adventurer(move_dict[move])
             print(f"Exit: {self.__model['dungeon'].exit}, Current: {self.__model['dungeon'].adventurer_loc}")
 
@@ -456,8 +451,3 @@ class GameController:
     def still_playing(self):
         return self.__model["hero"].is_alive()
 
-if __name__ == "__main__":
-    db = DungeonBuilder()
-    gv = dungeon_adventure_GUI()
-    gc = GameController(db, gv)
-    gc.frame_setup()

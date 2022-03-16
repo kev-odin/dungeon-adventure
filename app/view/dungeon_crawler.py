@@ -456,13 +456,6 @@ class DungeonBrawler(BaseFrame):
 
     def setup(self, controller, hero, monster):
         """Builds the basic frames for combat between the hero and the monster.
-
-        :param controller: _description_
-        :type controller: _type_
-        :param hero: _description_
-        :type hero: _type_
-        :param monster: _description_
-        :type monster: _type_
         """
         self.root.title("Dungeon Adventure 2.0 - DungeonBrawler")
         self.dungeon_brawl_frame = Frame(self.root)
@@ -470,33 +463,35 @@ class DungeonBrawler(BaseFrame):
         
         self.left_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "green")
         self.right_frame = Frame(self.dungeon_brawl_frame, width = 400, height = 400, bg = "red")
-        combat_log = Frame(self.dungeon_brawl_frame, width = 800, height = 200, bg = "blue")
+        self.combat_log = Frame(self.dungeon_brawl_frame, width = 800, height = 200, bg = "blue")
         self.combat_action = Frame(self.dungeon_brawl_frame, width= 400, height = 200, bg = "white")
 
         self.left_frame['relief'] = SUNKEN
         self.right_frame['relief'] = SUNKEN
-        combat_log['relief'] = SUNKEN
+        self.combat_log['relief'] = SUNKEN
         self.combat_action['relief'] = SUNKEN
 
         self.left_frame['borderwidth'] = 10
         self.right_frame['borderwidth'] = 10
-        combat_log['borderwidth'] = 10
+        self.combat_log['borderwidth'] = 10
         self.combat_action['borderwidth'] = 10
 
         self.left_frame.grid(row = 0, column= 0)
         self.right_frame.grid(row = 0, column= 1)
         self.combat_action.grid(row = 1, columnspan=2)
-        combat_log.grid(row = 2, columnspan=2)
+        self.combat_log.grid(row = 2, columnspan=2)
         
-        self.set_combat_log(combat_log)
         self.set_combat_action(self.combat_action, hero, monster)
+        self.create_combat_log(self.combat_log)
         self.create_hero_frame(self.left_frame, hero)
         self.create_monster_frame(self.right_frame, monster)
 
         self.dungeon_brawl_frame.pack()
     
     def update_labels(self, *args):
-        print("DEBUG - Updating Labels")
+        """Function to help with dynamically update labels during combat phase.
+        :param: *args include self.hero_hp, self.health_pot, and self.monster_hp
+        """
         for label in args:
             if label is self.hero_hp:
                 new_max = self.controller.get_hero_max_hp()
@@ -512,12 +507,10 @@ class DungeonBrawler(BaseFrame):
                 max_hp = self.controller.get_monster().max_hitpoints
                 label["text"] = f"Health: {new_hp} / {max_hp}"
 
-    def create_hero_frame(self, parent, hero):            
-        hero_label = Label(
-            parent, 
-            text = f"Name: {hero.name}"
-            )
-        
+    def create_hero_frame(self, parent, hero):
+        """Grouping the relevant labels together in a single parent frame(self.left_frame)
+        for the hero combatant.
+        """       
         self.hero_hp = Label(
             parent, 
             text = f"Health: {hero.current_hitpoints}/{hero.max_hitpoints}"
@@ -527,7 +520,12 @@ class DungeonBrawler(BaseFrame):
             parent,
             text = f"Health Potions: {hero.health_pots}"
         )
-
+        
+        hero_name = Label(
+            parent, 
+            text = f"Name: {hero.name}"
+            )
+        
         attack_sp = Label(
             parent,
             text = f"Attack Speed: {hero.attack_speed}"
@@ -538,22 +536,26 @@ class DungeonBrawler(BaseFrame):
             text = f"Hit Chance: {hero.hit_chance}"
         )
         
-        hero_label.grid(row=0, column=0)
         self.hero_hp.grid(row=1, column=0)
         self.health_pot.grid(row=2, column=0)
+
+        hero_name.grid(row=0, column=0)
         attack_sp.grid(row=3, column=0)
         hit_chance.grid(row=4, column=0)
 
-    def create_monster_frame(self, parent, monster):                
-        monster_label = Label(
-            parent, 
-            text = f"Monster Type: {monster.name}")
-        
+    def create_monster_frame(self, parent, monster):
+        """Grouping the relevant labels together in a single parent frame(self.right_frame)
+        for the monster combatant.
+        """                
         self.monster_hp = Label(
             parent,
             text = f"Health: {monster.current_hitpoints} / {monster.max_hitpoints}"
             )
 
+        monster_name = Label(
+            parent, 
+            text = f"Monster Type: {monster.name}")
+        
         monster_hit_chance = Label (
             parent,
             text = f"Hit Chance: {monster.hit_chance}"
@@ -569,13 +571,19 @@ class DungeonBrawler(BaseFrame):
             text = f"Hit Chance: {monster.hit_chance}"
         )
 
-        monster_label.grid(row=0, column=0)
         self.monster_hp.grid(row=1, column=0)
+        
+        monster_name.grid(row=0, column=0)
         monster_hit_chance.grid(row=2, column=0)
         attack_sp.grid(row=3, column=0)
         hit_chance.grid(row=4, column=0)
 
-    def set_combat_log(self, parent):
+    def create_combat_log(self, parent):
+        """Creating the combat log on DungeonBrawler frame.
+
+        :param parent: existing frame that will keep the Combat ListBox object
+        """
+
         canvas = parent
         text = Label(canvas, text = "Combat Log")
         self.text_log = Listbox(canvas)
@@ -584,6 +592,12 @@ class DungeonBrawler(BaseFrame):
         self.text_log.grid(row=1)
 
     def update_combat_log(self, event):
+        """Erases previous entries and repopulates the ListBox in reverse order.
+        Most recent actions are displayed on top.
+
+        :param event: combat actions that have occured and captured between the model and user
+        :type event: list
+        """
         self.text_log.delete(0, END)
         self.text_log.grid_forget()
         text_box_width = len(max(event, key=len))
@@ -595,8 +609,13 @@ class DungeonBrawler(BaseFrame):
         self.text_log.grid(row=1)
 
     def set_combat_action(self, parent, hero, monster):
-        canvas = parent
-        special_move = hero.special
+        """Enable valid button states for the hero while in combat with the monster.
+        Main entry for the user to interact with the model.
+
+        :param parent: placeholder for the existing combat action frames.
+        :param hero: Current hero combatant
+        :param monster: Current monster combatant
+        """
 
         def potion_state(button):
             current_potion = self.controller.get_health_pots()
@@ -606,7 +625,7 @@ class DungeonBrawler(BaseFrame):
                 button["state"] = ACTIVE
 
         attack = Button(
-            canvas, 
+            parent, 
             text="Attack", 
             command= lambda: [
                 self.controller.set_action("attack", hero, monster),
@@ -614,15 +633,15 @@ class DungeonBrawler(BaseFrame):
                 ])
         
         special = Button(
-            canvas, 
-            text=f"{special_move}", 
+            parent, 
+            text=f"{hero.special}", 
             command= lambda: [
                 self.controller.set_action("special", hero, monster),
                 self.update_labels(self.hero_hp, self.monster_hp)
                 ])
         
         health_potion = Button(
-            canvas, 
+            parent, 
             text= "Use Health Potion", 
             command= lambda: [
                 self.controller.set_potion("health"),
@@ -631,7 +650,7 @@ class DungeonBrawler(BaseFrame):
                 ])
 
         end_combat = Button(
-            canvas,
+            parent,
             text="DEBUG - SKIP COMBAT",
             bg="orange",
             command= lambda: [self.controller.end_combat()]
