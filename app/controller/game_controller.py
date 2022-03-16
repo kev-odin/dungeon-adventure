@@ -446,4 +446,3 @@ class GameController:
 
     def still_playing(self):
         return self.__model["hero"].is_alive()
-

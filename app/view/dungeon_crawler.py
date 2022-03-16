@@ -72,12 +72,6 @@ class DungeonCrawler(BaseFrame):
 
         self.dungeon_crawl_frame.pack()
 
-    # def update_display(self, controller):
-    #     canvas = self.root
-    #     dungeon = LabelFrame(canvas, width = 600, height = 400, bg = "White")
-    #     text = Label(dungeon, text = f"{controller}", bg = "White")
-    #     text.place(relx = 0.5, rely = 0.5, anchor = N)
-
     def adventurer_action(self):
         """Display base actions such as map and bag inventory
         """
@@ -87,21 +81,6 @@ class DungeonCrawler(BaseFrame):
         
         bag.grid(row=2, column=0, sticky="nswe")
         map.grid(row=3, column=0, sticky="nswe")
-
-    def set_adventurer_info(self, adv_name, curr_hp, max_hp):
-        """Display base adventurer information to be displayed during dungeon crawl.
-
-        Args:
-            adv_name (str): name of heroic adventurer
-            curr_hp (int): current hitpoints
-            max_hp (int): max hitpoints
-        """
-        canvas = self.dungeon_crawl_canvas
-        name = Label(canvas, text = f"Name: {adv_name}", bg = 'White')
-        name.grid(row = 0, column = 0)
-
-        health = Label(canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
-        health.grid(row = 1, column = 0)
 
     def dungeon_navigation(self):
         """Displays the navigation buttons for the DungeonCrawler view. Buttons are greyed out if a door is not present.
@@ -152,6 +131,21 @@ class DungeonCrawler(BaseFrame):
         travel_east.grid(row=2, column=3)
 
         canvas.pack()
+
+    def set_adventurer_info(self, adv_name, curr_hp, max_hp):
+        """Display base adventurer information to be displayed during dungeon crawl.
+
+        Args:
+            adv_name (str): name of heroic adventurer
+            curr_hp (int): current hitpoints
+            max_hp (int): max hitpoints
+        """
+        canvas = self.dungeon_crawl_canvas
+        name = Label(canvas, text = f"Name: {adv_name}", bg = 'White')
+        name.grid(row = 0, column = 0)
+
+        health = Label(canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
+        health.grid(row = 1, column = 0)
 
     def set_dungeon_display(self, map, adv_telemetry):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
@@ -526,6 +520,23 @@ class DungeonBrawler(BaseFrame):
                 new_hp = self.controller.get_monster().current_hitpoints
                 max_hp = self.controller.get_monster().max_hitpoints
                 label["text"] = f"Health: {new_hp} / {max_hp}"
+    
+    def update_combat_log(self, event):
+        """Erases previous entries and repopulates the ListBox in reverse order.
+        Most recent actions are displayed on top.
+
+        :param event: combat actions that have occured and captured between the model and user
+        :type event: list
+        """
+        self.text_log.delete(0, END)
+        self.text_log.grid_forget()
+        text_box_width = len(max(event, key=len))
+
+        for idx, event in enumerate(event[::-1], start = 1):
+            self.text_log.insert(idx, event)
+        
+        self.text_log["width"] = text_box_width
+        self.text_log.grid(row=1)
 
     def create_hero_frame(self, parent, hero):
         """Grouping the relevant labels together in a single parent frame(self.left_frame)
@@ -609,23 +620,6 @@ class DungeonBrawler(BaseFrame):
         self.text_log = Listbox(canvas)
 
         text.grid(row=0)
-        self.text_log.grid(row=1)
-
-    def update_combat_log(self, event):
-        """Erases previous entries and repopulates the ListBox in reverse order.
-        Most recent actions are displayed on top.
-
-        :param event: combat actions that have occured and captured between the model and user
-        :type event: list
-        """
-        self.text_log.delete(0, END)
-        self.text_log.grid_forget()
-        text_box_width = len(max(event, key=len))
-
-        for idx, event in enumerate(event[::-1], start = 1):
-            self.text_log.insert(idx, event)
-        
-        self.text_log["width"] = text_box_width
         self.text_log.grid(row=1)
 
     def set_combat_action(self, parent, hero, monster):
