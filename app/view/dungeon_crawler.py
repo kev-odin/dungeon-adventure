@@ -438,7 +438,7 @@ class DungeonCrawler(BaseFrame):
                     stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
                     stats_message.config(bg='yellow', font=('times', 20, 'italic'))
                     stats_message.pack()
-                    description_frame.pack(pady = 50)
+                    description_frame.pack(pady = 40)
 
                     canvas = self.root
 
@@ -462,7 +462,7 @@ class DungeonCrawler(BaseFrame):
         stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
         stats_message.config(bg='yellow', font=('times', 20, 'italic'))
         stats_message.pack()
-        description_frame.pack(pady=50)
+        description_frame.pack(pady=40)
 
         canvas = self.root
 
