@@ -251,15 +251,16 @@ class GameController:
                     action_string += f", and {monster.name} healed for {monster_heal2}"
             
             self.actions_capture.append(action_string)
-            action_string = ""
-            total_monster_dmg = hero.take_damage(monster_dmg)
-
-            if total_monster_dmg == 0:
-                action_string += f"{hero.name} negated the incoming damage from {monster.name}!"
-            else:
-                action_string += f"{monster.name} inflicted {total_monster_dmg} damage points to {hero.name}!"
             
-            self.actions_capture.append(action_string)
+            if monster.current_hitpoints > 0:
+                action_string = ""
+                total_monster_dmg = hero.take_damage(monster_dmg)
+                if total_monster_dmg == 0:
+                    action_string += f"{hero.name} negated the incoming damage from {monster.name}!"
+                else:
+                    action_string += f"{monster.name} inflicted {total_monster_dmg} damage points to {hero.name}!"
+                self.actions_capture.append(action_string)
+            
             self.update_combat_outcome(hero, monster)
 
         self.__brawl.update_combat_log(self.actions_capture)
