@@ -191,9 +191,6 @@ class DungeonCrawler(BaseFrame):
         # update the map's visited rooms, so that we can use to print the traveled room
         map.set_visited_room(x_adv_loc, y_adv_loc)
 
-        print('map.visited_array() in the set_dungeon_display()')
-        print(map.visited_array())
-
         for try_door in ['north', 'south', 'east', 'west']:
             if adv_telemetry.get_room([x_adv_loc, y_adv_loc]).get_door(try_door):
                 if try_door == 'north':
@@ -327,7 +324,6 @@ class DungeonCrawler(BaseFrame):
         canvas_height = "400"
         map_canvas = Canvas(map_window, width=canvas_width, height=canvas_height)
 
-        print("map.visited_array() in set_map_display()")
         print(map.visited_array()) # we can use this to display or cover the rooms
 
         rows = map.get_rows()
@@ -338,16 +334,7 @@ class DungeonCrawler(BaseFrame):
         # create the boxes of the dungeon, original dungeon missing the very top and left boarder. might be a tkinter thing.
         for i in range(rows):
             for j in range(cols):
-                # print(dungeon.get_room([i,j]))
-                # print(type(dungeon.get_room([i, j])))
-
-                # if (dungeon.get_room([i, j]).monster):
-                    # print(dungeon.get_room([i, j]).monster.char_dict) #DEBUG
-
-                # (box_width)*j+2 to make sure the very left and top boarder is also printed
                 map_canvas.create_rectangle(box_width * j + 2, box_height * i + 2, box_width * (j + 1), box_height * (i + 1), width=3)
-                # map_canvas.create_rectangle((box_width) * j, (box_height) * i, box_width * (j + 1),
-                                            # box_height * (i + 1), width=3)
 
         # Traverse through the 2d array and draw component of the room
         for i in range(rows):
@@ -451,7 +438,6 @@ class DungeonCrawler(BaseFrame):
                     quit_game_btn.place(relx=0.5, rely=0.9, anchor = CENTER)
 
     def set_lose_message(self, hero, parent):
-        # if hero.current_hitpoints < 0:
         for widget in parent.winfo_children():
             widget.destroy()
         lose_message = Message(parent, text=f"Sorry, you lost, {hero.name}!", width=800)
