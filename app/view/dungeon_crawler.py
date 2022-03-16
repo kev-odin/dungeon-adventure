@@ -434,21 +434,20 @@ class DungeonCrawler(BaseFrame):
                     win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
                     win_message.pack(side=tk.TOP)
 
-                    description_frame = LabelFrame(self.root, text = "Game stats")
+                    description_frame = LabelFrame(self.root, text=f"{hero.name}'s end-game summary")
                     stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
                     stats_message.config(bg='yellow', font=('times', 20, 'italic'))
                     stats_message.pack()
-                    description_frame.pack()
+                    description_frame.pack(pady = 50)
 
-                    # Show three possible options, also need to implement for the lose_message function
                     canvas = self.root
 
                     new_game_btn = Button(canvas, text="New Game", command=lambda: self.controller.start_new(self.root))
                     load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
                     quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
-                    new_game_btn.place(relx=0.5, rely=0.82, anchor = CENTER)
-                    load_game_btn.place(relx=0.5, rely=0.86, anchor = CENTER)
+                    new_game_btn.place(relx=0.5, rely=0.74, anchor = CENTER)
+                    load_game_btn.place(relx=0.5, rely=0.82, anchor = CENTER)
                     quit_game_btn.place(relx=0.5, rely=0.9, anchor = CENTER)
 
     def set_lose_message(self, hero, parent):
@@ -459,21 +458,20 @@ class DungeonCrawler(BaseFrame):
         lose_message.config(bg='red', font=('times', 50, 'italic'))
         lose_message.pack(side=tk.TOP)
 
-        description_frame = LabelFrame(self.root, text="Game stats")
+        description_frame = LabelFrame(self.root, text=f"{hero.name}'s end-game summary")
         stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
         stats_message.config(bg='yellow', font=('times', 20, 'italic'))
         stats_message.pack()
-        description_frame.pack()
+        description_frame.pack(pady=50)
 
-        # Show three possible options, also need to implement for the lose_message function
-        canvas = parent
+        canvas = self.root
 
         new_game_btn = Button(canvas, text="New Game", command=lambda: self.controller.start_new(self.root))
         load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
         quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
-        new_game_btn.place(relx=0.5, rely=0.82, anchor=CENTER)
-        load_game_btn.place(relx=0.5, rely=0.86, anchor=CENTER)
+        new_game_btn.place(relx=0.5, rely=0.74, anchor=CENTER)
+        load_game_btn.place(relx=0.5, rely=0.82, anchor=CENTER)
         quit_game_btn.place(relx=0.5, rely=0.9, anchor=CENTER)
 
     def print_win_lose_summary(self):
