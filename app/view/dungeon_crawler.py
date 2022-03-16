@@ -13,19 +13,16 @@ class BaseFrame(tk.Frame):
 
         # add a dictionary for the end of game summary
         self.player_stats = {
-                "game difficulty setting"       : "",#
-                "health potions collected"      : 0,#
-                "health potions used"           : 0,#
-                "health recovered"              : 0,#
-                "potential health recovered"    : 0,#
-                "vision potions collected"      : 0,#
-                "vision potions used"           : 0,#
-                "heroic falls"                  : 0,#
-                "pit damage received"           : 0,#
-                "moves to exit"                 : 0,#
-                "map opened"                    : 0,#
-                "pillars collected"             : 0,#
-                "cheat counter"                 : 0 #
+                "game difficulty setting"       : "", #done
+                "hero max hit points"           : 0, #done
+                "hero current hit points"       : 0,# done
+                "health potions used"           : 0,#done
+                "health potions left"           : 0,#done
+                "vision potions used"           : 0,#done
+                "vision potions left"           : 0,  #done
+                "moves to exit"                 : -1,# done
+                "map opened"                    : 0,# done
+                "pillars collected"             : 0,# done
             }
 
     def destruct(self):
@@ -159,6 +156,19 @@ class DungeonCrawler(BaseFrame):
     def set_dungeon_display(self, map, adv_telemetry):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
         """
+        self.player_stats["moves to exit"] += 1 # step counter for the end game summary
+
+        # use the map size to update the diff level
+        if len(map.visited_array()) == 5:
+            self.player_stats["game difficulty setting"] = "Easy"
+        elif len(map.visited_array()) == 8:
+            self.player_stats["game difficulty setting"] = "Medium"
+        elif len(map.visited_array()) == 10:
+            self.player_stats["game difficulty setting"] = "Hard"
+        else:
+            self.player_stats["game difficulty setting"] = "Inhumane"
+
+
         canvas = self.root
         labelFrame_width = 300
         labelFrame_height = 300
@@ -234,8 +244,10 @@ class DungeonCrawler(BaseFrame):
         def update_counter(label, button, potion_type):
             if potion_type == "Health":
                 curr_count = self.controller.get_health_pots()
+                self.player_stats["health potions used"] += 1
             elif potion_type == "Vision":
                 curr_count = self.controller.get_vision_pots()
+                self.player_stats["vision potions used"] += 1
 
             if curr_count == 0:
                 button["state"] = DISABLED
@@ -408,27 +420,34 @@ class DungeonCrawler(BaseFrame):
         if hero.current_hitpoints > 0:
             if dungeon.adventurer_loc == dungeon.exit:
                 if hero.has_all_pillars():
+
+                    # update for the end game summary
+                    self.player_stats["pillars collected"] = True # update if all pillars collected for the end game summary
+                    self.player_stats["hero current hit points"] = hero.current_hitpoints
+                    self.player_stats["health potions left"] = hero.health_pots
+                    self.player_stats["vision potions left"] = hero.vision_pots
+                    self.player_stats["hero max hit points"] = hero.max_hitpoints
+
                     for widget in self.root.winfo_children():
                         widget.destroy()
                     win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", width=800)
                     win_message.config(bg='lightgreen', font=('times', 50, 'italic'))
                     win_message.pack(side=tk.TOP)
 
-                    description_frame = LabelFrame(self.root, text = "Game stats")
-                    stats_message = Message(description_frame, text=self.player_stats, width=800)
+                    description_frame = LabelFrame(self.root, text=f"{hero.name}'s end-game summary")
+                    stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
                     stats_message.config(bg='yellow', font=('times', 20, 'italic'))
                     stats_message.pack()
-                    description_frame.pack()
+                    description_frame.pack(pady = 50)
 
-                    # Show three possible options, also need to implement for the lose_message function
                     canvas = self.root
 
                     new_game_btn = Button(canvas, text="New Game", command=lambda: self.controller.start_new(self.root))
                     load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
                     quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
-                    new_game_btn.place(relx=0.5, rely=0.82, anchor = CENTER)
-                    load_game_btn.place(relx=0.5, rely=0.86, anchor = CENTER)
+                    new_game_btn.place(relx=0.5, rely=0.74, anchor = CENTER)
+                    load_game_btn.place(relx=0.5, rely=0.82, anchor = CENTER)
                     quit_game_btn.place(relx=0.5, rely=0.9, anchor = CENTER)
 
     def set_lose_message(self, hero, parent):
@@ -439,16 +458,31 @@ class DungeonCrawler(BaseFrame):
         lose_message.config(bg='red', font=('times', 50, 'italic'))
         lose_message.pack(side=tk.TOP)
 
-        # Show three possible options, also need to implement for the lose_message function
-        canvas = parent
+        description_frame = LabelFrame(self.root, text=f"{hero.name}'s end-game summary")
+        stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
+        stats_message.config(bg='yellow', font=('times', 20, 'italic'))
+        stats_message.pack()
+        description_frame.pack(pady=50)
+
+        canvas = self.root
 
         new_game_btn = Button(canvas, text="New Game", command=lambda: self.controller.start_new(self.root))
         load_game_btn = Button(canvas, text="Load Game", command=lambda: self.controller.load_game(parent))
         quit_game_btn = Button(canvas, text="Quit Game", command=lambda: self.destruct())
 
-        new_game_btn.place(relx=0.5, rely=0.82, anchor=CENTER)
-        load_game_btn.place(relx=0.5, rely=0.86, anchor=CENTER)
+        new_game_btn.place(relx=0.5, rely=0.74, anchor=CENTER)
+        load_game_btn.place(relx=0.5, rely=0.82, anchor=CENTER)
         quit_game_btn.place(relx=0.5, rely=0.9, anchor=CENTER)
+
+    def print_win_lose_summary(self):
+        win_lose_summary = ""
+        for key, value in self.player_stats.items():
+            if key != "pillars collected":
+                curr = str(key).capitalize() + ' : ' + str(value) + "\n"
+            else:
+                curr = str(key).capitalize() + ' : ' + str(value)
+            win_lose_summary += curr
+        return win_lose_summary
 
 class DungeonBrawler(BaseFrame):
     def __init__(self):

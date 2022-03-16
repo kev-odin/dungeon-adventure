@@ -14,12 +14,10 @@ Kevin Chung
 6) UML
 
 Xingguo Huang
-1) DungeonAdventureGUI
-   1) New Game (character and difficulty)
-   2) Start menu
-2) Map
-3) Some modifications for colors on DungeonCrawler
-4) Some modifications of window divide on DungeonBrawler
+1) DungeonAdventureGUI(adventurer information from user)
+2) Map display(3x3 grid) and map display(whole dungeon) for debugging
+3) Colors adjustment on DungeonCrawler dungeon display to make the game more user-friendly
+4) Win/lose window set up and game summary display 
 
 Stephanie Liu
 1) Model & DB code (including refactoring Kevin's adventurer code from last quarter to match the needs of this quarter)
