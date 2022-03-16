@@ -7,11 +7,12 @@ Dungeon Adventure 2.0: The Spoony Bard Returns (bards not yet included) is an ex
 # TODO Please check this to see if I missed any of your contributions!
 Kevin Chung
 1) game_controller.py code
-2) BaseView
-3) DungeonCrawler
-4) DungeonBrawler
-5) SRS
-6) UML
+2) BaseFrame
+3) DungeonCrawler(Dungeon traversal, inventory management, and item usage)
+4) DungeonBrawler(Combat completed in turns, combat history log, and potion usage)
+5) Turning in weekly deliverables
+6) SRS
+7) UML
 
 Xingguo Huang
 1) DungeonAdventureGUI(adventurer information from user)
@@ -36,6 +37,7 @@ Stephanie Liu
 5) Really well documented, human-readable code.
 6) Great test coverage and OOP implentation with mocks for abstract classes (app\unit_tests\character_tests\abstract_classes\tests)
 7) Fleeing implemented in demo version!
+8) Turn order for each round completed in a single attack action in DungeonBrawler
 
 ### To run project:
 0) Verify Python 3.something is installed:

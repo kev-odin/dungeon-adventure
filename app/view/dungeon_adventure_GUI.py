@@ -13,6 +13,7 @@ class dungeon_adventure_GUI:
             for widget in root.winfo_children():  # Clears screen
                 widget.destroy()
             self.root = root
+        self.root.title("Dungeon Adventure 2.0")
         self.root.resizable(width=False, height=False) # fixed size
         self.welcome_screen_frame = Frame(self.root)  # create a frame within that root window
         self.welcome_screen_canvas = Canvas(self.welcome_screen_frame,width=800, height=600, bg="white") # canvas within that frame
