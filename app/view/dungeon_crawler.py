@@ -14,14 +14,15 @@ class BaseFrame(tk.Frame):
         # add a dictionary for the end of game summary
         self.player_stats = {
                 "game difficulty setting"       : "", #done
-                # "health potions collected"      : 0,#
-                "health potions used"           : 0,#
-                # "vision potions collected"      : 0,#
-                "vision potions used"           : 0,#
+                "hero max hit points"           : 0, #done
+                "hero current hit points"       : 0,# done
+                "health potions used"           : 0,#done
+                "health potions left"           : 0,#done
+                "vision potions used"           : 0,#done
+                "vision potions left"           : 0,  #done
                 "moves to exit"                 : -1,# done
                 "map opened"                    : 0,# done
                 "pillars collected"             : 0,# done
-                # "cheat counter"                 : 0 #
             }
 
     def destruct(self):
@@ -419,7 +420,14 @@ class DungeonCrawler(BaseFrame):
         if hero.current_hitpoints > 0:
             if dungeon.adventurer_loc == dungeon.exit:
                 if hero.has_all_pillars():
+
+                    # update for the end game summary
                     self.player_stats["pillars collected"] = True # update if all pillars collected for the end game summary
+                    self.player_stats["hero current hit points"] = hero.current_hitpoints
+                    self.player_stats["health potions left"] = hero.health_pots
+                    self.player_stats["vision potions left"] = hero.vision_pots
+                    self.player_stats["hero max hit points"] = hero.max_hitpoints
+
                     for widget in self.root.winfo_children():
                         widget.destroy()
                     win_message = Message(self.root, text=f"Congrats, you win, {hero.name}!", width=800)
@@ -450,6 +458,12 @@ class DungeonCrawler(BaseFrame):
         lose_message = Message(parent, text=f"Sorry, you lost, {hero.name}!", width=800)
         lose_message.config(bg='red', font=('times', 50, 'italic'))
         lose_message.pack(side=tk.TOP)
+
+        description_frame = LabelFrame(self.root, text="Game stats")
+        stats_message = Message(description_frame, text=self.player_stats, width=700)
+        stats_message.config(bg='yellow', font=('times', 20, 'italic'))
+        stats_message.pack()
+        description_frame.pack()
 
         # Show three possible options, also need to implement for the lose_message function
         canvas = parent
