@@ -69,14 +69,15 @@ class GameController:
         game = db.load_game(game)
         self.set_model(game)
 
-    def save_game(self, game):
+    def save_game(self):
         """
         Saves the game to the database.
         :return: True if saved, False if an error occurred.
         """
-        dungeon, adventurer, map = game["dungeon"], game["hero"], game["map"]
+        dungeon, adventurer, map = self.__model["dungeon"], self.__model["hero"], self.__model["map"]
         dungeon, adventurer, map = dungeon.json_dict, adventurer.char_dict, map.map_dict
         return SaveManager.save(dungeon, adventurer, map)
+        print(f"Game saved.")
 
     def frame_setup(self):
         """Builds tKinter frames for the user based on the current view.
