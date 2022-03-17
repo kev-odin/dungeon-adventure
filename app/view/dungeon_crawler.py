@@ -530,7 +530,7 @@ class DungeonBrawler(BaseFrame):
         """
         self.text_log.delete(0, END)
         self.text_log.grid_forget()
-        text_box_width = len(max(event, key=len))
+        text_box_width = 85  # Hard coded instead to keep from exceeding width of screen and knocking monster data off
 
         for idx, event in enumerate(event[::-1], start = 1):
             self.text_log.insert(idx, event)
