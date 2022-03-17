@@ -171,10 +171,14 @@ class GameController:
     def end_combat(self):
         """After Combat Ends, the player should be back into the DungeonCrawler view
         """
+        self.actions_capture.clear()
         self.__brawl.destruct()
+        
         room = self.get_room(self.get_hero_location())
         room.clear_room()
-        self.update_adv_info()
+        
+        if self.still_playing():
+            self.__view.update_adventurer_health()
 
     def set_action(self, action: str, hero, monster):
         """Function to apply changes to the model and capture actions that occur during combat.

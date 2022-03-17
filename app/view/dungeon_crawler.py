@@ -194,6 +194,10 @@ class DungeonCrawler(BaseFrame):
         self.health = Label(self.dungeon_crawl_canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
         self.health.grid(row = 1, column = 0)
 
+    def update_adventurer_health(self):
+        """Update hero health after combat."""
+        self.health["text"] = f"Health Points: {self.controller.get_hero_curr_hp()} / {self.controller.get_hero_max_hp()}"
+
     def set_dungeon_display(self, map, adv_telemetry):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
         """
