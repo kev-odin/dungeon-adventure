@@ -369,8 +369,6 @@ class DungeonCrawler(BaseFrame):
         canvas_height = "400"
         map_canvas = Canvas(map_window, width=canvas_width, height=canvas_height)
 
-        print(map.visited_array()) # we can use this to display or cover the rooms
-
         rows = map.get_rows()
         box_width = int(canvas_width)/rows
         cols = map.get_cols()
@@ -438,7 +436,7 @@ class DungeonCrawler(BaseFrame):
                                box_width * (y_adventurer_loc+3/4),box_height * (x_adventurer_loc+ 3/4), fill="purple")
 
 
-        print(dungeon.get_visible_dungeon_string())  # debug
+        # print(dungeon.get_visible_dungeon_string())
 
         map_canvas.pack()
         close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
