@@ -46,12 +46,75 @@ class BaseFrame(tk.Frame):
         menubar.add_cascade(label = "File", menu = filemenu)
 
         help = Menu(menubar, tearoff = 0)
-        help.add_command(label = "About Us")
-        help.add_command(label = "Controls")
+        help.add_command(label = "About Us", command = lambda: self.about_us_window())
+        help.add_command(label = "Controls", command = lambda: self.control_description_window())
 
         menubar.add_cascade(label = "Help", menu = help)
 
         self.root.config(menu = menubar)
+
+    def about_us_window(self):
+        global pop1
+        pop1 = Toplevel(self.root)
+        pop1.geometry("750x450")
+        pop1.resizable(width=False, height=False)
+        pop1.title("About us")
+
+        frame1 = Frame(pop1)
+        message1 = Message(frame1, text = "Dungeon Adventure – The Spoony Bard, is the final project "
+                                          "for the course TCSS504 of University of Washington Tacoma. \n"
+                                          "It is a game where a player can win and lose, select multiple hero classes, "
+                                          "save and load a game, select difficulty, and play through using a GUI.",
+                           font=('Helvetica', 30, 'bold'))
+        message1.pack()
+        frame1.pack(pady = 50)
+
+    def control_description_window(self):
+        global pop2
+        pop2 = Toplevel(self.root)
+        pop2.geometry("750x450")
+        # pop2.resizable(width=False, height=False)
+        pop2.title("Control")
+
+        frame2 = Frame(pop2, width = 750, height = 450)
+        message2 = Message(frame2, text="New Game -- Start a new game\n"
+                                        "\tSelect difficulty level -- choose from easy/medium/hard/inhumane\n"
+                                        "\tConfirm new -- Confirm the difficulty level\n"
+                                        "\tChoose your hero's name -- Choose a hero name\n"
+                                        "\tStart Game -- Start the game with chosen level and hero name\n\n"
+                                        "Load Game -- Load an existing game\n"
+                                        "Quit Game -- Quit the current game\n\n"
+                                        "In Dungeon Crawler Window\n"
+                                        "\tBag -- Open the hero inventory bag\n"
+                                        "\t\tUse Health Potion -- use the health potion of hero's inventory\n"
+                                        "\t\tUse Vision Potion -- use the vision potion of hero's inventory\n"
+                                        "\tMap -- Open the map of the current visible room\n"
+                                        "\tnorth -- move to the north of the dungeon\n"
+                                        "\tsouth -- move to the south of the dungeon\n"
+                                        "\teast -- move to the east of the dungeon\n"
+                                        "\twest -- move to the west of the dungeon\n\n"
+                                        "In Dungeon Brawler Window\n"
+                                        "\tAttack -- normal hero attack\n"
+                                        "\tHeal -- Priestess special ability\n"
+                                        "\tCrushing Blow -- Warrior special ability\n"
+                                        "\tSneak Attack -- Thief special ability\n"
+                                        "\tUse Health Potion -- use the health potion of hero's inventory\n"
+                                        "\tReturn to Dungeon -- Finish the combat and return to dungeon crawler\n", width = 750)
+        message2.pack()
+        frame2.pack(pady=10)
+
+        # global img
+        # base_dir = os.path.dirname(os.path.abspath(__file__))
+        # path = os.path.join(base_dir, "image assets/welcome_bg.gif")  # debug
+        # img = PhotoImage(file=path)
+        # w = img.width()
+        # h = img.height()
+        # frame2 = Frame(pop2, width=w+5, height=h+5)
+        # canvas2 = Canvas(frame2,width=w+5, height=w+5)
+        # canvas2.create_image(0, 0, image=img, anchor=NW)
+        # canvas2.pack()
+        # frame2.pack(pady=50)
+
 
 class DungeonCrawler(BaseFrame):
     def __init__(self):
