@@ -215,7 +215,7 @@ class GameController:
                             action_string = f"{monster.name} inflicted {total_monster_dmg} to {hero.name}"
                         
                     self.actions_capture.append(action_string)
-                    self.update_combat_outcome(hero, monster)
+                    # self.update_combat_outcome(hero, monster)
 
         if action == "special":
             action_string = f"{hero.name}"
@@ -253,9 +253,10 @@ class GameController:
                     action_string += f"{monster.name} inflicted {total_monster_dmg} damage points to {hero.name}!"
                 self.actions_capture.append(action_string)
             
-            self.update_combat_outcome(hero, monster)
-
-        self.__brawl.update_combat_log(self.actions_capture)
+            # self.update_combat_outcome(hero, monster)
+        if self.still_playing():
+            self.__brawl.update_combat_log(self.actions_capture)
+        self.update_combat_outcome(hero, monster)
 
     def update_combat_outcome(self, hero, monster):
         """Determine game state after combat.
@@ -269,7 +270,7 @@ class GameController:
 
         if hero.current_hitpoints <= 0:
             self.actions_capture.append(f"{monster.name} defeated {hero.name}.")
-            self.__brawl.update_combat_log(self.actions_capture)
+            # self.__brawl.update_combat_log(self.actions_capture)
             self.__view.set_lose_message(hero, self.__view.root)
             self.end_combat()
 
