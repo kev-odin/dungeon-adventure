@@ -5,17 +5,6 @@ from app.view.dungeon_crawler import DungeonCrawler, DungeonBrawler
 from app.view.dungeon_adventure_GUI import dungeon_adventure_GUI
 from app.view.load_view import LoadView
 
-# TODO: https://www.youtube.com/watch?v=ihtIcGkTFBU
-# TODO: Update adventurer bag when entering a room  - Done
-# TODO: Update view with room contents              - Done
-# TODO: Save Game                                   - Bug
-# TODO: Room Dungeon Canvas                         - Done
-# TODO: Dungeon Map Canvas                          - Done
-# TODO: DungeonBrawler                              - Done
-# TODO: Start New                                   - Done
-# TODO: Load Game                                   - Done
-# TODO: Quit Game                                   - Done
-
 class GameController:
     def __init__(self, model, view):
         """Controller for Dungeon Adventure. Main purpose to pass data from view to set changes
@@ -77,7 +66,6 @@ class GameController:
         dungeon, adventurer, map = self.__model["dungeon"], self.__model["hero"], self.__model["map"]
         dungeon, adventurer, map = dungeon.json_dict, adventurer.char_dict, map.map_dict
         return SaveManager.save(dungeon, adventurer, map)
-        print(f"Game saved.")
 
     def frame_setup(self):
         """Builds tKinter frames for the user based on the current view.
@@ -266,6 +254,10 @@ class GameController:
         self.__brawl.update_combat_log(self.actions_capture)
 
     def update_combat_outcome(self, hero, monster):
+        """Determine game state after combat.
+        Win - Continue DungeonCrawler
+        Lose - Presented loss screen
+        """
         if monster.current_hitpoints <= 0:
             self.actions_capture.append(f"{hero.name} defeated the {monster.name}")
             self.__brawl.update_combat_log(self.actions_capture)
@@ -303,11 +295,10 @@ class GameController:
         if potion == "health" and self.__model["hero"].has_health_potion():
             heal = PotionFactory().create_potion("health")
             self.__model["hero"].heal_adventurer(heal)
-            hero = self.__model["hero"]
-            self.__view.set_adventurer_info(hero.name, hero.current_hitpoints, hero.max_hitpoints)
+            self.update_adv_info()
 
             if len(self.actions_capture) > 0:
-                potion_str = f"{hero.name} used {heal.name} and increased {heal.heal_amount} HP"
+                potion_str = f"{self.get_hero_name()} used {heal.name} and increased {heal.heal_amount} HP"
                 self.actions_capture.append(potion_str)
                 self.__brawl.update_combat_log(self.actions_capture)
     
@@ -330,10 +321,7 @@ class GameController:
     def update_adv_info(self):
         """Update the DungeonCrawler frame with hero information from the model.
         """
-        hero_name = self.get_hero_name()
-        hero_hp = self.get_hero_curr_hp()
-        hero_max_hp = self.get_hero_max_hp()
-        self.__view.set_adventurer_info(hero_name, hero_hp, hero_max_hp)
+        self.__view.set_adventurer_info(self.get_hero_name(), self.get_hero_curr_hp(), self.get_hero_max_hp())
 
     def update_dungeon_display(self):
         """Update the DungeonCrawler frame with map information from the model.

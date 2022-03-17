@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter as tk
 import os
-# TODO: About, Directions, Some clean-up with view components.
 class BaseFrame(tk.Frame):
     def __init__(self):
         self.root = Tk()
@@ -73,7 +72,6 @@ class BaseFrame(tk.Frame):
         global pop2
         pop2 = Toplevel(self.root)
         pop2.geometry("750x450")
-        # pop2.resizable(width=False, height=False)
         pop2.title("Control")
 
         frame2 = Frame(pop2, width = 750, height = 450)
@@ -103,18 +101,6 @@ class BaseFrame(tk.Frame):
         message2.pack()
         frame2.pack(pady=10)
 
-        # global img
-        # base_dir = os.path.dirname(os.path.abspath(__file__))
-        # path = os.path.join(base_dir, "image assets/welcome_bg.gif")  # debug
-        # img = PhotoImage(file=path)
-        # w = img.width()
-        # h = img.height()
-        # frame2 = Frame(pop2, width=w+5, height=h+5)
-        # canvas2 = Canvas(frame2,width=w+5, height=w+5)
-        # canvas2.create_image(0, 0, image=img, anchor=NW)
-        # canvas2.pack()
-        # frame2.pack(pady=50)
-
 
 class DungeonCrawler(BaseFrame):
     def __init__(self):
@@ -138,9 +124,8 @@ class DungeonCrawler(BaseFrame):
     def adventurer_action(self):
         """Display base actions such as map and bag inventory
         """
-        canvas = self.dungeon_crawl_canvas
-        bag = Button(canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
-        map = Button(canvas, text= "Map", command= lambda: self.controller.update_adv_map())
+        bag = Button(self.dungeon_crawl_canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
+        map = Button(self.dungeon_crawl_canvas, text= "Map", command= lambda: self.controller.update_adv_map())
         
         bag.grid(row=2, column=0, sticky="nswe")
         map.grid(row=3, column=0, sticky="nswe")
@@ -203,12 +188,11 @@ class DungeonCrawler(BaseFrame):
             curr_hp (int): current hitpoints
             max_hp (int): max hitpoints
         """
-        canvas = self.dungeon_crawl_canvas
-        name = Label(canvas, text = f"Name: {adv_name}", bg = 'White')
-        name.grid(row = 0, column = 0)
+        self.name = Label(self.dungeon_crawl_canvas, text = f"Name: {adv_name}", bg = 'White')
+        self.name.grid(row = 0, column = 0)
 
-        health = Label(canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
-        health.grid(row = 1, column = 0)
+        self.health = Label(self.dungeon_crawl_canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
+        self.health.grid(row = 1, column = 0)
 
     def set_dungeon_display(self, map, adv_telemetry):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
@@ -741,6 +725,9 @@ class DungeonBrawler(BaseFrame):
         end_combat.grid(row=0, column=3)
 
     def set_crawler_update(self):
+        """When the hero has won in combat this function removes combat actions and replaces with a button
+        to return to DungeonCrawler.
+        """
         self.combat_action.grid_forget()
         self.crawler = Frame(self.dungeon_brawl_frame)
         back_to_crawler = Button(
