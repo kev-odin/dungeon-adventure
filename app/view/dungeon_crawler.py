@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter as tk
 import os
-# TODO: About, Directions, Some clean-up with view components.
 class BaseFrame(tk.Frame):
     def __init__(self):
         self.root = Tk()
@@ -46,12 +45,62 @@ class BaseFrame(tk.Frame):
         menubar.add_cascade(label = "File", menu = filemenu)
 
         help = Menu(menubar, tearoff = 0)
-        help.add_command(label = "About Us")
-        help.add_command(label = "Controls")
+        help.add_command(label = "About Us", command = lambda: self.about_us_window())
+        help.add_command(label = "Controls", command = lambda: self.control_description_window())
 
         menubar.add_cascade(label = "Help", menu = help)
 
         self.root.config(menu = menubar)
+
+    def about_us_window(self):
+        global pop1
+        pop1 = Toplevel(self.root)
+        pop1.geometry("750x450")
+        pop1.resizable(width=False, height=False)
+        pop1.title("About us")
+
+        frame1 = Frame(pop1)
+        message1 = Message(frame1, text = "Dungeon Adventure – The Spoony Bard, is the final project "
+                                          "for the course TCSS504 of University of Washington Tacoma. \n"
+                                          "It is a game where a player can win and lose, select multiple hero classes, "
+                                          "save and load a game, select difficulty, and play through using a GUI.",
+                           font=('Helvetica', 30, 'bold'))
+        message1.pack()
+        frame1.pack(pady = 50)
+
+    def control_description_window(self):
+        global pop2
+        pop2 = Toplevel(self.root)
+        pop2.geometry("750x450")
+        pop2.title("Control")
+
+        frame2 = Frame(pop2, width = 750, height = 450)
+        message2 = Message(frame2, text="New Game -- Start a new game\n"
+                                        "\tSelect difficulty level -- choose from easy/medium/hard/inhumane\n"
+                                        "\tConfirm new -- Confirm the difficulty level\n"
+                                        "\tChoose your hero's name -- Choose a hero name\n"
+                                        "\tStart Game -- Start the game with chosen level and hero name\n\n"
+                                        "Load Game -- Load an existing game\n"
+                                        "Quit Game -- Quit the current game\n\n"
+                                        "In Dungeon Crawler Window\n"
+                                        "\tBag -- Open the hero inventory bag\n"
+                                        "\t\tUse Health Potion -- use the health potion of hero's inventory\n"
+                                        "\t\tUse Vision Potion -- use the vision potion of hero's inventory\n"
+                                        "\tMap -- Open the map of the current visible room\n"
+                                        "\tnorth -- move to the north of the dungeon\n"
+                                        "\tsouth -- move to the south of the dungeon\n"
+                                        "\teast -- move to the east of the dungeon\n"
+                                        "\twest -- move to the west of the dungeon\n\n"
+                                        "In Dungeon Brawler Window\n"
+                                        "\tAttack -- normal hero attack\n"
+                                        "\tHeal -- Priestess special ability\n"
+                                        "\tCrushing Blow -- Warrior special ability\n"
+                                        "\tSneak Attack -- Thief special ability\n"
+                                        "\tUse Health Potion -- use the health potion of hero's inventory\n"
+                                        "\tReturn to Dungeon -- Finish the combat and return to dungeon crawler\n", width = 750)
+        message2.pack()
+        frame2.pack(pady=10)
+
 
 class DungeonCrawler(BaseFrame):
     def __init__(self):
@@ -75,9 +124,8 @@ class DungeonCrawler(BaseFrame):
     def adventurer_action(self):
         """Display base actions such as map and bag inventory
         """
-        canvas = self.dungeon_crawl_canvas
-        bag = Button(canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
-        map = Button(canvas, text= "Map", command= lambda: self.controller.update_adv_map())
+        bag = Button(self.dungeon_crawl_canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
+        map = Button(self.dungeon_crawl_canvas, text= "Map", command= lambda: self.controller.update_adv_map())
         
         bag.grid(row=2, column=0, sticky="nswe")
         map.grid(row=3, column=0, sticky="nswe")
@@ -140,12 +188,11 @@ class DungeonCrawler(BaseFrame):
             curr_hp (int): current hitpoints
             max_hp (int): max hitpoints
         """
-        canvas = self.dungeon_crawl_canvas
-        name = Label(canvas, text = f"Name: {adv_name}", bg = 'White')
-        name.grid(row = 0, column = 0)
+        self.name = Label(self.dungeon_crawl_canvas, text = f"Name: {adv_name}", bg = 'White')
+        self.name.grid(row = 0, column = 0)
 
-        health = Label(canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
-        health.grid(row = 1, column = 0)
+        self.health = Label(self.dungeon_crawl_canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
+        self.health.grid(row = 1, column = 0)
 
     def set_dungeon_display(self, map, adv_telemetry):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
@@ -419,7 +466,7 @@ class DungeonCrawler(BaseFrame):
                     stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
                     stats_message.config(bg='yellow', font=('times', 20, 'italic'))
                     stats_message.pack()
-                    description_frame.pack(pady = 50)
+                    description_frame.pack(pady = 40)
 
                     canvas = self.root
 
@@ -442,7 +489,7 @@ class DungeonCrawler(BaseFrame):
         stats_message = Message(description_frame, text=self.print_win_lose_summary(), width=700)
         stats_message.config(bg='yellow', font=('times', 20, 'italic'))
         stats_message.pack()
-        description_frame.pack(pady=50)
+        description_frame.pack(pady=40)
 
         canvas = self.root
 
@@ -678,6 +725,9 @@ class DungeonBrawler(BaseFrame):
         end_combat.grid(row=0, column=3)
 
     def set_crawler_update(self):
+        """When the hero has won in combat this function removes combat actions and replaces with a button
+        to return to DungeonCrawler.
+        """
         self.combat_action.grid_forget()
         self.crawler = Frame(self.dungeon_brawl_frame)
         back_to_crawler = Button(
