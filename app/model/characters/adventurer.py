@@ -17,14 +17,6 @@ class Adventurer(DungeonCharacter, ABC):
 
         :param adv_dict: dict of adventurer data
         """
-        adv_dict["health_pots"] = 0
-        adv_dict["vision_pots"] = 0
-        adv_dict["pillars_collected"] = {
-            "A": False,
-            "P": False,
-            "I": False,
-            "E": False
-        }
         super().__init__(adv_dict)
 
     def _readable_pillars(self):
@@ -206,7 +198,7 @@ class Adventurer(DungeonCharacter, ABC):
         :param always_hits: if True, cannot block.  If false, can block.
         :return: int, 0 if they blocked the damage, damage if taken.
         """
-        if not always_hits and self.block_chance <= random.random():
+        if not always_hits and self.block_chance >= random.random():
             return 0
 
         elif self.pillars_collected["I"]:

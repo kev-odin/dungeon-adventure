@@ -12,30 +12,6 @@ class QueryHelper:
         self._con = None
         self._cur = None
 
-    def query(self, target: str):
-        """
-        Queries the dng_diff table, returning a dictionary.
-        :param target: must be a string in the 'difficulty' column of dng_diff table, name in classes table,
-            or name in monsters table.  'easy', 'medium', 'hard', 'inhumane'.  'Ogre', 'Gremlin', 'Skeleton', or
-            'Thief', 'Priestess', 'Warrior'.
-        :return: dict of values for defaults queried, with keys as table names and values as value.
-        """
-        sql_select_query = ("""SELECT difficulty FROM dng_diff""", """SELECT name FROM monsters""",
-                            """SELECT adv_class FROM classes""")
-        diff_options = self._select_query(sql_select_query[0])
-        monster_options = self._select_query(sql_select_query[1])
-        class_options = self._select_query(sql_select_query[2])
-        if target in str(diff_options[0]):
-            sql_select_query = """SELECT * FROM dng_diff where difficulty = ?"""
-        elif target in str(monster_options[0]):
-            sql_select_query = """SELECT * FROM monsters where name = ?"""
-        elif target in str(class_options[0]):
-            sql_select_query = """SELECT * FROM classes where adv_class = ?"""
-        else:
-            raise KeyError(f"{target} is not a valid query.")
-        values, keys = self._select_query(sql_select_query, target)
-        return self._build_dictionary(keys, values[0])
-
     def _select_query(self, sql_select_query, value=None):
         """
         If there's a value, queries for a specific value within the
@@ -92,6 +68,30 @@ class QueryHelper:
     def console(self):
         return self._con
 
+    def query(self, target: str):
+        """
+        Queries the dng_diff table, returning a dictionary.
+        :param target: must be a string in the 'difficulty' column of dng_diff table, name in classes table,
+            or name in monsters table.  'easy', 'medium', 'hard', 'inhumane'.  'Ogre', 'Gremlin', 'Skeleton', or
+            'Thief', 'Priestess', 'Warrior'.
+        :return: dict of values for defaults queried, with keys as table names and values as value.
+        """
+        sql_select_query = ("""SELECT difficulty FROM dng_diff""", """SELECT name FROM monsters""",
+                            """SELECT adv_class FROM classes""")
+        diff_options = self._select_query(sql_select_query[0])
+        monster_options = self._select_query(sql_select_query[1])
+        class_options = self._select_query(sql_select_query[2])
+        if target in str(diff_options[0]):
+            sql_select_query = """SELECT * FROM dng_diff where difficulty = ?"""
+        elif target in str(monster_options[0]):
+            sql_select_query = """SELECT * FROM monsters where name = ?"""
+        elif target in str(class_options[0]):
+            sql_select_query = """SELECT * FROM classes where adv_class = ?"""
+        else:
+            raise KeyError(f"{target} is not a valid query.")
+        values, keys = self._select_query(sql_select_query, target)
+        return self._build_dictionary(keys, values[0])
+
     def save_game(self, save_data: dict):
         """
         Saves game in saves table with save_data.  Varifies keys required in dict.
@@ -109,3 +109,20 @@ class QueryHelper:
                                        save_data["dungeon"], save_data["adventurer"], save_data["map"]))
         self._con.commit()
         self._disconnect()
+
+    def query_saves(self, time=None):
+        if time is None:
+            sql_select_query = """SELECT timestamp, hero_name, class, difficulty, current_hp, max_hp FROM saves"""
+            records, keys = self._select_query(sql_select_query)
+            keys = ("timestamp", "hero_name", "class", "difficulty", "current_hp", "max_hp")
+            collection = []
+            for record in records:
+                collection.append(self._build_dictionary(keys, record))
+            return collection
+        else:
+            sql_select_query="""SELECT dungeon, adventurer, map FROM saves WHERE timestamp = ?"""
+            records, keys = self._select_query(sql_select_query, time)
+            keys = ("dungeon", "adventurer", "map")
+            dict = self._build_dictionary(keys, records[0])
+            return dict
+

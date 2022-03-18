@@ -41,18 +41,24 @@ class SaveManager:
         """
         Returns a sorted list (by timestamp) of dictionaries of all saved games with "timestamp", "hero_name",
         "class", "difficulty", "current_hp", "max_hp".
-        :return: list of dicts
+        May be just an unnecessary level of complexity since it does literally all the query helper does.
+        :return: list of dicts in chronological order.  Oldest saves at the end.
         """
-        pass
+        qh = QueryHelper()
+        saves = qh.query_saves()
+        return saves
 
     @staticmethod
-    def load(timestamp):
+    def load(timestamp: str):
         """
         Selects and loads a game based on its timestamp.  Returns the dungeon, adventurerer, and map objects.
         :param timestamp: str matching datetime in saves db.
-        :return: tuple (dungeon, adventurerer, map)
+        :return: tuple (dungeon, adventurerer, map) of dictionaries
         """
-        pass
+        qh = QueryHelper()
+        game = qh.query_saves(timestamp)
+        game["dungeon"], game["adventurer"], game["map"] = json.loads(game["dungeon"]), json.loads(game["adventurer"]), json.loads(game["map"])
+        return game
 
 
 

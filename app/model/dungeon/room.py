@@ -18,7 +18,7 @@ from app.model.characters.monster import Monster
 
 
 class Room:
-    def __init__(self, health_potion=0, vision_potion=0, monster=None, contents=" "):
+    def __init__(self, health_potion=0, vision_potion=0, monster=None, contents=" ", room_dict=None):
         """
         Creates a room with passed in parameters.  Defaults provided, so only values need to be provided if not the
         default.  Ex. new_room = Room(vision_potion=1, monster = Monster, north_door=True) should be valid.
@@ -26,12 +26,19 @@ class Room:
         :param vision_potion: integer value 0 or higher representing potions to be found in room
         :param monster: Monster object or None, combat begins upon entry
         """
-        if self.__is_valid_creation_data(health_potion, vision_potion, monster, contents):
-            self.__room_dict = {"health": health_potion, "vision": vision_potion, "monster": monster,
-                               "north": False, "east": False, "south": False, "west": False,
-                                "contents": contents}
+        if room_dict is None:
+            if self.__is_valid_creation_data(health_potion, vision_potion, monster, contents):
+                self.__room_dict = {"health": health_potion, "vision": vision_potion, "monster": monster,
+                                   "north": False, "east": False, "south": False, "west": False,
+                                    "contents": contents}
+            else:
+                raise Exception("Value or TypeErrors should have been raised and they weren't.  Sound the alarm!")
         else:
-            raise Exception("Value or TypeErrors should have been raised and they weren't.  Sound the alarm!")
+            keys = ("health", "vision", "monster", "north", "east", "south", "west", "contents")
+            for key in keys:
+                if key not in room_dict:
+                    raise KeyError(f"Room dictionary is missing vital value {key}")
+            self.__room_dict = room_dict
 
     def __str__(self):
         """
@@ -43,6 +50,21 @@ class Room:
         string += self.string_middle() + "\n"  # Gets the middle of the string and adds a new line for individual room.
         string += self.string_bottom() + "\n"
         return string
+
+    def __repr__(self):
+        """
+        Representation of a room for debugging purposes.
+        :return: str representing room.
+        """
+
+        rep = f"Health Potion: {self.room_dict['health']}, Vision Potion: {self.room_dict['vision']}, "
+        rep += f"Monster: {self.monster.name}, " if self.monster is not None else f"Monster: None, "
+        rep += f"Contents: {self.contents}, Doors: "
+        keys = ["north", "east", "south", "west"]
+        for key in keys:
+            if self.room_dict[key] == True:
+                rep += key
+        return rep
 
     def __eq__(self, other):
         """

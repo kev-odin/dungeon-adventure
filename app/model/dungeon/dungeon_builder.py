@@ -76,12 +76,23 @@ class DungeonBuilder:
         Based on class of adventurerer, sets self.__complete_adventurerer to match the completed class object.
         """
         adv_class = self.__adventurer_dict["adv_class"]
+        adv_dict = self.__adventurer_dict
+        if "health_pots" not in adv_dict:  # Checks for new creation of adventurerer or load of adventurer
+            adv_dict["health_pots"] = 0
+            adv_dict["vision_pots"] = 0
+            adv_dict["pillars_collected"] = {
+                "A": False,
+                "P": False,
+                "I": False,
+                "E": False
+            }
         if adv_class == "Warrior":
-            self.__complete_adventurer = Warrior(self.__adventurer_dict)
+            self.__complete_adventurer = Warrior(adv_dict)
         elif adv_class == "Priestess":
-            self.__adventurer_dict["max_heal"] = self.__adventurer_dict["max_hp"]
-            self.__adventurer_dict["min_heal"] = self.__adventurer_dict["max_hp"] // 4
-            self.__complete_adventurer = Priestess(self.__adventurer_dict)
+            if "max_heal" not in adv_dict:  # Checks for new creation of priestess vs. load
+                adv_dict["max_heal"] = adv_dict["max_hp"]
+                adv_dict["min_heal"] = adv_dict["max_hp"] // 4
+            self.__complete_adventurer = Priestess(adv_dict)
         elif adv_class == "Thief":
             self.__complete_adventurer = Thief(self.__adventurer_dict)
 
@@ -293,3 +304,30 @@ class DungeonBuilder:
             return self.__complete_map
         else:
             raise RuntimeError("Must build a dungeon before accessing the map for a dungeon.")
+
+    def load_game(self, game: dict):
+        """
+
+        :param game: dict containing "dungeon", "adventurer", and "map".  Dict must be created in format that matches
+            the classes' specific requirements such as from the SaveManager.
+        :return: dict with dungeon, adventurer, and map objects
+        """
+        self.__adventurer_dict = game["adventurer"]
+        self.__set_adventurer()
+        game["adventurer"] = self.__complete_adventurer
+        self.__complete_map = Map(game["map"])
+        game["map"] = self.__complete_map
+
+        for row in range(game["dungeon"]["rows"]):
+            for col in range(game["dungeon"]["cols"]):
+                room = game["dungeon"]["dungeon"][row][col]
+                if room["monster"] is not None:
+                    monster = Monster(room["monster"])
+                    room["monster"] = monster
+                game["dungeon"]["dungeon"][row][col] = Room(room_dict=room)
+        game["dungeon"]["entrance"] = tuple(game["dungeon"]["entrance"])
+        game["dungeon"]["exit"] = tuple(game["dungeon"]["exit"])
+        game["dungeon"]["adventurer_location"] = tuple(game["dungeon"]["adventurer_location"])
+        self.__complete_dungeon = Dungeon(game["dungeon"])
+        game["dungeon"] = self.__complete_dungeon
+        return game
