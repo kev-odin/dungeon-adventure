@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter as tk
 import os
-# TODO: About, Directions, Some clean-up with view components.
 class BaseFrame(tk.Frame):
     def __init__(self):
         self.root = Tk()
@@ -73,7 +72,6 @@ class BaseFrame(tk.Frame):
         global pop2
         pop2 = Toplevel(self.root)
         pop2.geometry("750x450")
-        # pop2.resizable(width=False, height=False)
         pop2.title("Control")
 
         frame2 = Frame(pop2, width = 750, height = 450)
@@ -103,6 +101,7 @@ class BaseFrame(tk.Frame):
         message2.pack()
         frame2.pack(pady=10)
 
+
 class DungeonCrawler(BaseFrame):
     def __init__(self):
         super(DungeonCrawler, self).__init__()
@@ -125,9 +124,8 @@ class DungeonCrawler(BaseFrame):
     def adventurer_action(self):
         """Display base actions such as map and bag inventory
         """
-        canvas = self.dungeon_crawl_canvas
-        bag = Button(canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
-        map = Button(canvas, text= "Map", command= lambda: self.controller.update_adv_map())
+        bag = Button(self.dungeon_crawl_canvas, text= "Bag", command= lambda: self.controller.update_adv_bag())
+        map = Button(self.dungeon_crawl_canvas, text= "Map", command= lambda: self.controller.update_adv_map())
         
         bag.grid(row=2, column=0, sticky="nswe")
         map.grid(row=3, column=0, sticky="nswe")
@@ -190,12 +188,15 @@ class DungeonCrawler(BaseFrame):
             curr_hp (int): current hitpoints
             max_hp (int): max hitpoints
         """
-        canvas = self.dungeon_crawl_canvas
-        name = Label(canvas, text = f"Name: {adv_name}", bg = 'White')
-        name.grid(row = 0, column = 0)
+        self.name = Label(self.dungeon_crawl_canvas, text = f"Name: {adv_name}", bg = 'White')
+        self.name.grid(row = 0, column = 0)
 
-        health = Label(canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
-        health.grid(row = 1, column = 0)
+        self.health = Label(self.dungeon_crawl_canvas, text = f"Health Points: {curr_hp} / {max_hp}", bg = 'Green')
+        self.health.grid(row = 1, column = 0)
+
+    def update_adventurer_health(self):
+        """Update hero health after combat."""
+        self.health["text"] = f"Health Points: {self.controller.get_hero_curr_hp()} / {self.controller.get_hero_max_hp()}"
 
     def set_dungeon_display(self, map, adv_telemetry):
         """Display the current dungeon visual to player in the Dungeon Crawler Frame
@@ -365,8 +366,6 @@ class DungeonCrawler(BaseFrame):
         canvas_height = "400"
         map_canvas = Canvas(map_window, width=canvas_width, height=canvas_height)
 
-        print(map.visited_array()) # we can use this to display or cover the rooms
-
         rows = map.get_rows()
         box_width = int(canvas_width)/rows
         cols = map.get_cols()
@@ -434,7 +433,7 @@ class DungeonCrawler(BaseFrame):
                                box_width * (y_adventurer_loc+3/4),box_height * (x_adventurer_loc+ 3/4), fill="purple")
 
 
-        print(dungeon.get_visible_dungeon_string())  # debug
+        # print(dungeon.get_visible_dungeon_string())
 
         map_canvas.pack()
         close_map_window = Button(map_window, text="Close Map", command=map_window.destroy)
@@ -725,6 +724,9 @@ class DungeonBrawler(BaseFrame):
         end_combat.grid(row=0, column=3)
 
     def set_crawler_update(self):
+        """When the hero has won in combat this function removes combat actions and replaces with a button
+        to return to DungeonCrawler.
+        """
         self.combat_action.grid_forget()
         self.crawler = Frame(self.dungeon_brawl_frame)
         back_to_crawler = Button(

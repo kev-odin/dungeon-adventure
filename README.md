@@ -6,6 +6,7 @@ Dungeon Adventure 2.0: The Spoony Bard Returns (bards not yet included) is an ex
 #### Responsibilities:
 # TODO Please check this to see if I missed any of your contributions!
 Kevin Chung
+Hours clocked: ~70 hours
 1) game_controller.py code
 2) BaseFrame
 3) DungeonCrawler(Dungeon traversal, inventory management, and item usage)
@@ -15,12 +16,14 @@ Kevin Chung
 7) UML
 
 Xingguo Huang
+Hours clocked: ~72 hours
 1) DungeonAdventureGUI(adventurer information from user)
 2) Map display(3x3 grid) and map display(whole dungeon) for debugging
 3) Colors adjustment on DungeonCrawler dungeon display to make the game more user-friendly
 4) Win/lose window set up and game summary display 
 
 Stephanie Liu
+Hours clocked: ~60 hours
 1) Model & DB code (including refactoring Kevin's adventurer code from last quarter to match the needs of this quarter)
 2) app\view\load_view.py in all its ugly glory, and refactoring of views to call supers to allow load_view to be opened from relevant views.
 3) Save and Load methods in controller/game_controller.py
@@ -37,14 +40,15 @@ Stephanie Liu
 5) Really well documented, human-readable code.
 6) Great test coverage and OOP implentation with mocks for abstract classes (app\unit_tests\character_tests\abstract_classes\tests)
 7) Fleeing implemented in demo version!
-8) Turn order for each round completed in a single attack action in DungeonBrawler
+8) Packages to assist with easy module import and not a giant file with all our game's files.
+9) Turn order for each round completed in a single attack action in DungeonBrawler
 
 ### To run project:
 0) Verify Python 3.something is installed:
    1) https://www.python.org/downloads/
 1) Verify PIP is installed:
    1) https://pip.pypa.io/en/stable/installation/
-2) in terminal in main directory (same as where setup.py is located), run following command:
+2) In terminal in main directory (same as where setup.py is located), run following command:
    1) pip install -e .  
 3) Verify TKinter installed:
    1) https://www.tutorialspoint.com/how-to-install-tkinter-in-python
@@ -62,6 +66,14 @@ assignment_documents\SRS.pdf
 
 ### Pivotal Tracker
 assignment_documents\pivotal_tracker.pdf
+
+### Shortcomings
+UI is manually tested.  Some integration bugs exist.  Room init code has not been fully refracted like most other classes to store all the generation information and logic within the dungeon_builder.
+
+### Problems overcome
+- Integration challenges.
+- TKinter was not very intuitive and had some unexpected limits and inconsistent documentation.
+- Refactoring old code base to allow easier integration with new features, and designing that adjustment to make sense and be modular.
 
 ### Git History
 # TODO INCLUDE ME TOO
