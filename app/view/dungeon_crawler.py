@@ -103,19 +103,6 @@ class BaseFrame(tk.Frame):
         message2.pack()
         frame2.pack(pady=10)
 
-        # global img
-        # base_dir = os.path.dirname(os.path.abspath(__file__))
-        # path = os.path.join(base_dir, "image assets/welcome_bg.gif")  # debug
-        # img = PhotoImage(file=path)
-        # w = img.width()
-        # h = img.height()
-        # frame2 = Frame(pop2, width=w+5, height=h+5)
-        # canvas2 = Canvas(frame2,width=w+5, height=w+5)
-        # canvas2.create_image(0, 0, image=img, anchor=NW)
-        # canvas2.pack()
-        # frame2.pack(pady=50)
-
-
 class DungeonCrawler(BaseFrame):
     def __init__(self):
         super(DungeonCrawler, self).__init__()
@@ -281,9 +268,6 @@ class DungeonCrawler(BaseFrame):
         img = PhotoImage(file=path)
         img = img.subsample(9)
         adjacent_rooms_canvas.create_image(151, 151, image=img)
-
-        # print a purple circle at the center of the 3x3 grid to represent the hero
-        # adjacent_rooms_canvas.create_oval(125, 125, 175, 175, fill="purple")
 
         adjacent_rooms_canvas.pack()
         adjacent_rooms_frame.place(relx = 0.5, rely = 0.25, anchor = N)
