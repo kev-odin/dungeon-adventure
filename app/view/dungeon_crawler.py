@@ -55,7 +55,7 @@ class BaseFrame(tk.Frame):
     def about_us_window(self):
         global pop1
         pop1 = Toplevel(self.root)
-        pop1.geometry("750x450")
+        pop1.geometry("750x500")
         pop1.resizable(width=False, height=False)
         pop1.title("About us")
 
@@ -64,17 +64,17 @@ class BaseFrame(tk.Frame):
                                           "for the course TCSS504 of University of Washington Tacoma. \n"
                                           "It is a game where a player can win and lose, select multiple hero classes, "
                                           "save and load a game, select difficulty, and play through using a GUI.",
-                           font=('Helvetica', 30, 'bold'))
+                           font=('Helvetica', 16, 'bold'))
         message1.pack()
         frame1.pack(pady = 50)
 
     def control_description_window(self):
         global pop2
         pop2 = Toplevel(self.root)
-        pop2.geometry("750x450")
+        pop2.geometry("750x500")
         pop2.title("Control")
 
-        frame2 = Frame(pop2, width = 750, height = 450)
+        frame2 = Frame(pop2, width = 750, height = 500)
         message2 = Message(frame2, text="New Game -- Start a new game\n"
                                         "\tSelect difficulty level -- choose from easy/medium/hard/inhumane\n"
                                         "\tConfirm new -- Confirm the difficulty level\n"
@@ -99,8 +99,7 @@ class BaseFrame(tk.Frame):
                                         "\tUse Health Potion -- use the health potion of hero's inventory\n"
                                         "\tReturn to Dungeon -- Finish the combat and return to dungeon crawler\n", width = 750)
         message2.pack()
-        frame2.pack(pady=10)
-
+        frame2.pack(pady=5)
 
 class DungeonCrawler(BaseFrame):
     def __init__(self):
