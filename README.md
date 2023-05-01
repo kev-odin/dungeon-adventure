@@ -6,17 +6,28 @@
 ![project-size](https://img.shields.io/github/repo-size/kev-odin/dungeon-adventure?style=for-the-badge)
 ![love](https://img.shields.io/badge/made%20with-%E2%9D%A4%EF%B8%8F-grey?style=for-the-badge)
 
+## Table of Contents
+
+- Click on the hamburger menu in the top left corner of the README.md cell.
+
 ## Project Synopsis
 
 Dungeon Adventure 2.0: The Spoony Bard Returns (bards not yet included) is an expansion of our original Dungeon Adventure game.
 
 A pure python game dependent on TKinter.
 
-      In this game, you play as a novice programmer who finds themselves trapped in a mysterious dungeon. Your task is to escape the dungeon by collecting the 4 pillars of object oriented programming: abstraction, encapsulation, inheritance, and polymorphism.The dungeon is filled with hidden dangers at every turn. Deadly traps and ferocious monsters lurk in the shadows, waiting for their next victim. You must use your programming skills to navigate the treacherous terrain and avoid these dangers.
+      In this game, you play as a novice programmer who finds themselves trapped in a mysterious
+      dungeon. Your task is to escape the dungeon by collecting the 4 pillars of object oriented
+      programming: abstraction, encapsulation, inheritance, and polymorphism.The dungeon is filled with
+      hidden dangers at every turn. Deadly traps and ferocious monsters lurk in the shadows, waiting for
+      their next victim. You must use your programming skills to navigate the treacherous terrain and
+      avoid these dangers.
 
-      But beware - the dungeon is full of traps and enemies that will test your skills to the limit. You'll need to use all your wits and cunning to survive and make it to the end of the dungeon.
+      But beware - the dungeon is full of traps and enemies that will test your skills to the limit.
+      You'll need to use all your wits and cunning to survive and make it to the end of the dungeon.
 
-      Can you collect all four pillars of object oriented programming and escape the dungeon alive? Only time will tell. Good luck, adventurer!
+      Can you collect all four pillars of object oriented programming and escape the dungeon alive? Only
+      time will tell. Good luck, adventurer!
 
 ## Features
 
